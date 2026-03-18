@@ -59,28 +59,6 @@ Suits. 0-10 in its primary value, slowdown 0, various utility
 //FOR BOTH SUITS AND ARMORS BELONGING TO FACTIONS
 //PLEASE PUT CUSTOM ARMORS IN f13armor.dm. All power armors are found in f13armor.dm.
 
-/obj/item/clothing/suit/armor/exile
-	name = "base faction exile armor"
-	desc = "this is for testing."
-	icon = 'icons/fallout/clothing/armored_medium.dmi'
-	mob_overlay_icon = 'icons/fallout/onmob/clothes/armor_medium.dmi'
-
-/obj/item/clothing/suit/armor/exile/Initialize()
-	. = ..()
-	AddComponent(/datum/component/armor_plate)
-
-/obj/item/clothing/suit/armor/exile/ncrexile
-	name = "modified NCR armor"
-	desc = "A modified detoriated armor kit consisting of NCR gear and scrap metal."
-	icon_state = "ncrexile"
-	item_state = "ncrexile"
-
-/obj/item/clothing/suit/armor/exile/legexile
-	name = "modified Legion armor"
-	desc = "A modified detoriated armor kit consisting of Legion gear and scrap metal."
-	icon_state = "legexile"
-	item_state = "legexile"
-
 //////////
 //LEGION//
 //////////
@@ -95,7 +73,7 @@ Suits. 0-10 in its primary value, slowdown 0, various utility
 	salvage_loot = list(/obj/item/stack/crafting/armor_plate = 2) // Because shit armor
 	armor = ARMOR_VALUE_LIGHT
 	armor_tier_desc = ARMOR_CLOTHING_LIGHT
-	slowdown = ARMOR_SLOWDOWN_LIGHT * ARMOR_SLOWDOWN_LESS_T1 * ARMOR_SLOWDOWN_GLOBAL_MULT
+	slowdown = ARMOR_SLOWDOWN_LIGHT * ARMOR_SLOWDOWN_GLOBAL_MULT
 	armor_tokens = list(ARMOR_MODIFIER_UP_MELEE_T1)
 
 /obj/item/clothing/suit/armor/legion/Initialize()
@@ -114,19 +92,22 @@ Suits. 0-10 in its primary value, slowdown 0, various utility
 /obj/item/clothing/suit/armor/legion/recruit/decan
 	name = "legion recruit decanii armor"
 	desc = "Recruit decanii receive slightly better protection than regular recruits. Slightly."
-	armor_tokens = list(ARMOR_MODIFIER_UP_MELEE_T2)
+	armor_tokens = list(ARMOR_MODIFIER_UP_MELEE_T2, ARMOR_MODIFIER_UP_DT_T1)
+	slowdown = ARMOR_SLOWDOWN_LIGHT * ARMOR_SLOWDOWN_GLOBAL_MULT
 
 /obj/item/clothing/suit/armor/legion/prime
 	name = "legion prime armor"
 	desc = "Legion Primes have survived some skirmishes, and when promoted often recieve a set of armor, padded leather modeled on ancient baseball catcher uniforms and various plates of metal or boiled leather."
 	icon_state = "legion_prime"
 	item_state = "legion_prime"
-	armor_tokens = list(ARMOR_MODIFIER_UP_MELEE_T1, ARMOR_MODIFIER_UP_DT_T1)
+	armor_tokens = list(ARMOR_MODIFIER_UP_MELEE_T2, ARMOR_MODIFIER_UP_BULLET_T1, ARMOR_MODIFIER_UP_DT_T1)
+	slowdown = ARMOR_SLOWDOWN_LIGHT * ARMOR_SLOWDOWN_GLOBAL_MULT
 
 /obj/item/clothing/suit/armor/legion/prime/decan
 	name = "legion prime decanus armor"
 	desc = "Legion prime decanus armor-an extra reinforced baseball uniform."
-	armor_tokens = list(ARMOR_MODIFIER_UP_MELEE_T2, ARMOR_MODIFIER_UP_DT_T1)
+	armor_tokens = list(ARMOR_MODIFIER_UP_MELEE_T2, ARMOR_MODIFIER_UP_BULLET_T1, ARMOR_MODIFIER_UP_DT_T2)
+	slowdown = ARMOR_SLOWDOWN_LIGHT * ARMOR_SLOWDOWN_GLOBAL_MULT
 
 /obj/item/clothing/suit/armor/legion/orator
 	name = "Legion Orator armor"
@@ -151,8 +132,8 @@ Suits. 0-10 in its primary value, slowdown 0, various utility
 	salvage_loot = list(/obj/item/stack/crafting/armor_plate = 4) // Slightly better armor
 	armor = ARMOR_VALUE_MEDIUM
 	armor_tier_desc = ARMOR_CLOTHING_MEDIUM
-	slowdown = ARMOR_SLOWDOWN_MEDIUM * ARMOR_SLOWDOWN_LESS_T2 * ARMOR_SLOWDOWN_GLOBAL_MULT
-	armor_tokens = list(ARMOR_MODIFIER_UP_MELEE_T1)
+	slowdown = ARMOR_SLOWDOWN_LIGHT * ARMOR_SLOWDOWN_GLOBAL_MULT
+	armor_tokens = list(ARMOR_MODIFIER_DOWN_MELEE_T1, ARMOR_MODIFIER_DOWN_BULLET_T2, ARMOR_MODIFIER_DOWN_LASER_T3, ARMOR_MODIFIER_UP_DT_T2)
 
 /obj/item/clothing/suit/armor/legion/heavy
 	name = "legion veteran decan armor"
@@ -165,8 +146,8 @@ Suits. 0-10 in its primary value, slowdown 0, various utility
 	salvage_loot = list(/obj/item/stack/crafting/armor_plate = 5)
 	armor = ARMOR_VALUE_MEDIUM
 	armor_tier_desc = ARMOR_CLOTHING_MEDIUM
-	slowdown = ARMOR_SLOWDOWN_MEDIUM * ARMOR_SLOWDOWN_LESS_T2 * ARMOR_SLOWDOWN_GLOBAL_MULT
-	armor_tokens = list(ARMOR_MODIFIER_UP_MELEE_T1, ARMOR_MODIFIER_UP_DT_T2)
+	slowdown = ARMOR_SLOWDOWN_LIGHT * ARMOR_SLOWDOWN_GLOBAL_MULT
+	armor_tokens = list(ARMOR_MODIFIER_DOWN_MELEE_T1, ARMOR_MODIFIER_UP_BULLET_T2, ARMOR_MODIFIER_DOWN_LASER_T3, ARMOR_MODIFIER_UP_DT_T3)
 
 /obj/item/clothing/suit/armor/legion/vet/explorer
 	name = "legion scout armor"
@@ -178,13 +159,24 @@ Suits. 0-10 in its primary value, slowdown 0, various utility
 	slowdown = ARMOR_SLOWDOWN_LIGHT * ARMOR_SLOWDOWN_GLOBAL_MULT
 	armor_tokens = list() // Exchanges protection for speed.
 
+/obj/item/clothing/suit/armor/legion/praetorian
+	name = "legion bodyguard armor"
+	desc = "A suit of light armor with reinforced plates and leather added to it, protecting its user. Perfect for combatants specializing in hit-and-run."
+	icon = 'icons/fallout/clothing/armored_light.dmi'
+	mob_overlay_icon = 'icons/fallout/onmob/clothes/armor_light.dmi'
+	icon_state = "legion_praetorian"
+	item_state = "legion_praetorian"
+	slowdown = ARMOR_SLOWDOWN_LIGHT * ARMOR_SLOWDOWN_GLOBAL_MULT
+	armor_tokens = list(ARMOR_MODIFIER_UP_MELEE_T3, ARMOR_MODIFIER_UP_BULLET_T2, ARMOR_MODIFIER_UP_LASER_T1, ARMOR_MODIFIER_UP_DT_T2)
+
 /obj/item/clothing/suit/armor/legion/vet/vexil
 	name = "legion vexillarius armor"
 	icon = 'icons/fallout/clothing/armored_medium.dmi'
 	desc = " Worn by Vexillarius, this armor has been reinforced with circular metal plates on the chest and a back mounted pole for the flag of the Bull, making the wearer easy to see at a distance."
 	icon_state = "legion_vex"
 	item_state = "legion_vex"
-	armor_tokens = list(ARMOR_MODIFIER_UP_BULLET_T1, ARMOR_MODIFIER_UP_DT_T2)
+	armor_tokens = list(ARMOR_MODIFIER_DOWN_MELEE_T1, ARMOR_MODIFIER_DOWN_BULLET_T2, ARMOR_MODIFIER_DOWN_LASER_T3, ARMOR_MODIFIER_UP_DT_T1)
+	slowdown = ARMOR_SLOWDOWN_LIGHT * ARMOR_SLOWDOWN_GLOBAL_MULT
 
 /obj/item/clothing/suit/armor/legion/venator // ehh ?
 	name = "legion explorer armor"
@@ -196,8 +188,8 @@ Suits. 0-10 in its primary value, slowdown 0, various utility
 	armor = ARMOR_VALUE_HEAVY
 	armor_tier_desc = ARMOR_CLOTHING_MEDIUM
 	stiffness = LIGHT_STIFFNESS
-	slowdown = ARMOR_SLOWDOWN_LIGHT * ARMOR_SLOWDOWN_LESS_T3 * ARMOR_SLOWDOWN_GLOBAL_MULT
-	armor_tokens = list(ARMOR_MODIFIER_UP_DT_T1)
+	slowdown = ARMOR_SLOWDOWN_LIGHT * ARMOR_SLOWDOWN_GLOBAL_MULT
+	armor_tokens = list(ARMOR_MODIFIER_DOWN_MELEE_T1, ARMOR_MODIFIER_DOWN_BULLET_T2, ARMOR_MODIFIER_DOWN_LASER_T3, ARMOR_MODIFIER_UP_DT_T1)
 	
 /obj/item/clothing/suit/armor/legion/centurion //good all around
 	name = "legion centurion armor"
@@ -211,8 +203,8 @@ Suits. 0-10 in its primary value, slowdown 0, various utility
 	armor = ARMOR_VALUE_MEDIUM
 	armor_tier_desc = ARMOR_CLOTHING_MEDIUM
 	stiffness = LIGHT_STIFFNESS
-	slowdown = ARMOR_SLOWDOWN_LIGHT * ARMOR_SLOWDOWN_LESS_T2 * ARMOR_SLOWDOWN_GLOBAL_MULT
-	armor_tokens = list(ARMOR_MODIFIER_UP_MELEE_T1, ARMOR_MODIFIER_UP_DT_T2)
+	slowdown = ARMOR_SLOWDOWN_MEDIUM * ARMOR_SLOWDOWN_GLOBAL_MULT
+	armor_tokens = list(ARMOR_MODIFIER_UP_MELEE_T3, ARMOR_MODIFIER_UP_BULLET_T2, ARMOR_MODIFIER_DOWN_LASER_T3, ARMOR_MODIFIER_UP_DT_T3)
 
 /obj/item/clothing/suit/armor/legion/palacent //laser resist spec
 	name = "paladin-slayer centurion armor"
@@ -222,11 +214,11 @@ Suits. 0-10 in its primary value, slowdown 0, various utility
 	icon_state = "legion_palacent"
 	item_state = "legion_palacent"
 	clothing_flags = CUSHIONED_ARMOR
-	armor = ARMOR_VALUE_MEDIUM
-	armor_tier_desc = ARMOR_CLOTHING_MEDIUM
-	stiffness = LIGHT_STIFFNESS
-	slowdown = ARMOR_SLOWDOWN_LIGHT * ARMOR_SLOWDOWN_LESS_T2 * ARMOR_SLOWDOWN_GLOBAL_MULT
-	armor_tokens = list(ARMOR_MODIFIER_UP_LASER_T2, ARMOR_MODIFIER_UP_DT_T2)
+	armor = ARMOR_VALUE_HEAVY
+	armor_tier_desc = ARMOR_CLOTHING_HEAVY
+	stiffness = HEAVY_STIFFNESS
+	slowdown = ARMOR_SLOWDOWN_SALVAGE * ARMOR_SLOWDOWN_GLOBAL_MULT
+	armor_tokens = list(ARMOR_MODIFIER_UP_LASER_T3, ARMOR_MODIFIER_DOWN_BULLET_T2, ARMOR_MODIFIER_UP_DT_T3)
 
 /obj/item/clothing/suit/armor/legion/rangercent //speed and bullet resist, sacrifices all else
 	name = "ranger-hunter centurion armor"
@@ -239,8 +231,8 @@ Suits. 0-10 in its primary value, slowdown 0, various utility
 	armor = ARMOR_VALUE_MEDIUM
 	armor_tier_desc = ARMOR_CLOTHING_MEDIUM
 	stiffness = LIGHT_STIFFNESS
-	slowdown = ARMOR_SLOWDOWN_LIGHT * ARMOR_SLOWDOWN_LESS_T3 * ARMOR_SLOWDOWN_GLOBAL_MULT
-	armor_tokens = list(ARMOR_MODIFIER_DOWN_LASER_T1, ARMOR_MODIFIER_UP_BULLET_T2, ARMOR_MODIFIER_UP_DT_T1)
+	slowdown = ARMOR_SLOWDOWN_MEDIUM * ARMOR_SLOWDOWN_GLOBAL_MULT
+	armor_tokens = list(ARMOR_MODIFIER_DOWN_LASER_T3, ARMOR_MODIFIER_DOWN_MELEE_T2, ARMOR_MODIFIER_UP_BULLET_T3, ARMOR_MODIFIER_UP_DT_T3)
 
 /obj/item/clothing/suit/armor/legion/legate
 	name = "legion legate armor"
@@ -254,24 +246,24 @@ Suits. 0-10 in its primary value, slowdown 0, various utility
 	armor = ARMOR_VALUE_HEAVY
 	armor_tier_desc = ARMOR_CLOTHING_MEDIUM
 	stiffness = LIGHT_STIFFNESS
-	slowdown = ARMOR_SLOWDOWN_LIGHT * ARMOR_SLOWDOWN_LESS_T3 * ARMOR_SLOWDOWN_GLOBAL_MULT
+	slowdown = ARMOR_SLOWDOWN_MEDIUM * ARMOR_SLOWDOWN_GLOBAL_MULT
 	armor_tokens = list(ARMOR_MODIFIER_UP_BULLET_T2, ARMOR_MODIFIER_UP_MELEE_T2, ARMOR_MODIFIER_UP_DT_T3) // Legate OP
 
-/obj/item/clothing/suit/armor/medium/combat/legion // not craftable atm. Give armor if it becomes so.
+/obj/item/clothing/suit/armor/medium/combat/legion
 	name = "Legion combat armor"
 	desc = "Pre-war military style armor, patched and missing some parts. Modified and repainted to declare the user a fighter for Caesar's Legion."
 	icon = 'icons/fallout/clothing/armored_medium.dmi'
 	mob_overlay_icon = 'icons/fallout/onmob/clothes/armor_medium.dmi'
-	icon_state = "legion_combat"
-	item_state = "legion_combat"
+	icon_state = "combat_armor_legion"
+	item_state = "combat_armor_legion"
 
-/obj/item/clothing/suit/armor/medium/combat/mk2/legion // not craftable atm. Give armor if it becomes so.
+/obj/item/clothing/suit/armor/medium/combat/mk2/legion
 	name = "reinforced Legion combat armor"
+	desc = "Pre-war military style armor, a full set with bracers and reinforcements. Modified and repainted to declare the user a fighter for Caesar's Legion."
 	icon = 'icons/fallout/clothing/armored_medium.dmi'
 	mob_overlay_icon = 'icons/fallout/onmob/clothes/armor_medium.dmi'
-	desc = "Pre-war military style armor, a full set with bracers and reinforcements. Modified and repainted to declare the user a fighter for Caesar's Legion."
-	icon_state = "legion_combat2"
-	item_state = "legion_combat2"
+	icon_state = "combat_armor_legion_mk2"
+	item_state = "combat_armor_legion_mk2"
 
 /obj/item/clothing/suit/armor/legion/vet/explorercanada
 	name = "custom explorer armor"
@@ -295,7 +287,7 @@ Suits. 0-10 in its primary value, slowdown 0, various utility
 	armor = ARMOR_VALUE_MEDIUM
 	armor_tier_desc = ARMOR_CLOTHING_MEDIUM
 	slowdown = ARMOR_SLOWDOWN_MEDIUM * ARMOR_SLOWDOWN_GLOBAL_MULT
-	armor_tokens = list(ARMOR_MODIFIER_UP_DT_T1) // The NCR is more tanky, but slower
+	armor_tokens = list(ARMOR_MODIFIER_DOWN_MELEE_T3, ARMOR_MODIFIER_DOWN_BULLET_T2, ARMOR_MODIFIER_DOWN_LASER_T2, ARMOR_MODIFIER_UP_DT_T1) // The NCR is more tanky, but slower
 
 /datum/component/storage/concrete/pockets/bulletbelt/ncr
 	max_items = 2
@@ -305,13 +297,16 @@ Suits. 0-10 in its primary value, slowdown 0, various utility
 	desc = "A standard issue NCR Infantry vest with a mantle on the shoulder."
 	icon_state = "ncr_standard_mantle"
 	item_state = "ncr_standard_mantle"
+	armor_tokens = list(ARMOR_MODIFIER_DOWN_MELEE_T3, ARMOR_MODIFIER_DOWN_BULLET_T1, ARMOR_MODIFIER_DOWN_LASER_T2, ARMOR_MODIFIER_UP_DT_T1)
+
 
 /obj/item/clothing/suit/armor/ncrarmor/reserve
 	name = "reserve NCR patrol vest"
 	desc = "A standard issue NCR Infantry vest."
 	icon_state = "ncr_infantry_vest"
 	item_state = "ncr_infantry_vest"
-	armor_tokens = list()
+	armor_tokens = list(ARMOR_MODIFIER_DOWN_MELEE_T3, ARMOR_MODIFIER_DOWN_BULLET_T3, ARMOR_MODIFIER_DOWN_LASER_T3)
+
 
 /obj/item/clothing/suit/armor/ncrarmor/conscript
 	name = "NCR flak vest"
@@ -321,7 +316,7 @@ Suits. 0-10 in its primary value, slowdown 0, various utility
 	salvage_loot = list(/obj/item/stack/crafting/armor_plate = 1)
 	armor = ARMOR_VALUE_LIGHT
 	armor_tier_desc = ARMOR_CLOTHING_LIGHT
-	slowdown = ARMOR_SLOWDOWN_LIGHT * ARMOR_SLOWDOWN_GLOBAL_MULT
+	slowdown = ARMOR_SLOWDOWN_MEDIUM * ARMOR_SLOWDOWN_GLOBAL_MULT
 	armor_tokens = list()
 
 /obj/item/clothing/suit/armor/ncrarmor/reinforced
@@ -333,23 +328,24 @@ Suits. 0-10 in its primary value, slowdown 0, various utility
 	armor = ARMOR_VALUE_MEDIUM
 	armor_tier_desc = ARMOR_CLOTHING_MEDIUM
 	slowdown = ARMOR_SLOWDOWN_MEDIUM * ARMOR_SLOWDOWN_GLOBAL_MULT
-	armor_tokens = list(ARMOR_MODIFIER_UP_DT_T1, ARMOR_MODIFIER_UP_BULLET_T1)
+	armor_tokens = list(ARMOR_MODIFIER_DOWN_MELEE_T3, ARMOR_MODIFIER_DOWN_LASER_T2, ARMOR_MODIFIER_UP_DT_T1)
 	salvage_loot = list(/obj/item/stack/crafting/armor_plate = 3)
 
 /obj/item/clothing/suit/armor/ncrarmor/reinforced/engineer
 	name = "NCR blast-padded reinforced patrol vest"
 	desc = "A standard issue NCR Engineer vest reinforced with a groinpad."
-	armor_tokens = list(ARMOR_MODIFIER_UP_DT_T1, ARMOR_MODIFIER_UP_BOMB_T2, ARMOR_MODIFIER_UP_FIRE_T2)
+	armor_tokens = list(ARMOR_MODIFIER_DOWN_MELEE_T2, ARMOR_MODIFIER_DOWN_LASER_T3, ARMOR_MODIFIER_UP_DT_T1, ARMOR_MODIFIER_UP_BOMB_T3, ARMOR_MODIFIER_UP_FIRE_T2)
 
 /obj/item/clothing/suit/armor/ncrarmor/reinforced/mantle
 	name = "NCR reinforced mantle vest"
 	desc = "A standard issue NCR Infantry vest reinforced with a groinpad and a mantle."
 	icon_state = "ncr_reinforced_mantle"
+	armor_tokens = list(ARMOR_MODIFIER_DOWN_MELEE_T1, ARMOR_MODIFIER_UP_BULLET_T1, ARMOR_MODIFIER_DOWN_LASER_T2, ARMOR_MODIFIER_UP_DT_T1)
 
 /obj/item/clothing/suit/armor/ncrarmor/reinforced/mantle/trenchraider
 	name = "NCR reinforced trench mantle vest"
 	desc = "A standard issue NCR Infantry vest with a really long name and extra melee plating."
-	armor_tokens = list(ARMOR_MODIFIER_UP_DT_T1, ARMOR_MODIFIER_UP_MELEE_T2)
+	armor_tokens = list(ARMOR_MODIFIER_UP_MELEE_T1, ARMOR_MODIFIER_DOWN_BULLET_T1, ARMOR_MODIFIER_DOWN_LASER_T2, ARMOR_MODIFIER_UP_DT_T1)
 
 /obj/item/clothing/suit/armor/ncrarmor/heavygunner //NCR Trench Raider Armor
 	name = "NCR Trench Raider Chestplate"
@@ -358,7 +354,7 @@ Suits. 0-10 in its primary value, slowdown 0, various utility
 	mob_overlay_icon = 'icons/fallout/onmob/clothes/armor_medium.dmi'
 	icon_state = "steel_bib_ncra"
 	item_state = "steel_bib_ncra"
-	armor_tokens = list(ARMOR_MODIFIER_DOWN_BULLET_T1, ARMOR_MODIFIER_UP_MELEE_T3)
+	armor_tokens = list(ARMOR_MODIFIER_DOWN_BULLET_T1, ARMOR_MODIFIER_UP_MELEE_T3, ARMOR_MODIFIER_DOWN_LASER_T2, ARMOR_MODIFIER_UP_DT_T3)
 	salvage_loot = list(/obj/item/stack/crafting/armor_plate = 8)
 
 /obj/item/clothing/suit/armor/ncrarmor/labcoat
@@ -376,9 +372,8 @@ Suits. 0-10 in its primary value, slowdown 0, various utility
 	clothing_flags = CUSHIONED_ARMOR
 	armor = ARMOR_VALUE_MEDIUM
 	armor_tier_desc = ARMOR_CLOTHING_MEDIUM
-	slowdown = ARMOR_SLOWDOWN_MEDIUM * ARMOR_SLOWDOWN_LESS_T1 * ARMOR_SLOWDOWN_GLOBAL_MULT
-	armor_tokens = list(ARMOR_MODIFIER_UP_DT_T1, ARMOR_MODIFIER_UP_BULLET_T1)
-
+	slowdown = ARMOR_SLOWDOWN_MEDIUM * ARMOR_SLOWDOWN_GLOBAL_MULT
+	armor_tokens = list(ARMOR_MODIFIER_DOWN_MELEE_T3, ARMOR_MODIFIER_DOWN_LASER_T2, ARMOR_MODIFIER_UP_DT_T1)
 /obj/item/clothing/suit/armor/ncrarmor/captain/ncr_officer_coat
 	name = "NCR officer vest"
 	desc = "A special issue NCR officer's armour with an added thick overcoat for protection from the elements."
@@ -388,7 +383,7 @@ Suits. 0-10 in its primary value, slowdown 0, various utility
 	salvage_loot = list(/obj/item/stack/crafting/armor_plate = 5)
 	armor = ARMOR_VALUE_MEDIUM
 	armor_tier_desc = ARMOR_CLOTHING_MEDIUM
-	slowdown = ARMOR_SLOWDOWN_MEDIUM * ARMOR_SLOWDOWN_LESS_T1 * ARMOR_SLOWDOWN_GLOBAL_MULT
+	slowdown = ARMOR_SLOWDOWN_MEDIUM * ARMOR_SLOWDOWN_GLOBAL_MULT
 	armor_tokens = list(ARMOR_MODIFIER_UP_DT_T1, ARMOR_MODIFIER_UP_BULLET_T1)
 
 /obj/item/clothing/suit/armor/ncrarmor/captain
@@ -408,12 +403,46 @@ Suits. 0-10 in its primary value, slowdown 0, various utility
 	desc = "A brown dress uniform jacket intended for enlisted NCRA personnel."
 	icon_state = "ncr_dressjack"
 	item_state = "ncr_dressjack"
+	armor_tokens = list(ARMOR_MODIFIER_DOWN_MELEE_T3, ARMOR_MODIFIER_DOWN_BULLET_T4, ARMOR_MODIFIER_DOWN_LASER_T4)
 
 /obj/item/clothing/suit/armor/ncrarmor/ncr_codressjack
 	name = "NCR dress jacket"
 	desc = "A brown dress uniform jacket for commissioned NCRA personnel."
 	icon_state = "ncr_codressjack"
 	item_state = "ncr_codressjack"
+	armor_tokens = list(ARMOR_MODIFIER_DOWN_MELEE_T3, ARMOR_MODIFIER_DOWN_BULLET_T4, ARMOR_MODIFIER_DOWN_LASER_T4)
+
+/obj/item/clothing/suit/armor/medium/combat/ncr
+	name = "NCR combat armor"
+	icon = 'icons/fallout/clothing/armored_medium.dmi'
+	mob_overlay_icon = 'icons/fallout/onmob/clothes/armor_medium.dmi'
+	desc = "Pre-war military style armor, patched and missing some parts. Modified and repainted to declare the user a fighter for New California Republic."
+	icon_state = "combat_armor_ncr"
+
+/obj/item/clothing/suit/armor/medium/combat/mk2/ncr
+	name = "reinforced NCR combat armor"
+	icon = 'icons/fallout/clothing/armored_medium.dmi'
+	mob_overlay_icon = 'icons/fallout/onmob/clothes/armor_medium.dmi'
+	desc = "Pre-war military style armor, a full set with bracers and reinforcements. Modified and repainted to declare the user a fighter for New California Republic."
+	icon_state = "combat_armor_ncr_mk2"
+
+/obj/item/clothing/suit/armor/heavy/vest/bulletproof/ncrbulletproofcoat
+	name = "heavy NCR bulletproof coat"
+	desc = "A heavy bulletproof vest that excels in protecting the wearer against traditional projectile weaponry. This one comes with a long coat to boot, styled after the types commonly used by the NCRA and NCRR."
+	icon = 'icons/fallout/onmob/clothes/suit.dmi'
+	mob_overlay_icon = 'icons/fallout/onmob/clothes/suit.dmi'
+	icon_state = "ncrbulletproofcoat"
+	item_state = "ncrbulletproofcoat"
+	blood_overlay_type = "armor"
+
+/obj/item/clothing/suit/armor/heavy/vest/bulletproof/ncrbulletproofsniper
+	name = "heavy NCR bulletproof sniper armor"
+	desc = "A heavy bulletproof vest that excels in protecting the wearer against traditional projectile weaponry. This one comes with an attached sniper's raincoat, colored to fit the arid environments of the Mojave Desert."
+	icon = 'icons/fallout/onmob/clothes/suit.dmi'
+	mob_overlay_icon = 'icons/fallout/onmob/clothes/suit.dmi'
+	icon_state = "ncrbulletproofsniper"
+	item_state = "ncrbulletproofsniper"
+	blood_overlay_type = "armor"
 
 
 //NCR Ranger
@@ -426,8 +455,8 @@ Suits. 0-10 in its primary value, slowdown 0, various utility
 	armor = ARMOR_VALUE_LIGHT
 	stiffness = LIGHT_STIFFNESS
 	armor_tier_desc = ARMOR_CLOTHING_LIGHT
-	slowdown = ARMOR_SLOWDOWN_LIGHT * ARMOR_SLOWDOWN_LESS_T1 * ARMOR_SLOWDOWN_GLOBAL_MULT
-	armor_tokens = list(ARMOR_MODIFIER_UP_DT_T2, ARMOR_MODIFIER_UP_BULLET_T1)
+	slowdown = ARMOR_SLOWDOWN_MEDIUM * ARMOR_SLOWDOWN_GLOBAL_MULT
+	armor_tokens = list(ARMOR_MODIFIER_UP_DT_T2, ARMOR_MODIFIER_UP_BULLET_T2, ARMOR_MODIFIER_DOWN_MELEE_T2)
 
 /obj/item/clothing/suit/armor/trailranger
 	name = "ranger vest"
@@ -457,30 +486,29 @@ Suits. 0-10 in its primary value, slowdown 0, various utility
 	item_state = "ncr_patrol"
 	clothing_flags = CUSHIONED_ARMOR
 	stiffness = LIGHT_STIFFNESS
-	slowdown = ARMOR_SLOWDOWN_MEDIUM * ARMOR_SLOWDOWN_LESS_T2 * ARMOR_SLOWDOWN_GLOBAL_MULT
-	armor_tokens = list(ARMOR_MODIFIER_UP_DT_T1, ARMOR_MODIFIER_UP_BULLET_T1)
+	slowdown = ARMOR_SLOWDOWN_MEDIUM * ARMOR_SLOWDOWN_GLOBAL_MULT
+	armor_tokens = list(ARMOR_MODIFIER_UP_DT_T2, ARMOR_MODIFIER_UP_BULLET_T1, ARMOR_MODIFIER_DOWN_MELEE_T2)
 
 /obj/item/clothing/suit/armor/rangercombat
 	name = "veteran ranger combat armor"
 	desc = "The NCR veteran ranger combat armor, or black armor consists of a pre-war L.A.P.D. riot suit under a duster with rodeo jeans. Considered one of the most prestigious suits of armor to earn and wear while in service of the NCR Rangers."
 	icon_state = "ranger"
 	item_state = "ranger"
+	unique_reskin = list("Classic" = "ranger_old")
 	clothing_flags = CUSHIONED_ARMOR
 	armor = ARMOR_VALUE_HEAVY
 	armor_tier_desc = ARMOR_CLOTHING_HEAVY
 	stiffness = LIGHT_STIFFNESS
-	slowdown = ARMOR_SLOWDOWN_MEDIUM * ARMOR_SLOWDOWN_LESS_T3 * ARMOR_SLOWDOWN_GLOBAL_MULT
-	armor_tokens = list(ARMOR_MODIFIER_UP_DT_T2)
+	slowdown = ARMOR_SLOWDOWN_MEDIUM * ARMOR_SLOWDOWN_GLOBAL_MULT
+	armor_tokens = list(ARMOR_MODIFIER_UP_DT_T2, ARMOR_MODIFIER_UP_BULLET_T1, ARMOR_MODIFIER_DOWN_MELEE_T2, ARMOR_MODIFIER_DOWN_LASER_T2)
 	salvage_loot = list(/obj/item/stack/crafting/armor_plate = 8)
 
-
-
-//Great Khan
-/obj/item/clothing/suit/armor/khan_jacket
-	name = "khan armored jacket"
-	desc = "The symbol of the greatest pushers."
-	icon_state = "khan_jacket"
-	item_state = "khan_jacket"
+/obj/item/clothing/suit/armor/rangercombat/shocktrooper
+	name = "shocktrooper combat armor"
+	desc = "An old marine shocktrooper suit from before the war, still good as new."
+	icon_state = "shocktrooper"
+	item_state = "shocktrooper"
+	slowdown = ARMOR_SLOWDOWN_MEDIUM * ARMOR_SLOWDOWN_GLOBAL_MULT
 
 //All of the armor below is mostly unused
 
@@ -569,30 +597,6 @@ Suits. 0-10 in its primary value, slowdown 0, various utility
 	item_state = "midwestpa" // PATREON SUPPORTER CUSTOM GEAR, DO NOT USE.
 	desc = "This set of power armor once belonged to the Midwestern branch of the Brotherhood of Steel, and now resides here. This particular one has gone through a chemical hardening process, increasing its armor capabilities." // PATREON SUPPORTER CUSTOM GEAR, DO NOT USE.
 
-/obj/item/clothing/suit/armor/exile/cust0m
-	name = "Lorica Iudicis"
-	desc = "A set of well maintained though still quite clearly worn armor consisting of a metal vest, a Centurion's shoulder pad, a pair of Centurion's arm guards and an incredibly large, perhaps even over-sized fur cloak. Upon basic examination, one can see that every piece of metal bar the buckles on the leather straps and whatever scratches and blemishes are yet to be retouched is masterfully decorated with silver, in complete contrast to the blackness of the cloak. Though only upon closer examination can the intricacies of the armor set be observed. The most obvious piece is the metal vest which has clearly been engraved, mostly decorationally besides the name 'Iudex Flammae' near the top. Though the engravings provide no tactical advantage whatsoever, the sharp geometric shapes accompanied by smooth, tastefully placed curves would catch the eye of even the most skeptical engraving enjoyer. As for the shoulder pad and arm guards, they hold the same engravings, and though they are recognizable as salvage, they still look incredibly beautiful yet simultaneously sturdy. Not much of the metal seems to exist on the back though that is only due to the fact that the incredibly thick, durable and flexible bear pelt that covers it would definitely provide ample protection. The pelt itself is absolutely covered in thick, almost jet black fur. One can tell from touch that the skin underneath is about as sturdy as skin gets. The pelt hangs across the wearer's back, held up by the neck and shoulders. This armor was competently made, and it shows."
-	icon_state = "exilecust0m"
-	item_state = "exilecust0m"
-	var/adjusted = FALSE
-
-/obj/item/clothing/suit/armor/exile/cust0m/verb/armor_adjust()
-	set name = "Adjust Armor"
-	set category = null
-	set src in usr
-
-	if(!adjusted)
-		adjusted = TRUE
-		icon_state = "exilecust0m_d"
-	else
-		adjusted = FALSE
-		icon_state = "exilecust0m"
-
-	if(ishuman(usr))
-		var/mob/living/carbon/human/H = usr
-		H.update_inv_w_uniform()
-		H.update_body()
-
 /obj/item/clothing/suit/armor/harpercoat
 	name = "outlaw coat"
 	desc = "An ugly looking combat duster"
@@ -652,7 +656,6 @@ Suits. 0-10 in its primary value, slowdown 0, various utility
 	desc = "A durable muslin poncho. Tough enough to bear the elements and serve as handy blanket."
 	icon_state = "ranger_cloak"
 	item_state = "ranger_cloak"
-
 
 
 //THE GRAVEYARD
@@ -760,12 +763,6 @@ Suits. 0-10 in its primary value, slowdown 0, various utility
 // LEGION //
 ////////////
 
-/obj/item/clothing/suit/armor/medium/tribal/legion/legexile
-	name = "modified Legion armor"
-	desc = "A modified detoriated armor kit consisting of Legion gear and scrap metal."
-	icon_state = "legexile"
-	item_state = "legexile"
-
 /obj/item/clothing/suit/armor/medium/tribal/legion/forgemaster
 	name = "forgemaster armor"
 	desc = "Legion armor reinforced with metal, worn with a Forgemaster apron with the bull insignia over it."
@@ -824,26 +821,138 @@ Suits. 0-10 in its primary value, slowdown 0, various utility
 // GREAT KHANS ARMOR //
 ///////////////////////
 
-//Armored jacket
+// Light Khan
+
+/obj/item/clothing/suit/toggle/labcoat/khan_jacket
+	name = "Great Khan jacket"
+	desc = "A black leather jacket. <br>There is an illustration on the back - an aggressive, red-eyed skull wearing a fur hat with horns.<br>The skull has a mongoloid moustache - it's obviously a Great Khans emblem."
+	icon = 'icons/fallout/clothing/khans.dmi'
+	mob_overlay_icon = 'icons/fallout/onmob/clothes/khaans.dmi'
+	icon_state = "khan_jacket"
+	item_state = "khan_jacket"
+	cold_protection = CHEST|GROIN
+	heat_protection = CHEST|GROIN
+	min_cold_protection_temperature = ARMOR_MIN_TEMP_PROTECT
+	max_heat_protection_temperature = ARMOR_MAX_TEMP_PROTECT
+	strip_delay = 10
+	equip_delay_other = 10
+	max_integrity = 100
+	pocket_storage_component_path = /datum/component/storage/concrete/pockets/armor
+	armor = ARMOR_VALUE_LIGHT
+	armor_tier_desc = ARMOR_CLOTHING_LIGHT
+	slowdown = ARMOR_SLOWDOWN_LIGHT * ARMOR_SLOWDOWN_GLOBAL_MULT
+	armor_tokens = list()
+	pocket_storage_component_path = /datum/component/storage/concrete/pockets
+
+// Medium Khan
+
 /obj/item/clothing/suit/toggle/labcoat/khan_jacket/armored
 	name = "Great Khan armored jacket"
 	desc = "A black leather jacket with ballistic plates and a big Great Khan logo on the back. Some prefer to wear a leather vest (alt-click)."
 	icon_state = "khan_jacket_armored"
 	item_state = "khan_jacket_armored"
+	cold_protection = CHEST|GROIN
+	heat_protection = CHEST|GROIN
+	min_cold_protection_temperature = ARMOR_MIN_TEMP_PROTECT
+	max_heat_protection_temperature = ARMOR_MAX_TEMP_PROTECT
+	strip_delay = 30
+	equip_delay_other = 50
+	max_integrity = 200
+	pocket_storage_component_path = /datum/component/storage/concrete/pockets/armor
+	stiffness = LIGHT_STIFFNESS
+	armor = ARMOR_VALUE_LIGHT
+	armor_tier_desc = ARMOR_CLOTHING_LIGHT
+	slowdown = ARMOR_SLOWDOWN_LIGHT * ARMOR_SLOWDOWN_GLOBAL_MULT
+	armor_tokens = list(ARMOR_MODIFIER_UP_MELEE_T2, ARMOR_MODIFIER_UP_DT_T1)
 
-//Battlecoat
+// Heavy Khan
+
 /obj/item/clothing/suit/toggle/labcoat/khan_jacket/coat
-	name = "Leather battle coat"
-	desc = "Heavy leather coat lined with a patchwork of metal plates on the inside."
+	name = "Great Khan battle coat"
+	desc = "Heavy leather coat lined with a patchwork of metal plates on the inside. On the back the symbol of the Great Khans is displayed proudly."
 	icon_state = "khan_heavy"
 	item_state = "khan_heavy"
+	cold_protection = CHEST|GROIN|LEGS|ARMS
+	heat_protection = CHEST|GROIN|LEGS|ARMS
+	strip_delay = 80
+	equip_delay_other = 50
+	max_integrity = 200
+	pocket_storage_component_path = /datum/component/storage/concrete/pockets/duster/armored
+	armor = ARMOR_VALUE_MEDIUM
+	armor_tier_desc = ARMOR_CLOTHING_MEDIUM
+	stiffness = MEDIUM_STIFFNESS
+	slowdown = ARMOR_SLOWDOWN_MEDIUM * ARMOR_SLOWDOWN_GLOBAL_MULT
+	armor_tokens = list(ARMOR_MODIFIER_UP_BULLET_T2, ARMOR_MODIFIER_UP_MELEE_T1, ARMOR_MODIFIER_UP_LASER_T2, ARMOR_MODIFIER_DOWN_ENV_T1, ARMOR_MODIFIER_UP_DT_T3)
 
-//Battlecoat/Goji
-/obj/item/clothing/suit/toggle/labcoat/khan_jacket/coat/goji
-	name = "Golden Geckoskin jacket"
-	desc = "Heavy Geckoskin jacket lined with a bulletproof lining on the inside. On the back the symbol of the Great Khans is displayed proudly."
-	icon_state = "GojiSuit"
-	item_state = "GojiSuit"
+// Outlaws / Exiles specific factions
+
+/obj/item/clothing/suit/armor/exile
+	name = "base faction exile armor"
+	desc = "this is for testing."
+	icon = 'icons/fallout/clothing/armored_medium.dmi'
+	mob_overlay_icon = 'icons/fallout/onmob/clothes/armor_medium.dmi'
+
+/obj/item/clothing/suit/armor/exile/Initialize()
+	. = ..()
+	AddComponent(/datum/component/armor_plate)
+
+/obj/item/clothing/suit/armor/exile/ncrexile
+	name = "modified NCR armor"
+	desc = "A modified detoriated armor kit consisting of NCR gear and scrap metal."
+	icon_state = "ncrexile"
+	item_state = "ncrexile"
+	armor = ARMOR_VALUE_MEDIUM
+	armor_tier_desc = ARMOR_CLOTHING_MEDIUM
+	slowdown = ARMOR_SLOWDOWN_MEDIUM * ARMOR_SLOWDOWN_GLOBAL_MULT
+	armor_tokens = list(ARMOR_MODIFIER_DOWN_MELEE_T3, ARMOR_MODIFIER_DOWN_LASER_T2, ARMOR_MODIFIER_UP_DT_T1)
+
+/obj/item/clothing/suit/armor/exile/legexile
+	name = "modified Legion armor"
+	desc = "A modified detoriated armor kit consisting of Legion gear and scrap metal."
+	icon_state = "legexile"
+	item_state = "legexile"
+	armor = ARMOR_VALUE_MEDIUM
+	armor_tier_desc = ARMOR_CLOTHING_MEDIUM
+	slowdown = ARMOR_SLOWDOWN_LIGHT * ARMOR_SLOWDOWN_GLOBAL_MULT
+	armor_tokens = list(ARMOR_MODIFIER_DOWN_MELEE_T1, ARMOR_MODIFIER_DOWN_BULLET_T2, ARMOR_MODIFIER_DOWN_LASER_T3, ARMOR_MODIFIER_UP_DT_T2)
+
+/obj/item/clothing/suit/armor/exile/bosexile
+	name = "modified Brotherhood armor"
+	desc = "A modified detoriated armor kit consisting of brotherhood combat armor and scrap metal."
+	icon = 'icons/fallout/clothing/armored_heavy.dmi'
+	mob_overlay_icon = 'icons/fallout/onmob/clothes/armor_heavy.dmi'
+	icon_state = "exile_bos"
+	item_state = "exile_bos"
+	armor = ARMOR_VALUE_MEDIUM
+	armor_tier_desc = ARMOR_CLOTHING_MEDIUM
+	slowdown = ARMOR_SLOWDOWN_MEDIUM * ARMOR_SLOWDOWN_GLOBAL_MULT
+	armor_tokens = list(ARMOR_MODIFIER_DOWN_MELEE_T3, ARMOR_MODIFIER_DOWN_BULLET_T2, ARMOR_MODIFIER_DOWN_LASER_T1, ARMOR_MODIFIER_UP_DT_T1)
+
+/obj/item/clothing/suit/armor/exile/cust0m
+	name = "Lorica Iudicis"
+	desc = "A set of well maintained though still quite clearly worn armor consisting of a metal vest, a Centurion's shoulder pad, a pair of Centurion's arm guards and an incredibly large, perhaps even over-sized fur cloak. Upon basic examination, one can see that every piece of metal bar the buckles on the leather straps and whatever scratches and blemishes are yet to be retouched is masterfully decorated with silver, in complete contrast to the blackness of the cloak. Though only upon closer examination can the intricacies of the armor set be observed. The most obvious piece is the metal vest which has clearly been engraved, mostly decorationally besides the name 'Iudex Flammae' near the top. Though the engravings provide no tactical advantage whatsoever, the sharp geometric shapes accompanied by smooth, tastefully placed curves would catch the eye of even the most skeptical engraving enjoyer. As for the shoulder pad and arm guards, they hold the same engravings, and though they are recognizable as salvage, they still look incredibly beautiful yet simultaneously sturdy. Not much of the metal seems to exist on the back though that is only due to the fact that the incredibly thick, durable and flexible bear pelt that covers it would definitely provide ample protection. The pelt itself is absolutely covered in thick, almost jet black fur. One can tell from touch that the skin underneath is about as sturdy as skin gets. The pelt hangs across the wearer's back, held up by the neck and shoulders. This armor was competently made, and it shows."
+	icon_state = "exilecust0m"
+	item_state = "exilecust0m"
+	var/adjusted = FALSE
+
+/obj/item/clothing/suit/armor/exile/cust0m/verb/armor_adjust()
+	set name = "Adjust Armor"
+	set category = null
+	set src in usr
+
+	if(!adjusted)
+		adjusted = TRUE
+		icon_state = "exilecust0m_d"
+	else
+		adjusted = FALSE
+		icon_state = "exilecust0m"
+
+	if(ishuman(usr))
+		var/mob/living/carbon/human/H = usr
+		H.update_inv_w_uniform()
+		H.update_body()
+
+
 
 //Special Biosuit
 
@@ -1019,20 +1128,6 @@ Just leaving this here for quick copy-pasting, for future contributors.
 	STOP_PROCESSING(SSobj, src)
 	return ..() */
 
-
-/obj/item/clothing/suit/armor/medium/duster/khancoat
-	name = "khan battlecoat"
-	desc = "Affluent pushers can affort fancy coats with a lot of metal and ceramic plates stuffed inside."
-	icon_state = "khanbattle"
-	item_state = "khanbattle"
-
-// Outlaw
-/obj/item/clothing/suit/toggle/armored/khanlight
-	name = "great khan jacket"
-	desc = "With small lead plate inserts giving some defense, the jackets and vests popular with the Great Khans show off their emblem on the back."
-	icon_state = "khanjacket"
-	item_state = "khanjacket"
-
 /obj/item/clothing/suit/armor/light/tribal/ncr
 	name = "tribalized NCR armor vest"
 	desc = "A suit of worn dated NCR armor, it seems to have seen better days."
@@ -1117,8 +1212,16 @@ Just leaving this here for quick copy-pasting, for future contributors.
 	desc = "Developed in early 2077 after the Anchorage Reclamation, the T-60 series of power armor was designed to eventually replace the T-51b as the pinnacle of powered armor technology in the U.S. military arsenal."
 	icon_state = "t60powerarmor"
 	item_state = "t60powerarmor"
+	armor_tokens = list(ARMOR_MODIFIER_UP_MELEE_T1, ARMOR_MODIFIER_UP_BULLET_T1, ARMOR_MODIFIER_UP_LASER_T1)
 	salvage_loot = list(/obj/item/stack/crafting/armor_plate = 30)
 	salvaged_type = /obj/item/clothing/suit/armor/heavy/salvaged_pa/t60
+
+/obj/item/clothing/suit/armor/power_armor/t60/tesla
+	name = "T-60a tesla power armor"
+	desc = "Developed in early 2077 after the Anchorage Reclamation, the T-60 series of power armor was designed to eventually replace the T-51b as the pinnacle of powered armor technology in the U.S. military arsenal, this one appears to be enhanced with jurry rigged tesla coils"
+	icon_state = "t60tesla"
+	item_state = "t60tesla"
+	armor_tokens = list(ARMOR_MODIFIER_UP_MELEE_T1, ARMOR_MODIFIER_UP_BULLET_T1, ARMOR_MODIFIER_UP_LASER_T1)
 
 /obj/item/clothing/suit/armor/power_armor/t60/pineapple
 	name = "degraded T-60a power armor"
@@ -1156,3 +1259,39 @@ Just leaving this here for quick copy-pasting, for future contributors.
 	item_state = "duster_recon"
 	permeability_coefficient = 0.9
 
+///////////////
+////  Town ////
+///////////////
+
+/obj/item/clothing/suit/armor/heavy/riot/knight/mayor
+	name = "Mayors Plated Armor"
+	desc = "A metal set of plated armor. denoting the rank of lord, gold appears to be welded crudely onto the top"
+	icon_state = "knight_yellow"
+	item_state = "knight_yellow"
+	pocket_storage_component_path = /datum/component/storage/concrete/pockets/armor
+	equip_delay_self = 110
+	equip_delay_other = 20
+	slowdown = ARMOR_SLOWDOWN_HEAVY
+	armor = ARMOR_VALUE_MEDIUM
+	armor_tokens = list(ARMOR_MODIFIER_UP_MELEE_T2, ARMOR_MODIFIER_DOWN_BULLET_T2, ARMOR_MODIFIER_UP_LASER_T2)
+
+/obj/item/clothing/suit/armor/heavy/riot/knight/sherrif
+	name = "Sherrifs Plated Armor"
+	desc = "A metal set of plated armor. it appears to have red markings all over marking the rank of sherrif."
+	icon_state = "knight_red"
+	item_state = "knight_red"
+	pocket_storage_component_path = /datum/component/storage/concrete/pockets/armor
+	equip_delay_self = 110
+	equip_delay_other = 20
+	slowdown = ARMOR_SLOWDOWN_HEAVY
+	armor = ARMOR_VALUE_MEDIUM
+	armor_tokens = list(ARMOR_MODIFIER_UP_MELEE_T2, ARMOR_MODIFIER_DOWN_BULLET_T2, ARMOR_MODIFIER_UP_LASER_T2)
+
+/obj/item/clothing/suit/armor/heavy/riot/knight/tabard
+	name = "Watchmens tabard"
+	desc = "A red tabard, scratched and marked from years of usage."
+	icon_state = "knight_tabard"
+	item_state = "knight_tabard"
+	slowdown = ARMOR_SLOWDOWN_HEAVY
+	armor = ARMOR_VALUE_MEDIUM
+	armor_tokens = list(ARMOR_MODIFIER_UP_MELEE_T1, ARMOR_MODIFIER_DOWN_BULLET_T3, ARMOR_MODIFIER_UP_LASER_T1)

@@ -495,10 +495,12 @@ Turf and target are separate in case you want to teleport some distance from a t
 /proc/can_see(atom/source, atom/target, length=5) // I couldnt be arsed to do actual raycasting :I This is horribly inaccurate.
 	var/turf/current = get_turf(source)
 	var/turf/target_turf = get_turf(target)
+	if(!current || !target_turf)
+		return 0
 	var/steps = 1
 	if(current != target_turf)
 		current = get_step_towards(current, target_turf)
-		while(current != target_turf)
+		while(current != target_turf && current)
 			if(steps > length)
 				return 0
 			if(current.opacity)
@@ -775,10 +777,12 @@ GLOBAL_LIST_INIT(WALLITEMS_INVERSE, typecacheof(list(
 			return "white"
 
 /proc/params2turf(scr_loc, turf/origin, client/C)
-	if(!scr_loc)
+	if(!scr_loc || !origin)
 		return null
 	var/tX = splittext(scr_loc, ",")
 	var/tY = splittext(tX[2], ":")
+	if(!origin)
+		return null
 	var/tZ = origin.z
 	tY = tY[1]
 	tX = splittext(tX[1], ":")
@@ -1635,7 +1639,7 @@ GLOBAL_DATUM_INIT(dview_mob, /mob/dview, new)
 	var/list/channels_to_use = list()
 	for(var/I in world.TgsChatChannelInfo())
 		var/datum/tgs_chat_channel/channel = I
-		if(channel.tag == config_setting)
+		if(channel.custom_tag == config_setting)
 			channels_to_use += channel
 
 	if(length(channels_to_use))

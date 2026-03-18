@@ -177,6 +177,8 @@ ATTACHMENTS
 	COOLDOWN_DECLARE(shoot_message_antispam)
 	/// Minimum S.P.E.C.I.A.L. Intelligence stat required for using this gun
 	var/required_int_to_fire = 0
+	/// Minimum S.P.E.C.I.A.L. Strength stat required for using this gun
+	var/required_str_to_fire = 0
 
 /obj/item/gun/Initialize()
 	if(!recoil_dat && islist(init_recoil))
@@ -268,6 +270,12 @@ ATTACHMENTS
 	QDEL_LIST(firemodes)
 	return ..()
 
+/obj/item/gun/ballistic/Destroy()
+	if(magazine)
+		QDEL_NULL(magazine)
+	magazine = null
+	return ..()
+
 /obj/item/gun/handle_atom_del(atom/A)
 	if(A == chambered)
 		chambered = null
@@ -342,12 +350,22 @@ ATTACHMENTS
 		distant_sound = shootprops[CSP_INDEX_DISTANT_SOUND],
 		distant_range = shootprops[CSP_INDEX_DISTANT_RANGE]
 		)
+	
+	// Alert nearby hostile mobs to gunfire
+	if(!silenced)
+		for(var/mob/living/simple_animal/hostile/H in range(7, user))
+			if(H.stat != DEAD && !H.ckey && H.can_hear_combat)
+				// Don't alert if shooter is same faction
+				if(!H.faction_check_mob(user))
+					H.hear_gunshot(get_turf(user), user)
+	
 	if(!silenced && message && COOLDOWN_FINISHED(src, shoot_message_antispam))
 		COOLDOWN_START(src, shoot_message_antispam, GUN_SHOOT_MESSAGE_ANTISPAM_TIME)
 		if(pointblank)
 			user.visible_message(span_danger("[user] fires [src] point blank at [pbtarget]!"), null, null, COMBAT_MESSAGE_RANGE)
 		else
 			user.visible_message(span_danger("[user] fires [src]!"), null, null, COMBAT_MESSAGE_RANGE)
+	
 	kickback(user, P)
 
 //Adds logging to the attack log whenever anyone draws a gun, adds a pause after drawing a gun before you can do anything based on it's size
@@ -446,7 +464,7 @@ ATTACHMENTS
 	if (automatic == 0)
 		user.DelayNextAction(1)
 	if (automatic == 1)
-		user.DelayNextAction(autofire_shot_delay)
+		user.DelayNextAction(autofire_shot_delay * 0.3) // 70% reduction
 
 	//DUAL (or more!) WIELDING
 	var/loop_counter = 0
@@ -551,7 +569,7 @@ ATTACHMENTS
 /obj/item/gun/proc/process_fire(atom/target, mob/living/user, message = TRUE, params = null, zone_override = "", stam_cost = 0)
 	add_fingerprint(user)
 
-	if(!gun_firing_special_stat_check(user)) //S.P.E.C.I.A.L.
+	if(!gun_firing_int_check(user) || !gun_firing_str_check(user)) //S.P.E.C.I.A.L.
 		return
 	if(on_cooldown(user))
 		return
@@ -1626,6 +1644,7 @@ GLOBAL_LIST_INIT(gun_yeet_words, list(
 	new /obj/item/gun/ballistic/automatic/pistol/pistol14(src)
 	new /obj/item/ammo_box/magazine/uzim9mm(src)
 	new /obj/item/ammo_box/magazine/m9mm/doublestack(src)
+	new /obj/item/ammo_box/magazine/m10mm/adv/drum(src)
 	new /obj/item/ammo_box/magazine/m10mm/adv/ext(src)
 	new /obj/item/ammo_box/magazine/m10mm/adv(src)
 	new /obj/item/ammo_box/magazine/m10mm_p90(src)

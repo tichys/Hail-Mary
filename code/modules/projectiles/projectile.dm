@@ -222,6 +222,10 @@
 		hit_limb = L.check_limb_hit(def_zone)
 	SEND_SIGNAL(src, COMSIG_PROJECTILE_SELF_ON_HIT, firer, target, Angle, hit_limb)
 	var/turf/target_loca = get_turf(target)
+	
+	// Alert hostile mobs about the impact (spawned to avoid blocking, optimized with early exits)
+	spawn(0)
+		notify_mobs_of_projectile_impact(target_loca, firer, src)
 
 	var/hitx
 	var/hity
@@ -562,10 +566,14 @@
 	if(spread_override)
 		setAngle(Angle + rand(-spread_override, spread_override))
 	var/turf/starting = get_turf(src)
-	if(original)
-		if(starting.z > original?.z)
+	if(!starting)
+		stack_trace("WARNING: Projectile [type] fired without a valid location!")
+		qdel(src)
+		return
+	if(original && isatom(original))
+		if(starting.z > original.z)
 			starting  = SSmapping.get_turf_below(starting)
-		if(starting.z < original?.z)
+		if(starting.z < original.z)
 			starting  = SSmapping.get_turf_above(starting)
 	if(isnull(Angle))	//Try to resolve through offsets if there's no angle set.
 		if(isnull(xo) || isnull(yo))
@@ -690,6 +698,8 @@
 	var/old_px = pixel_x
 	var/old_py = pixel_y
 	for(var/i in 1 to times)
+		if(QDELETED(src) || !trajectory || !loc)
+			return
 		// HOMING START - Too expensive to proccall at this point.
 		if(homing_target)
 			// No datum/points, too expensive.
@@ -716,11 +726,14 @@
 				pixel_x = trajectory.return_px()
 				pixel_y = trajectory.return_py()
 		else if(T != loc)
-			var/safety = CEILING(pixel_increment_amount / world.icon_size, 1) * 5 + 1
+			var/safety = CEILING(pixel_increment_amount / world.icon_size, 1) * 10 + 5
 			while(T != loc)
-				if(!--safety)
-					CRASH("[type] took too long (allowed: [CEILING(pixel_increment_amount/world.icon_size,1)*2] moves) to get to its location.")
-				step_towards(src, T)
+				if(!T || !--safety)
+					if(!T)
+						break  // Target turf became null, stop moving
+					CRASH("[type] took too long (allowed: [CEILING(pixel_increment_amount/world.icon_size,1)*10] moves) to get to its location.")
+				if(!step_towards(src, T))
+					break  // Projectile blocked or can't move, stop trying
 				if(QDELETED(src) || pixel_move_interrupted)		// this doesn't take into account with pixel_move_interrupted the portion of the move cut off by any forcemoves, but we're opting to ignore that for now
 				// the reason is the entire point of moving to pixel speed rather than tile speed is smoothness, which will be crucial when pixel movement is done in the future
 				// reverting back to tile is more or less the only way of fixing this issue.
@@ -731,7 +744,7 @@
 			if(QDELETED(src))
 				return
 			pixels_range_leftover -= world.icon_size
-	if(!hitscanning && !forcemoved)
+	if(!hitscanning && !forcemoved && trajectory && loc)
 		var/traj_px = round(trajectory.return_px(), 1)
 		var/traj_py = round(trajectory.return_py(), 1)
 		if(allow_animation && (pixel_increment_amount * times > MINIMUM_PIXELS_TO_ANIMATE))
@@ -789,7 +802,7 @@
 	trajectory_ignore_forcemove = FALSE
 	starting = get_turf(source)
 	original = target
-	if(targloc || !params)
+	if(targloc && !params)
 		yo = targloc.y - curloc.y
 		xo = targloc.x - curloc.x
 		setAngle(get_projectile_angle(src, targloc) + spread)
@@ -920,6 +933,35 @@
 /proc/check_armor_penetration(atom/A)
 	var/obj/item/projectile/P = A
 	return istype(P) && P.armour_penetration
+
+// GLOBAL PROJECTILE IMPACT HANDLER for hostile.dm
+// CPU OPTIMIZED: Early exits, limited notifications, reduced range
+/proc/notify_mobs_of_projectile_impact(turf/impact_turf, atom/firer, obj/item/projectile/P)
+	if(!impact_turf || !firer)
+		return
+	
+	var/notified = 0
+	var/max_notifications = 8 // Limit notifications to prevent spam on large mob groups
+	
+	// CPU OPTIMIZATION: Reduced range from 20 to 5 tiles (50 tiles vs 400 tiles to check)
+	for(var/mob/living/simple_animal/hostile/M in range(5, impact_turf))
+		if(M.stat == DEAD || M.ckey)
+			continue
+		
+		// Only alert mobs actively engaged (has target or searching)
+		if(!M.target && !M.searching)
+			continue
+		
+		// Check if mob can hear the impact (with muffling)
+		var/effective_range = M.calculate_muffled_sound_range(impact_turf, M.impact_hearing_range)
+		var/distance = get_dist(M, impact_turf)
+		var/z_distance = abs(M.z - impact_turf.z)
+		
+		if(distance <= effective_range && z_distance <= 1)
+			M.hear_impact_sound(impact_turf, firer)
+			notified++
+			if(notified >= max_notifications) // Early exit after enough notifications
+				return
 
 /obj/item/projectile/bullet/F13
 	name = "bullet"

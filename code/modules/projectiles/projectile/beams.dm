@@ -183,6 +183,7 @@
 	light_color = LIGHT_COLOR_GREEN
 	wound_bonus = -40
 	bare_wound_bonus = 70
+	armour_penetration = 0 //Energy Cannon is doing bullshit in background
 
 /obj/item/projectile/beam/emitter/singularity_pull()
 	return
@@ -193,6 +194,7 @@
 	tracer_type = /obj/effect/projectile/tracer/laser/emitter
 	impact_type = /obj/effect/projectile/impact/laser/emitter
 	impact_effect_type = null
+	armour_penetration = 0 //Energy Cannon is doing bullshit in background
 
 /obj/item/projectile/beam/lasertag
 	name = "laser tag beam"
@@ -314,6 +316,17 @@
 //Securitrons Beam
 /obj/item/projectile/beam/laser/pistol/ultraweak
 	damage = 15 //quantity over quality
+
+//Big Chews Beam
+/obj/item/projectile/beam/laser/pistol/ultraweak/chew/strong
+	damage = 30 //it fucks
+	icon_state = "gaussstrong"
+	sharpness = SHARP_POINTY // Temporary fix for the Wound system. Makes lasers/plasma bleed you out per hit.
+	armour_penetration = 0.8
+	movement_type = FLYING | UNSTOPPABLE //stopping for nothing except its range
+	pixels_per_second = TILES_TO_PIXELS(15) //slow
+	irradiate = 25
+	range = 16
 
 //Alrem's plasmacaster
 /obj/item/projectile/f13plasma/plasmacaster/arlem

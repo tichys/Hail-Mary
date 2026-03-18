@@ -126,8 +126,20 @@
 	if(datum_flags & DF_VAR_EDITED)
 		return WrapAdminProcCall(object, delegate, calling_arguments)
 	if (object == GLOBAL_PROC)
-		return call(delegate)(arglist(calling_arguments))
-	return call(object, delegate)(arglist(calling_arguments))
+		if(!delegate)
+			return null
+		try
+			return call(delegate)(arglist(calling_arguments))
+		catch
+			// Corrupted delegate reference
+			return null
+	if(!object || !delegate)
+		return null
+	try
+		return call(object, delegate)(arglist(calling_arguments))
+	catch
+		// Corrupted delegate or object reference
+		return null
 
 /**
  * Invoke this callback async (waitfor=false)
@@ -161,8 +173,16 @@
 	if(datum_flags & DF_VAR_EDITED)
 		return WrapAdminProcCall(object, delegate, calling_arguments)
 	if (object == GLOBAL_PROC)
-		return call(delegate)(arglist(calling_arguments))
-	return call(object, delegate)(arglist(calling_arguments))
+		try
+			return call(delegate)(arglist(calling_arguments))
+		catch
+			// Corrupted delegate reference
+			return null
+	try
+		return call(object, delegate)(arglist(calling_arguments))
+	catch
+		// Corrupted delegate or object reference
+		return null
 
 /**
 	Helper datum for the select callbacks proc

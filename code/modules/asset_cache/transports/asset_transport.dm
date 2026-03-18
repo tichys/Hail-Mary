@@ -86,6 +86,8 @@
 				client = M.client
 			else //no stacktrace because this will mainly happen because the client went away
 				return
+		else if(!client)
+			return
 		else
 			CRASH("Invalid argument: client: `[client]`")
 	if (!islist(asset_list))
@@ -110,7 +112,9 @@
 			|| (ACI.namespace && !ACI.namespace_parent)
 		if (!keep_local_name)
 			new_asset_name = "asset.[ACI.hash][ACI.ext]"
-		if (client.sent_assets[new_asset_name] == asset_hash)
+		if(!client || !islist(client.sent_assets))
+			client.sent_assets = list()
+		if (client.sent_assets && client.sent_assets[new_asset_name] == asset_hash)
 			if (GLOB.Debug2)
 				log_asset("DEBUG: Skipping send of `[asset_name]` (as `[new_asset_name]`) for `[client]` because it already exists in the client's sent_assets list")
 			continue
@@ -130,16 +134,19 @@
 			if (!keep_local_name)
 				new_asset_name = "asset.[ACI.hash][ACI.ext]"
 			log_asset("Sending asset `[asset_name]` to client `[client]` as `[new_asset_name]`")
+			if(!client)
+				continue
 			client << browse_rsc(ACI.resource, new_asset_name)
 
-			client.sent_assets[new_asset_name] = ACI.hash
+			if(client && client.sent_assets)
+				// Track this asset as sent to prevent resending it on future connection attempts
+				client.sent_assets[new_asset_name] = ACI.hash
 
+		// Schedule client-side asset cache update after all assets are queued for sending
 		addtimer(CALLBACK(client, TYPE_PROC_REF(/client, asset_cache_update_json)), 1 SECONDS, TIMER_UNIQUE|TIMER_OVERRIDE)
-		return TRUE
-	return FALSE
+		return TRUE  // Assets were sent successfully
+	return FALSE  // No assets were sent (unreceived list was empty)
 
-
-/// Precache files without clogging up the browse() queue, used for passively sending files on connection start.
 /datum/asset_transport/proc/send_assets_slow(client/client, list/files, filerate = 3)
 	var/startingfilerate = filerate
 	for (var/file in files)

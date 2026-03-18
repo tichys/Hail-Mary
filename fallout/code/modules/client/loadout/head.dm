@@ -231,6 +231,31 @@
 	path = /obj/item/clothing/head/helmet/f13/khan/bandana
 	cost = 2
 
+/datum/gear/head/peakedcap
+	name = "Peaked Cap"
+	path = /obj/item/clothing/head/donor/macarthur
+	cost = 1
+
+/datum/gear/head/tribaleyepatch
+	name = "Bandage Eyepatch"
+	path = /obj/item/clothing/glasses/f13/tribaleyepatch
+	cost = 1
+
+/datum/gear/head/knighthelmet
+	name = "Red Medieval Helmet"
+	path = /obj/item/clothing/head/helmet/f13/knighthelmet
+	cost = 2
+
+/datum/gear/head/stormchaser
+	name = "Stormchaser Hat"
+	path = /obj/item/clothing/head/f13/stormchaser
+	cost = 1
+
+/datum/gear/head/trilbyfeather
+	name = "Feather Trilby"
+	path = /obj/item/clothing/head/f13/trilby
+	cost = 1
+
 //POLICE
 
 /datum/gear/head/police
@@ -270,6 +295,62 @@
 	path = /obj/item/clothing/head/f13/army/beret/airborne
 	cost = 3
 
+//HELMETS
+
+/datum/gear/head/helmet/knight
+	name = "Knight Helmet"
+	path = /obj/item/clothing/head/helmet/knight/greyscale
+	cost = 1
+	subcategory = LOADOUT_SUBCATEGORY_HEAD_HELMETS
+
+/datum/gear/head/helmet/knight/templar
+	name = "Crusader Helmet"
+	path = /obj/item/clothing/head/helmet/knight/templar
+	cost = 1
+	subcategory = LOADOUT_SUBCATEGORY_HEAD_HELMETS
+
+/datum/gear/head/helmet/durathread
+	name = "Makeshift Helmet"
+	path = /obj/item/clothing/head/helmet/durathread
+	cost = 1
+	subcategory = LOADOUT_SUBCATEGORY_HEAD_HELMETS
+
+/datum/gear/head/helmet/old
+	name = "Degrating Helmet"
+	path = /obj/item/clothing/head/helmet/old
+	cost = 1
+	subcategory = LOADOUT_SUBCATEGORY_HEAD_HELMETS
+
+/datum/gear/head/helmet/coifhelmet
+	name = "Chainmail Coif and Helmet"
+	path = /obj/item/clothing/head/coyote/coifhelmet
+	cost = 1
+	subcategory = LOADOUT_SUBCATEGORY_HEAD_HELMETS
+
+/datum/gear/head/helmet/coif
+	name = "Chainmail Coif"
+	path = /obj/item/clothing/head/coyote/coif
+	cost = 1
+	subcategory = LOADOUT_SUBCATEGORY_HEAD_HELMETS
+
+/datum/gear/head/c27_light
+	name = "Light C-27 armor"
+	path = /obj/item/clothing/head/helmet/f13/combat/brotherhood/c27_light
+	subcategory = LOADOUT_SUBCATEGORY_HEAD_FACTIONS 	
+	cost = 0
+
+/datum/gear/head/c27_medium
+	name = "Medium C-27 armor"
+	path = /obj/item/clothing/head/helmet/f13/combat/mk2/c27_medium
+	subcategory = LOADOUT_SUBCATEGORY_HEAD_FACTIONS 	
+	cost = 0
+
+/datum/gear/head/c27_heavy
+	name = "Heavy C-27 armor"
+	path = /obj/item/clothing/head/helmet/f13/power_armor/excavator/c27_heavy
+	subcategory = LOADOUT_SUBCATEGORY_HEAD_FACTIONS 	
+	cost = 0
+
 //CHINA
 
 /datum/gear/head/chinese
@@ -290,9 +371,37 @@
 	cost = 4
 	subcategory = LOADOUT_SUBCATEGORY_HEAD_FACTIONS
 	restricted_desc = "NCR"
-/*	restricted_roles = list("NCR Combat Engineer",
+	restricted_roles = list("NCR Captain",
+							"NCR Lieutenant",
+							"NCR Medical Officer",
+							"NCR Heavy Trooper",
+							"NCR Sergeant",
+							"NCR Corporal",
+							"NCR Combat Engineer",
+							"NCR Combat Medic",
+							"NCR Military Police",
+							"NCR Trooper",
 							"NCR Off-Duty"
-						)*/
+						)
+
+/datum/gear/head/ncr_recon
+	name = "NCR recon beret"
+	path = /obj/item/clothing/head/beret/ncr/ncr_recon
+	cost = 4
+	subcategory = LOADOUT_SUBCATEGORY_HEAD_FACTIONS
+	restricted_desc = "NCR"
+	restricted_roles = list("NCR Captain",
+							"NCR Lieutenant",
+							"NCR Medical Officer",
+							"NCR Heavy Trooper",
+							"NCR Sergeant",
+							"NCR Corporal",
+							"NCR Combat Engineer",
+							"NCR Combat Medic",
+							"NCR Military Police",
+							"NCR Trooper",
+							"NCR Off-Duty"
+						)
 
 /datum/gear/head/ncr_cap
 	name = "NCR garrison cap"
@@ -309,7 +418,9 @@
 							"NCR Combat Medic",
 							"NCR Military Police",
 							"NCR Trooper",
-							"NCR Off-Duty"
+							"NCR Off-Duty",
+							"NCR Conscript",
+							"NCR Rear Echelon",
 						)
 
 /datum/gear/head/steelpot_goggles
@@ -328,7 +439,47 @@
 							"NCR Combat Medic",
 							"NCR Military Police",
 							"NCR Trooper",
-							"NCR Off-Duty"
+							"NCR Off-Duty",
+							"NCR Conscript",
+							"NCR Rear Echelon",
+						)
+
+/datum/gear/head/ranger/rigs
+	name = "11th Armored Cavalry Helmet"
+	path = /obj/item/clothing/head/helmet/f13/ncr/rangercombat/rigscustom
+	subcategory = LOADOUT_SUBCATEGORY_HEAD_FACTIONS
+	cost = 1
+	restricted_desc = "NCR"
+	restricted_roles = list("NCR Veteran Ranger")
+
+/datum/gear/head/ranger/price
+	name = "Spider Riot Helmet"
+	path = /obj/item/clothing/head/helmet/f13/ncr/rangercombat/pricecustom
+	subcategory = LOADOUT_SUBCATEGORY_HEAD_FACTIONS
+	cost = 1
+	restricted_desc = "NCR"
+	restricted_roles = list("NCR Captain",
+							"NCR Veteran Ranger",
+						)
+
+/datum/gear/head/fox
+	name = "Reclaimed Ranger-Hunter Helmet"
+	path = /obj/item/clothing/head/helmet/f13/ncr/rangercombat/foxcustom
+	subcategory = LOADOUT_SUBCATEGORY_HEAD_FACTIONS
+	cost = 1
+	restricted_desc = "NCR"
+	restricted_roles = list("NCR Captain",
+							"NCR Veteran Ranger",
+						)
+
+/datum/gear/head/ranger/moss
+	name = "Veteran Patrol Stetson"
+	path = /obj/item/clothing/head/helmet/f13/ncr/rangercombat/mosshelmet
+	subcategory = LOADOUT_SUBCATEGORY_HEAD_FACTIONS
+	cost = 1
+	restricted_desc = "NCR"
+	restricted_roles = list("NCR Captain",
+							"NCR Veteran Ranger",
 						)
 
 /datum/gear/head/steelpot_gambler
@@ -347,7 +498,9 @@
 							"NCR Combat Medic",
 							"NCR Military Police",
 							"NCR Trooper",
-							"NCR Off-Duty"
+							"NCR Off-Duty",
+							"NCR Conscript",
+							"NCR Rear Echelon",
 						)
 
 /datum/gear/head/steelpot_bandolier
@@ -366,7 +519,9 @@
 							"NCR Combat Medic",
 							"NCR Military Police",
 							"NCR Trooper",
-							"NCR Off-Duty"
+							"NCR Off-Duty",
+							"NCR Conscript",
+							"NCR Rear Echelon",
 						)
 
 /datum/gear/head/ncr_slouch
@@ -385,7 +540,9 @@
 							"NCR Combat Medic",
 							"NCR Military Police",
 							"NCR Trooper",
-							"NCR Off-Duty"
+							"NCR Off-Duty",
+							"NCR Conscript",
+							"NCR Rear Echelon",
 						)
 
 /datum/gear/head/ncr_flapcap
@@ -404,7 +561,9 @@
 							"NCR Combat Medic",
 							"NCR Military Police",
 							"NCR Trooper",
-							"NCR Off-Duty"
+							"NCR Off-Duty",
+							"NCR Conscript",
+							"NCR Rear Echelon",
 						)
 
 /datum/gear/head/ncr_campaign
@@ -420,6 +579,39 @@
 							"NCR Heavy Trooper"
 						)
 
+/datum/gear/head/c27_light/ncr
+	name = "NCR light C-27 armor"
+	path = /obj/item/clothing/head/helmet/f13/combat/brotherhood/c27_light/ncr
+	subcategory = LOADOUT_SUBCATEGORY_HEAD_FACTIONS 	
+	cost = 0
+	restricted_desc = "NCR"
+	restricted_roles = list("NCR Rear Echelon",
+							"NCR Conscript",
+							"NCR Trooper",
+						)
+
+/datum/gear/head/c27_medium/ncr
+	name = "NCR medium C-27 armor"
+	path = /obj/item/clothing/head/helmet/f13/combat/mk2/c27_medium/ncr
+	subcategory = LOADOUT_SUBCATEGORY_HEAD_FACTIONS	
+	cost = 0
+	restricted_desc = "NCR"
+	restricted_roles = list("NCR Rear Echelon",
+							"NCR Conscript",
+							"NCR Trooper",
+						)
+
+/datum/gear/head/c27_heavy/ncr
+	name = "NCR heavy C-27 armor"
+	path = /obj/item/clothing/head/helmet/f13/power_armor/excavator/c27_heavy/ncr
+	subcategory = LOADOUT_SUBCATEGORY_HEAD_FACTIONS 	
+	cost = 0
+	restricted_desc = "NCR"
+	restricted_roles = list("NCR Rear Echelon",
+							"NCR Conscript",
+							"NCR Trooper",
+						)
+
 /datum/gear/head/khan
 	name = "Great Khan helmet"
 	path = /obj/item/clothing/head/helmet/f13/khan
@@ -427,7 +619,8 @@
 	cost = 2
 	restricted_desc = "Wastelanders"
 	restricted_roles = list("Outlaw",
-							"Wastelander"
+							"Wastelander",
+							"Great Khans"
 						)
 
 /datum/gear/head/khan/khan_furtrimmed
@@ -440,9 +633,9 @@
 	subcategory = LOADOUT_SUBCATEGORY_HEAD_FACTIONS
 	cost = 3
 	restricted_desc = "Oasis PD, Oasis officials"
-	restricted_roles = list("Chief of Police",
+	restricted_roles = list("Head of the Watch",
 							"Officer",
-							"Mayor",
+							"Warden",
 							"Detective",
 							"Secretary",
 							"Shopkeeper",
@@ -467,3 +660,40 @@
 							"Initiate",
 							"BoS Off-Duty"
 	)
+
+/datum/gear/head/c27_light/bos
+	name = "Brotherhood light C-27 armor"
+	path = /obj/item/clothing/head/helmet/f13/combat/brotherhood/c27_light/bos
+	subcategory = LOADOUT_SUBCATEGORY_HEAD_FACTIONS 	
+	cost = 0
+	restricted_desc = "Brotherhood"
+	restricted_roles = list("Knight",
+						)
+
+/datum/gear/head/c27_medium/bos
+	name = "Brotherhood medium C-27 armor"
+	path = /obj/item/clothing/head/helmet/f13/combat/mk2/c27_medium/bos
+	subcategory = LOADOUT_SUBCATEGORY_HEAD_FACTIONS 	
+	cost = 0
+	restricted_desc = "Brotherhood"
+	restricted_roles = list("Knight",
+						)
+
+/datum/gear/head/c27_heavy/bos
+	name = "Brotherhood heavy C-27 armor"
+	path = /obj/item/clothing/head/helmet/f13/power_armor/excavator/c27_heavy/bos
+	subcategory = LOADOUT_SUBCATEGORY_HEAD_FACTIONS	
+	cost = 0
+	restricted_desc = "Brotherhood"
+	restricted_roles = list("Knight",
+						)
+
+/datum/gear/head/legion/venator
+	name = "Galerum Lacertarex"
+	path = /obj/item/clothing/head/helmet/f13/legion/venator/diohelmet
+	subcategory = LOADOUT_SUBCATEGORY_HEAD_FACTIONS
+	cost = 1
+	restricted_desc = "CaesarsLegion"
+	restricted_roles = list("Legion Centurion",
+							"Legion Veteran Decanus",
+						)

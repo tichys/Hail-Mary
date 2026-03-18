@@ -1,9 +1,14 @@
 /mob/dead/new_player/Login()
+	if(!client)
+		return
 	if(CONFIG_GET(flag/use_exp_tracking))
-		client.set_exp_from_db()
-		client.set_db_player_flags()
+		if(client)
+			client.set_exp_from_db()
+		if(client)
+			client.set_db_player_flags()
 	if(CONFIG_GET(flag/use_role_whitelist))
-		client.set_job_whitelist_from_db()
+		if(client)
+			client.set_job_whitelist_from_db()
 	
 	if(!mind)
 		mind = new /datum/mind(key)

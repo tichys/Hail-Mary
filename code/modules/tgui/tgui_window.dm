@@ -30,8 +30,12 @@
  * required id string A unique window identifier.
  */
 /datum/tgui_window/New(client/client, id, pooled = FALSE)
+	if(!client || !id)
+		CRASH("[src] called with invalid client ([client]) or id ([id])")
 	src.id = id
 	src.client = client
+	if(!src.client.tgui_windows)
+		src.client.tgui_windows = list()
 	src.client.tgui_windows[id] = src
 	src.pooled = pooled
 	if(pooled)
@@ -89,12 +93,17 @@
 	// Inject custom HTML
 	html = replacetextEx(html, "<!-- tgui:html -->\n", inline_html)
 	// Open the window
+	if(!client)
+		return
 	client << browse(html, "window=[id];[options]")
 	// Detect whether the control is a browser
+	if(!client)
+		return
 	is_browser = winexists(client, id) == "BROWSER"
 	// Instruct the client to signal UI when the window is closed.
-	if(!is_browser)
-		winset(client, id, "on-close=\"uiclose [id]\"")
+	if(!is_browser || !client)
+		return
+	winset(client, id, "on-close=\"uiclose [id]\"")
 
 /**
  * public

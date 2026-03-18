@@ -46,7 +46,7 @@
 	light_range = 9
 	var/deflect_chance = 10 //chance to deflect the incoming projectiles, hits, or lesser the effect of ex_act.
 	armor = ARMOR_VALUE_HEAVY
-	var/list/facing_modifiers = list(FRONT_ARMOUR = 1.5, SIDE_ARMOUR = 1, BACK_ARMOUR = 0.5)
+	var/list/facing_modifiers = alist(FRONT_ARMOUR = 1.5, SIDE_ARMOUR = 1, BACK_ARMOUR = 0.5)
 	//var/obj/item/stock_parts/cell/cell
 	var/obj/item/reagent_containers/fuel_tank/fuel_holder
 	var/state = 0
@@ -83,6 +83,23 @@
 	var/max_temperature = 25000
 	var/internal_damage_threshold = 50 //health percentage below which internal damage is possible
 	var/internal_damage = 0 //contains bitflags
+	// FRONT, LEFT , RIGHT, BACK
+	/// List of internal components per direction , will cause increased mech damge incase of mech AP and block shots from hitting the driver
+	// internal list should be list[ref] = list(hitChance, hitMult, APthreshold)
+	var/list/directional_comps = list(
+		list(
+			list(100,2, 30)
+		),
+		list(
+			list(30,2, 30)
+		),
+		list(
+			list(30,2, 30)
+		),
+		list(
+			list(5,2, 30)
+		)
+	)
 
 	var/list/operation_req_access = list()//required access level for mecha operation
 	var/list/internals_req_access = list()//REQUIRED ACCESS LEVEL TO OPEN CELL COMPARTMENT
@@ -394,18 +411,19 @@
 
 	if(occupant)
 		if(fuel_holder)
-			var/fuelamount = fuel_holder.reagents.total_volume/fuel_holder.volume
-			switch(fuelamount)
-				if(0.75 to INFINITY)
-					occupant.clear_alert("charge")
-				if(0.5 to 0.75)
-					occupant.throw_alert("charge", /obj/screen/alert/lowcell, 1)
-				if(0.25 to 0.5)
-					occupant.throw_alert("charge", /obj/screen/alert/lowcell, 2)
-				if(0.01 to 0.25)
-					occupant.throw_alert("charge", /obj/screen/alert/lowcell, 3)
-				else
-					occupant.throw_alert("charge", /obj/screen/alert/emptycell)
+			if(fuel_holder.volume > 0)
+				var/fuelamount = fuel_holder.reagents.total_volume/fuel_holder.volume
+				switch(fuelamount)
+					if(0.75 to INFINITY)
+						occupant.clear_alert("charge")
+					if(0.5 to 0.75)
+						occupant.throw_alert("charge", /obj/screen/alert/lowcell, 1)
+					if(0.25 to 0.5)
+						occupant.throw_alert("charge", /obj/screen/alert/lowcell, 2)
+					if(0.01 to 0.25)
+						occupant.throw_alert("charge", /obj/screen/alert/lowcell, 3)
+					else
+						occupant.throw_alert("charge", /obj/screen/alert/emptycell)
 
 		var/integrity = obj_integrity/max_integrity*100
 		switch(integrity)

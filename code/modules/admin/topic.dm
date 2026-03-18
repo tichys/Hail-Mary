@@ -1948,6 +1948,26 @@
 		if(M.ckey in GLOB.client_ghost_timeouts)
 			GLOB.client_ghost_timeouts -= M.ckey
 
+	else if(href_list["forcerules"])
+		if(!check_rights(R_ADMIN))
+			message_admins("[ADMIN_TPMONTY(usr)] tried to use /datum/admins/proc/CheckAdminHref(): forcerules without admin perms.")
+			log_admin("INVALID ADMIN PROC ACCESS: [key_name(usr)] tried to use /datum/admins/proc/CheckAdminHref(): forcerules without admin perms.")
+			return
+		var/mob/M = locate(href_list["forcerules"])
+		if(!ismob(M) || !M.client)
+			to_chat(usr, "Target has no active client.")
+			return
+		if(M.client.prefs)
+			M.client.prefs.rules_accepted = FALSE
+			M.client.prefs.save_preferences()
+		log_admin("[key_name(usr)] has forced [key_name(M)] to re-accept the server rules.")
+		message_admins("[key_name_admin(usr)] has forced [key_name_admin(M)] to re-accept the server rules.")
+		if(isnewplayer(M))
+			var/mob/dead/new_player/NP = M
+			NP.show_rules_panel(TRUE)
+		else
+			to_chat(M, span_adminnotice("An admin has required you to re-read and accept the server rules. They will be shown the next time you return to the lobby."))
+
 	else if(href_list["sendtoprison"])
 		if(!check_rights(R_ADMIN))
 			message_admins("[ADMIN_TPMONTY(usr)] tried to use /datum/admins/proc/CheckAdminHref(): sendtoprison without admin perms.")
@@ -3187,29 +3207,29 @@
 			if(response.body == "[]")
 				dat += "<center><b>0 bans detected for [ckey]</b></center>"
 			else
-				bans = json_decode(response["body"])
-				dat += "<center><b>[bans.len] ban\s detected for [ckey]</b></center>"
-				for(var/list/ban in bans)
-					dat += "<b>Server: </b> [sanitize(ban["sourceName"])]<br>"
-					dat += "<b>RP Level: </b> [sanitize(ban["sourceRoleplayLevel"])]<br>"
-					dat += "<b>Type: </b> [sanitize(ban["type"])]<br>"
-					dat += "<b>Banned By: </b> [sanitize(ban["bannedBy"])]<br>"
-					dat += "<b>Reason: </b> [sanitize(ban["reason"])]<br>"
-					dat += "<b>Datetime: </b> [sanitize(ban["bannedOn"])]<br>"
-					var/expiration = ban["expires"]
-					dat += "<b>Expires: </b> [expiration ? "[sanitize(expiration)]" : "Permanent"]<br>"
-					if(ban["type"] == "job")
-						dat += "<b>Jobs: </b> "
-						var/list/jobs = ban["jobs"]
-						dat += sanitize(jobs.Join(", "))
-						dat += "<br>"
-					dat += "<hr>"
-
-		dat += "<br></body>"
-		var/datum/browser/popup = new(usr, "centcomlookup-[ckey]", "<div align='center'>Central Command Galactic Ban Database</div>", 700, 600)
-		popup.set_content(dat.Join())
-		popup.open(0)
-
+				bans = json_decode(response.body)
+				if(!islist(bans))
+					dat += "<br>Invalid response from CentCom."
+				else
+					var/list/bans_list = bans
+					dat += "<center><b>[bans_list.len] ban\s detected for [ckey]</b></center>"
+					for(var/list/ban in bans_list)
+						if(!islist(ban))
+							continue
+						dat += "<b>Server: </b> [sanitize(ban["sourceName"])]<br>"
+						dat += "<b>RP Level: </b> [sanitize(ban["sourceRoleplayLevel"])]<br>"
+						dat += "<b>Type: </b> [sanitize(ban["type"])]<br>"
+						dat += "<b>Banned By: </b> [sanitize(ban["bannedBy"])]<br>"
+						dat += "<b>Reason: </b> [sanitize(ban["reason"])]<br>"
+						dat += "<b>Datetime: </b> [sanitize(ban["bannedOn"])]<br>"
+						var/expiration = ban["expires"]
+						dat += "<b>Expires: </b> [expiration ? "[sanitize(expiration)]" : "Permanent"]<br>"
+						if(ban["type"] == "job")
+							dat += "<b>Jobs: </b> "
+							var/list/jobs = ban["jobs"]
+							dat += sanitize(jobs.Join(", "))
+							dat += "<br>"
+						dat += "<hr>"
 	else if(href_list["modantagrep"])
 		if(!check_rights(R_ADMIN))
 			message_admins("[ADMIN_TPMONTY(usr)] tried to use /datum/admins/proc/CheckAdminHref(): modantagrep without admin perms.")

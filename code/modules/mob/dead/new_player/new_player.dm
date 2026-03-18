@@ -33,49 +33,209 @@
 	. = ..()
 
 /mob/dead/new_player/Destroy()
+	// Clean up mind reference to break garbage collection cycles
+	if(mind)
+		mind.current = null
+		mind = null
+
+	// Clean up client screen objects to prevent orphaned UI elements
+	if(client)
+		QDEL_LIST(client.screen)
+		client.screen = null
+
 	return ..()
 
 /mob/dead/new_player/prepare_huds()
 	return
 
 /mob/dead/new_player/proc/new_player_panel()
-	if (client?.interviewee)
+	if(client?.interviewee)
 		return
+
+	if(!client?.prefs?.rules_accepted)
+		show_rules_panel(TRUE)
+		return
+
+	// Reset all HUD button toggle states — they persist through mob transfers
+	winset(client, "infowindow.setoocstatus", "is-checked=false")
+	winset(client, "infowindow.tgwiki", "is-checked=false")
+	winset(client, "infowindow.changelog", "is-checked=false")
+	winset(client, "infowindow.github", "is-checked=false")
+	winset(client, "infowindow.discord", "is-checked=false")
 
 	var/datum/asset/asset_datum = get_asset_datum(/datum/asset/simple/lobby)
 	asset_datum.send(client)
-	var/list/output = list()
+	var/rs = REF(src)
+	var/list/o = list()
+
+	o += "<!DOCTYPE html><html><head><meta charset='UTF-8'><style>"
+	o += "* { box-sizing: border-box; margin: 0; padding: 0; }"
+	o += "body { background: #062113; color: #4aed92; font-family: 'Courier New', Courier, monospace; font-size: 15px; line-height: 1.7; padding: 0; margin: 0; }"
+	o += ".hdr { padding: 14px 18px 10px; border-bottom: 1px solid #1a5e38; text-align: center; }"
+	o += ".hdr .title { font-size: 11px; color: #2a7a52; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }"
+	o += ".hdr .name { font-size: 18px; font-weight: bold; color: #4aed92; }"
+	o += ".menu { padding: 16px 18px; }"
+	o += ".menu-item { display: block; padding: 8px 0; border-bottom: 1px solid #0d3322; }"
+	o += ".menu-item:last-child { border-bottom: none; }"
+	o += "a, a:link, a:visited, a:active { color: #4aed92; text-decoration: none; display: block; padding: 6px 10px; }"
+	o += "a:hover { background: #4aed92; color: #062113; }"
+	o += "a:hover b, a:hover strong, a:hover * { color: #041a0e; }"
+	o += ".muted { color: #2a7a52; font-size: 13px; padding: 6px 4px; }"
+	o += ".sep { border-top: 1px solid #1a5e38; margin: 10px 0; }"
+	o += ".waiting { color: #e8a020; font-size: 13px; padding: 4px; }"
+	o += "</style></head><body>"
+
+	o += "<div class='hdr'>"
+	o += "<div class='title'>ROBCO INDUSTRIES &mdash; WASTELAND TERMINAL</div>"
 	if(client?.prefs)
-		output += "<center><p>Welcome, <b>[client.prefs.be_random_name ? "random name player" : client.prefs.real_name]</b></p>"
-	output += "<center><p><a href='byond://?src=[REF(src)];show_preferences=1'>Setup Character</a></p>"
+		var/pname = client.prefs.be_random_name ? "WANDERER" : uppertext(client.prefs.real_name)
+		o += "<div class='name'>[pname]</div>"
+	o += "</div>"
+
+	o += "<div class='menu'>"
+	o += "<div class='menu-item'><a href='byond://?src=[rs];show_preferences=1'>&gt; CHARACTER CREATOR</a></div>"
 
 	if(SSticker.current_state <= GAME_STATE_PREGAME)
-	/*
-		switch(ready)
-			if(PLAYER_NOT_READY)
-				output += "<p>\[ [LINKIFY_READY("Ready", PLAYER_READY_TO_PLAY)] | <b>Not Ready</b> | [LINKIFY_READY("Observe", PLAYER_READY_TO_OBSERVE)] \]</p>"
-			if(PLAYER_READY_TO_PLAY)
-				output += "<p>\[ <b>Ready</b> | [LINKIFY_READY("Not Ready", PLAYER_NOT_READY)] | [LINKIFY_READY("Observe", PLAYER_READY_TO_OBSERVE)] \]</p>"
-			if(PLAYER_READY_TO_OBSERVE)
-				output += "<p>\[ [LINKIFY_READY("Ready", PLAYER_READY_TO_PLAY)] | [LINKIFY_READY("Not Ready", PLAYER_NOT_READY)] | <b> Observe </b> \]</p>"
-	*/
-		output += "<p>Please be patient, the game is starting soon!</p>"
-		output += "<p><a href='byond://?src=[REF(src)];refresh=1'>(Refresh)</a></p>"
-		output += "<p><a href='byond://?src=[REF(src)];refresh_chat=1)'>(Fix Chat Window)</a></p>"
+		o += "<div class='waiting'>&gt; AWAITING ROUND START...</div>"
+		o += "<div class='menu-item'><a href='byond://?src=[rs];refresh=1'>&gt; REFRESH</a></div>"
+		o += "<div class='menu-item'><a href='byond://?src=[rs];refresh_chat=1'>&gt; FIX CHAT WINDOW</a></div>"
 	else
-		output += "<p><a href='byond://?src=[REF(src)];manifest=1'>View the Crew Manifest</a></p>"
-		output += "<p><a href='byond://?src=[REF(src)];late_join=1'>Join Game!</a></p>"
-		output += "<p>[LINKIFY_READY("Observe", PLAYER_READY_TO_OBSERVE)]</p>"
-		output += "<p><a href='byond://?src=[REF(src)];refresh_chat=1)'>(Fix Chat Window)</a></p>"
+		o += "<div class='menu-item'><a href='byond://?src=[rs];late_join=1'>&gt; JOIN GAME</a></div>"
+		o += "<div class='menu-item'><a href='byond://?src=[rs];ready=[PLAYER_READY_TO_OBSERVE]'>&gt; OBSERVE</a></div>"
+		o += "<div class='menu-item'><a href='byond://?src=[rs];refresh_chat=1'>&gt; FIX CHAT WINDOW</a></div>"
+
+	o += "<div class='sep'></div>"
+	o += "<div class='menu-item'><a href='byond://?src=[rs];view_wiki=1'>&gt; WIKI</a></div>"
+	o += "<div class='menu-item'><a href='byond://?src=[rs];show_rules_only=1'>&gt; SERVER RULES</a></div>"
 
 	if(!IsGuestKey(src.key))
-		output += playerpolls()
+		o += playerpolls()
 
-	output += "</center>"
+	o += "</div>"
+	o += "<div style='padding:8px 18px;font-size:11px;color:#1a5e38;border-top:1px solid #0d3322;text-align:center;'>ROBCO INDUSTRIES (TM) TERMLINK PROTOCOL</div>"
+	o += "</body></html>"
 
-	var/datum/browser/popup = new(src, "playersetup", "<div align='center'>New Player Options</div>", 250, 265)
+	var/datum/browser/popup = new(src, "playersetup", null, 320, 600)
 	popup.set_window_options("can_close=0")
-	popup.set_content(output.Join())
+	popup.set_content(o.Join())
+	popup.open(FALSE)
+
+/mob/dead/new_player/proc/show_rules_panel(accepting = TRUE)
+	var/rs = REF(src)
+	var/list/c = list()
+	c += "<!DOCTYPE html><html><head><meta charset='UTF-8'>"
+	c += "<style>"
+	c += "* { box-sizing: border-box; margin: 0; padding: 0; }"
+	c += "body { background: #062113; color: #4aed92; font-family: 'Courier New', Courier, monospace; font-size: 15px; line-height: 1.6; }"
+	c += ".hdr { padding: 12px 16px 10px; border-bottom: 1px solid #1a5e38; }"
+	c += ".hdr .sys { font-size: 11px; color: #2a7a52; letter-spacing: 2px; margin-bottom: 4px; }"
+	c += ".hdr h2 { font-size: 17px; font-weight: bold; color: #4aed92; text-transform: uppercase; letter-spacing: 1px; }"
+	c += ".hint { font-size: 12px; color: #2a7a52; padding: 6px 16px 2px; }"
+	c += ".scroll { max-height: 360px; overflow-y: auto; padding: 8px 16px 12px; }"
+	c += ".scroll::-webkit-scrollbar { width: 6px; } .scroll::-webkit-scrollbar-track { background: #041a0d; } .scroll::-webkit-scrollbar-thumb { background: #1a5e38; }"
+	c += ".rule { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid #0d3322; }"
+	c += ".rule:last-child { border-bottom: none; }"
+	c += ".rule input { margin-top: 4px; flex-shrink: 0; width: 16px; height: 16px; cursor: pointer; accent-color: #4aed92; }"
+	c += ".rule label { cursor: pointer; color: #4aed92; line-height: 1.6; }"
+	c += ".rule p { color: #4aed92; line-height: 1.6; }"
+	c += ".rule label.done { color: #2a7a52; }"
+	c += ".n { color: #4aed92; font-weight: bold; }"
+	c += ".sub { color: #2a9f5c; padding-left: 18px; display: block; font-size: 13px; }"
+	c += ".addendum { margin: 10px 16px 0; padding: 10px 12px; background: #041a0d; border-left: 3px solid #2a7a52; font-size: 13px; color: #2a9f5c; line-height: 1.6; }"
+	c += ".addendum b { color: #e8a020; display: block; margin-bottom: 4px; font-size: 14px; }"
+	c += ".footer { padding: 12px 16px; border-top: 1px solid #1a5e38; text-align: center; background: #041a0d; }"
+	c += ".footer .q { margin-bottom: 10px; font-size: 15px; color: #4aed92; }"
+	c += "button { background: #062113; color: #4aed92; border: 1px solid #4aed92; padding: 8px 28px; cursor: pointer; font-family: 'Courier New', Courier, monospace; font-size: 15px; text-transform: uppercase; letter-spacing: 1px; }"
+	c += "button:disabled { color: #1a5e38; border-color: #1a5e38; cursor: not-allowed; }"
+	c += "button:hover:not(:disabled) { background: #4aed92; color: #062113; }"
+	c += "</style></head>"
+	c += "<body>"
+	c += "<div class='hdr'>"
+	c += "<div class='sys'>ROBCO INDUSTRIES TERMLINK PROTOCOL</div>"
+	c += "<h2>&gt; Server Rules</h2>"
+	c += "</div>"
+	c += "<div class='scroll'>"
+	if(accepting)
+		c += "<p class='hint'>&gt; Acknowledge each rule to proceed.</p>"
+
+	// Rules 1-6: straightforward
+	var/list/simple_rules = list(
+		"Play in good faith. Don't be too much of a dick, don't meta-game, power-game, or abuse exploits.",
+		"Don't harass each other OOC. Banter is fine but don't take it too far.",
+		"Roleplay believably as a member of your faction. Don't be a blatant shitpost. (Some exception for Raiders.)",
+		"Names cannot be obvious references to pop culture. More subtle ones are fine.",
+		"Use escalation when engaging in PvP combat.",
+		"Don't attack other players until the 30-minute grace period is over. You'll see a big notice when it's time to mog."
+	)
+	for(var/i = 1; i <= length(simple_rules); i++)
+		c += "<div class='rule'>"
+		if(accepting)
+			c += "<input type='checkbox' class='rc' id='r[i]' onchange='upd()'>"
+			c += "<label for='r[i]'><span class='n'>[i].</span> [simple_rules[i]]</label>"
+		else
+			c += "<p><span class='n'>[i].</span> [simple_rules[i]]</p>"
+		c += "</div>"
+
+	// Rule 7: raids (complex with sub-points)
+	c += "<div class='rule'>"
+	if(accepting)
+		c += "<input type='checkbox' class='rc' id='r7' onchange='upd()'>"
+		c += "<label for='r7'><span class='n'>7.</span> Make an ahelp before you raid &mdash; all we require is a good IC reason. &#91;WAIT FOR ADMIN APPROVAL&#93;"
+		c += "<span class='sub'>&bull; Make it known to your target that you are raiding them before going in. (e.g. &ldquo;Hello NCR, we are here to raid you.&rdquo;)</span>"
+		c += "<span class='sub'>&bull; Do not linger too long after the raid is complete, or risk getting admin-killed.</span>"
+		c += "<span class='sub'>&bull; If no admins are online, raids may be permitted 2 hours into the round.</span>"
+		c += "</label>"
+	else
+		c += "<p><span class='n'>7.</span> Make an ahelp before you raid &mdash; all we require is a good IC reason. &#91;WAIT FOR ADMIN APPROVAL&#93;"
+		c += "<span class='sub'>&bull; Make it known to your target that you are raiding them before going in. (e.g. &ldquo;Hello NCR, we are here to raid you.&rdquo;)</span>"
+		c += "<span class='sub'>&bull; Do not linger too long after the raid is complete, or risk getting admin-killed.</span>"
+		c += "<span class='sub'>&bull; If no admins are online, raids may be permitted 2 hours into the round.</span>"
+		c += "</p>"
+	c += "</div>"
+
+	// Rules 8-11
+	var/list/tail_rules = list(
+		"Stay in your faction armor, or use the colormate to paint found armor to your faction colors. (Legion = red, NCR = brown, etc.)",
+		"Do not mess with AFK players at all unless you are sending-to-matrix (despawning) those who aren't coming back.",
+		"ERP is not allowed. Do not emote anything sexually explicit.",
+		"Have fun."
+	)
+	for(var/i = 1; i <= length(tail_rules); i++)
+		var/rule_num = i + 7
+		c += "<div class='rule'>"
+		if(accepting)
+			c += "<input type='checkbox' class='rc' id='r[rule_num]' onchange='upd()'>"
+			c += "<label for='r[rule_num]'><span class='n'>[rule_num].</span> [tail_rules[i]]</label>"
+		else
+			c += "<p><span class='n'>[rule_num].</span> [tail_rules[i]]</p>"
+		c += "</div>"
+
+	c += "</div>"
+
+	// Addendum
+	c += "<div class='addendum'>"
+	c += "<b>&gt; Additional Rulings (Temporary)</b>"
+	c += "Sieges are now considered raids &mdash; ahelp for permission. "
+	c += "Blocking a bunker with walls is fine; others may break in equally. "
+	c += "Basing in a bunker (e.g. casino) does not require raid permissions, but this only applies before the 1:30 mark."
+	c += "</div>"
+
+	if(accepting)
+		c += "<div class='footer'>"
+		c += "<p class='q'>&gt; Do you accept the rules above?</p>"
+		c += "<button id='ab' disabled onclick=\"window.location='byond://?src=[rs];accept_rules=1'\">&#91; I ACCEPT &#93;</button>"
+		c += "</div>"
+		c += "<script>function upd(){var b=document.querySelectorAll('.rc');var ok=Array.from(b).every(function(x){return x.checked;});document.getElementById('ab').disabled=!ok;document.querySelectorAll('.rule label').forEach(function(l){if(document.getElementById(l.getAttribute('for')).checked)l.classList.add('done');else l.classList.remove('done');});}</script>"
+	else
+		c += "<div class='footer'>"
+		c += "<button onclick=\"window.location='byond://?src=[rs];close_rules=1'\">&#91; CLOSE &#93;</button>"
+		c += "</div>"
+	c += "</body></html>"
+
+	var/datum/browser/popup = new(src, "rules_panel", "<div align='center'>Server Rules</div>", 520, 620)
+	if(accepting)
+		popup.set_window_options("can_close=0")
+	popup.set_content(c.Join())
 	popup.open(FALSE)
 
 /mob/dead/new_player/proc/playerpolls()
@@ -229,6 +389,27 @@
 
 	if(href_list["manifest"])
 		ViewManifest()
+
+	if(href_list["accept_rules"])
+		if(client.prefs)
+			client.prefs.rules_accepted = TRUE
+			client.prefs.save_preferences()
+		log_game("[key_name(src)] has accepted the server rules.")
+		src << browse(null, "window=rules_panel")
+		new_player_panel()
+		return
+
+	if(href_list["show_rules_only"])
+		show_rules_panel(FALSE)
+		return
+
+	if(href_list["close_rules"])
+		src << browse(null, "window=rules_panel")
+		return
+
+	if(href_list["view_wiki"])
+		client << link("https://sites.google.com/view/f13mechanisediron/menu?authuser=0")
+		return
 
 	if(href_list["SelectedJob"])
 		if(!SSticker || !SSticker.IsRoundInProgress())
@@ -492,6 +673,8 @@
 	SSjob.AssignRole(src, rank, 1)
 
 	var/mob/living/character = create_character(TRUE)	//creates the human and transfers vars and mind
+	if(!character)
+		return FALSE
 	var/equip = SSjob.EquipRank(character, rank, TRUE)
 	if(isliving(equip))	//Borgs get borged in the equip, so we need to make sure we handle the new mob.
 		character = equip
@@ -508,13 +691,14 @@
 	job.standard_assign_skills(character.mind)
 
 	SSticker.minds += character.mind
-	character.client.init_verbs() // init verbs for the late join
+	// Removed duplicate init_verbs() call - verbs already finalized in Login()
 	var/mob/living/carbon/human/humanc
 	if(ishuman(character))
 		humanc = character	//Let's retypecast the var to be human,
 
 	if(humanc)	//These procs all expect humans
-		GLOB.data_core.manifest_inject(humanc, humanc.client, humanc.client.prefs)
+		if(humanc.client)
+			GLOB.data_core.manifest_inject(humanc, humanc.client, humanc.client.prefs)
 		if(SSshuttle.arrivals)
 			SSshuttle.arrivals.QueueAnnounce(humanc, rank)
 		else
@@ -546,8 +730,9 @@
 						SSticker.mode.make_antag_chance(humanc)
 
 	if(humanc && CONFIG_GET(flag/roundstart_traits))
-		SSquirks.AssignQuirks(humanc, humanc.client, TRUE, FALSE, job, FALSE)
-	if(humanc.client && humanc.ckey == "tk420634")
+		if(humanc.client)
+			SSquirks.AssignQuirks(humanc, humanc.client, TRUE, FALSE, job, FALSE)
+	if(humanc && humanc.client && humanc.ckey == "tk420634")
 		humanc.client.deadmin()
 
 	log_manifest(character.mind.key,character.mind,character,latejoin = TRUE)
@@ -618,8 +803,13 @@
 		if(QDELETED(src))
 			return
 	if(frn)
+		if(!client)
+			return
 		client.prefs.random_character()
 		client.prefs.real_name = client.prefs.pref_species.random_name(gender,1)
+	if(!client)
+		qdel(H)
+		return
 	var/cur_scar_index = client.prefs.scars_index
 	if(client.prefs.persistent_scars && client.prefs.scars_list["[cur_scar_index]"])
 		var/scar_string = client.prefs.scars_list["[cur_scar_index]"]
@@ -639,7 +829,7 @@
 		mind.transfer_to(H)					//won't transfer key since the mind is not active
 		mind.original_character = H
 
-	client.init_verbs()
+	// Removed early init_verbs() call - verbs will be initialized after Login() in BYOND 516
 	. = H
 	new_character = .
 	if(transfer_after)
@@ -660,11 +850,10 @@
 		return
 	client.crew_manifest_delay = world.time + (1 SECONDS)
 
-	var/dat = "<html><head><meta http-equiv='Content-Type' content='text/html; charset=UTF-8'></head><body>"
-	dat += "<h4>Crew Manifest</h4>"
+	var/dat = "<h4>Crew Manifest</h4>"
 	dat += GLOB.data_core.get_manifest_dr(OOC = 1)
 
-	src << browse(dat, "window=manifest;size=387x420;can_close=1")
+	src << browse(HTML_SKELETON(dat), "window=manifest;size=387x420;can_close=1")
 
 /mob/dead/new_player/Move()
 	return 0

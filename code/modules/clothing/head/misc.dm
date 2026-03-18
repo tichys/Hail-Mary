@@ -46,6 +46,12 @@
 	desc = "<i>'Right-on-time'</i> mail service head wear."
 	pocket_storage_component_path = /datum/component/storage/concrete/pockets/small/rushelmet
 
+/obj/item/clothing/head/mailman/usps
+	name = "mailman's hat"
+	icon_state = "policehelm"
+	desc = "<i>'Right-on-time'</i> mail service head wear."
+	dynamic_hair_suffix = ""
+
 /obj/item/clothing/head/plaguedoctorhat
 	name = "plague doctor's hat"
 	desc = "These were once used by plague doctors. They're pretty much useless."
@@ -392,8 +398,9 @@
 	. = ..()
 	UnregisterSignal(M, COMSIG_MOB_SAY)
 
-/obj/item/clothing/head/frenchberet/proc/handle_speech(datum/source, mob/speech_args)
-	var/message = speech_args[SPEECH_MESSAGE]
+/obj/item/clothing/head/frenchberet/proc/handle_speech(datum/source, speech_args)
+	var/list/args_list = speech_args
+	var/message = args_list[SPEECH_MESSAGE]
 	if(message[1] != "*")
 		message = " [message]"
 		var/list/french_words = strings("french_replacement.json", "french")
@@ -409,7 +416,7 @@
 
 		if(prob(3))
 			message += pick(" Honh honh honh!"," Honh!"," Zut Alors!")
-	speech_args[SPEECH_MESSAGE] = trim(message)
+	args_list[SPEECH_MESSAGE] = trim(message)
 
 /obj/item/clothing/head/assu_helmet
 	name = "DAB helmet"

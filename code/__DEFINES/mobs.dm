@@ -11,6 +11,15 @@
 #define MOVE_INTENT_WALK "walk"
 #define MOVE_INTENT_RUN  "run"
 
+// Vision cone definitions (cone-based directional vision system)
+#define CONE_FRONT 1        // 90° front cone - best vision
+#define CONE_PERIPHERAL 2   // 45° side cones - reduced vision
+#define CONE_REAR 3         // Behind mob - no vision, sound only
+
+// Sound cone definitions (rear sound detection)
+#define SOUND_REAR_CENTER 1    // 90° rear cone - normal sound detection
+#define SOUND_REAR_PERIPHERAL 2 // 45° rear side cones - reduced sound detection
+
 /// Normal baseline blood volume
 #define BLOOD_VOLUME_NORMAL 1000
 /// The amount blood typically regenerates to on its own
@@ -176,6 +185,7 @@
 #define MOB_SIZE_SMALL 1
 #define MOB_SIZE_HUMAN 2
 #define MOB_SIZE_LARGE 3
+#define MOB_SIZE_HUGE 5
 
 //Ventcrawling defines
 #define VENTCRAWLER_NONE   0
@@ -324,6 +334,14 @@
 #define DISGUST_LEVEL_VERYGROSS 50
 #define DISGUST_LEVEL_GROSS 25
 
+//Thirst levels for humans
+#define THIRST_LEVEL_FULL 600
+#define THIRST_LEVEL_NORMAL 400
+#define THIRST_LEVEL_THIRSTY 200
+#define THIRST_LEVEL_DEADLY_THIRSTY 50
+
+#define THIRST_LEVEL_START 500
+
 //Charge levels for Ethereals
 #define ETHEREAL_CHARGE_NONE 0
 #define ETHEREAL_CHARGE_LOWPOWER 20
@@ -441,6 +459,7 @@
 #define DOOR_CRUSH_DAMAGE	15	//the amount of damage that airlocks deal when they crush you
 
 #define	HUNGER_FACTOR		0.1	//factor at which mob nutrition decreases
+#define THIRST_FACTOR		0.12 //slightly faster than hunger
 #define	ETHEREAL_CHARGE_FACTOR	0.08 //factor at which ethereal's charge decreases
 #define	REAGENTS_METABOLISM 0.4	//How many units of reagent are consumed per tick, by default.
 #define REAGENTS_EFFECT_MULTIPLIER (REAGENTS_METABOLISM / 0.4)	// By defining the effect multiplier this way, it'll exactly adjust all effects according to how they originally were with the 0.4 metabolism

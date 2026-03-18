@@ -140,6 +140,9 @@
 
 	/// our current tab
 	var/stat_tab
+	
+	/// cached encoded turf items to prevent sending duplicate updates
+	var/last_turf_items_encoded
 
 	/// whether our browser is ready or not yet
 	var/statbrowser_ready = FALSE
@@ -186,3 +189,5 @@
 	/// If the client is currently under the restrictions of the interview system
 	var/interviewee = FALSE
 	var/is_fullscreen = 0
+	/// Cached hash of current verb list to prevent unnecessary rebuilds
+	var/cached_verb_hash = null

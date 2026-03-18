@@ -36,6 +36,9 @@
 
 //hands
 #define LOADOUT_CATEGORY_HANDS 				"Hands"
+#define LOADOUT_SUBCATEGORY_HANDS_GENERAL		"General"
+#define LOADOUT_SUBCATEGORY_HANDS_SHIELDS		"Shields"
+#define LOADOUT_SUBCATEGORY_HANDS_MODKITS		"Modkits"
 
 //uniform
 #define LOADOUT_CATEGORY_UNIFORM 			"Uniform" //there's so many types of uniform it's best to have lots of categories
@@ -52,6 +55,7 @@
 #define LOADOUT_SUBCATEGORY_UNIFORM_JUMPSUITS "Jumpsuits"
 #define LOADOUT_SUBCATEGORY_UNIFORM_ESCORT "Escort"
 #define LOADOUT_SUBCATEGORY_UNIFORM_TRIBAL "Tribal"
+#define LOADOUT_SUBCATEGORY_UNIFORM_JOBS "Jobs"
 
 //suit
 #define LOADOUT_CATEGORY_SUIT 				"Suit"
@@ -67,7 +71,7 @@
 #define LOADOUT_CATEGORY_HEAD 				"Head"
 #define LOADOUT_SUBCATEGORY_HEAD_GENERAL 	"General"
 //#define LOADOUT_SUBCATEGORY_HEAD_COWBOY			"Cowboy hats"
-//#define LOADOUT_SUBCATEGORY_HEAD_HELMETS 		"Helmets"
+#define LOADOUT_SUBCATEGORY_HEAD_HELMETS 		"Helmets"
 #define LOADOUT_SUBCATEGORY_HEAD_FACTIONS		"Factions"
 
 //shoes

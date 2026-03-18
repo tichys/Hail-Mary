@@ -948,8 +948,8 @@ Mayor
 	title = "Minuteman"
 	flag = F13MINUTEMEN
 	faction = DEP_LOCUST
-	total_positions = 4
-	spawn_positions = 4
+	total_positions = 0
+	spawn_positions = 0
 	description = "A beacon of liberty and light in the wastes. The Minutemen are freedom-fighters that aim to keep the wastes a safer and more just place."
 	supervisors = "minutemen superiors"
 
@@ -975,7 +975,7 @@ Mayor
 	satchel = /obj/item/storage/backpack/satchel/explorer
 	belt = /obj/item/storage/belt/army/assault
 	uniform = /obj/item/clothing/under/f13/minutemen
-	suit = /obj/item/clothing/suit/armor/medium/duster/trenchcoat/minutemen
+	suit = /obj/item/clothing/suit/armor/medium/duster/minutemen
 	suit_store = /obj/item/gun/ballistic/rifle/hobo/lasmusket
 	r_pocket = /obj/item/flashlight/seclite
 	gloves = /obj/item/clothing/gloves/f13/minutemen

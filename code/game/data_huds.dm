@@ -12,7 +12,7 @@
 		hud.add_to_hud(src)
 
 /atom/proc/remove_from_all_data_huds()
-	for(var/datum/atom_hud/data/hud in GLOB.huds)
+	for(var/datum/atom_hud/hud in GLOB.huds)
 		hud.remove_from_hud(src)
 
 /datum/atom_hud/data
@@ -95,6 +95,8 @@
 //Check if has client or not bruh
 /mob/living/proc/hud_client_check()
 	var/image/onlineholder = hud_list[ONLINE_HUD]
+	if(!onlineholder)
+		return
 	var/icon/I = icon(icon, icon_state, dir)
 	onlineholder.pixel_y = I.Height() - world.icon_size
 	if(living_flags & HIDE_OFFLINE_INDICATOR)
@@ -414,7 +416,7 @@
 	var/image/holder = hud_list[DIAG_BATT_HUD]
 	var/icon/I = icon(icon, icon_state, dir)
 	holder.pixel_y = I.Height() - world.icon_size
-	if(fuel_holder)
+	if(fuel_holder && fuel_holder.volume > 0)
 		var/chargelvl = fuel_holder.reagents.total_volume/fuel_holder.volume
 		holder.icon_state = "hudbatt[RoundDiagBar(chargelvl)]"
 	else

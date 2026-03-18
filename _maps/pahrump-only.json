@@ -67,11 +67,11 @@
 		}
 	],
 	"minetype": "none",
+
 	"removed_jobs": [
-		"enclave.dm",
 		"atlantic_cross.dm",
+		"eastwood.dm",
 		"locust_point.dm",
-		"Redwater Resident",
-		"Redwater Watcher",
-		"Redwater Resident"]
+		"khan.dm"
+	]
 }

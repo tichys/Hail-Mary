@@ -108,6 +108,8 @@
 	src.frequency = frequency
 	src.language = language
 	virt = speaker
+	if(!speaker)
+		return
 	var/datum/language/lang_instance = GLOB.language_datum_instances[language]
 	data = list(
 		"name" = speaker.name,
@@ -118,7 +120,10 @@
 		"spans" = spans
 	)
 	var/turf/T = get_turf(source)
-	levels = list(T.z)
+	if(T)
+		levels = list(T.z)
+	else
+		levels = list()
 
 /datum/signal/subspace/vocal/copy()
 	var/datum/signal/subspace/vocal/copy = new(source, frequency, virt, language)
@@ -178,7 +183,7 @@
 	for(var/mob/dead/observer/M in GLOB.player_list)
 		if(QDELETED(M))
 			continue
-		if(M.client && (M.client.prefs.chat_toggles & CHAT_GHOSTRADIO))
+		if(M.client && M.client.prefs && (M.client.prefs.chat_toggles & CHAT_GHOSTRADIO))
 			receive |= M
 
 	// Render the message and have everybody hear it.

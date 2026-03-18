@@ -224,7 +224,8 @@
 			<a href='?src=[ref];tdomeobserve=[ref_mob]'>Thunderdome Observer</A> | 
 			<a href='?src=[ref];makementor=[M.ckey]'>Make mentor</A> | 
 			<a href='?src=[ref];removementor=[M.ckey]'>Remove mentor</A> | 
-			<a href='?src=[ref];makeeligible=[ref_mob]'>Allow reentering round</A>
+			<a href='?src=[ref];makeeligible=[ref_mob]'>Allow reentering round</A> |
+			<a href='?src=[ref];forcerules=[ref_mob]'>Force rules reaccept</A>
 			"}
 	body += "<br></body></html>"
 
@@ -486,7 +487,7 @@
 	if(marked_datum && istype(marked_datum, /atom))
 		dat += "<A href='?src=[REF(src)];[HrefToken()];dupe_marked_datum=1'>Duplicate Marked Datum</A><br>"
 
-	usr << browse(dat, "window=admin2;size=240x280")
+	usr << browse(HTML_SKELETON(dat), "window=admin2;size=240x280")
 	return
 
 /////////////////////////////////////////////////////////////////////////////////////////////////admins2.dm merge

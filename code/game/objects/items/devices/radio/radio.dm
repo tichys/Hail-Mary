@@ -441,6 +441,8 @@
 		return
 
 /obj/item/radio/proc/avoiding_a_sleep(mob/living/user, music_filepath, name_of_music, music_volume)
+	if(!user)
+		return
 	music_name = name_of_music
 	to_chat(user, "<span class='robot'><b>[src]</b> beeps into your ears, 'Now playing: <i>[music_name]</i>.' </span>")
 	if(user.client)
@@ -453,7 +455,7 @@
 	playsound(user, music_filepath, music_volume, channel = music_channel, extrarange = -15) //plays the music to the user
 	update_icon()
 
-/obj/item/radio/proc/playmusic(music_filepath, name_of_music, music_volume) //Plays music at src using the filepath to the audio file. This proc is directly working with the bluespace radio station at radio_station.dm
+/obj/item/radio/proc/playmusic(music_filepath, name_of_music, music_volume, skip_messaging = FALSE) //Plays music at src using the filepath to the audio file. This proc is directly working with the bluespace radio station at radio_station.dm
 	radio_music_file = music_filepath
 
 	var/atom/loc_layer = loc
@@ -466,21 +468,33 @@
 		return
 	if(!istype(loc_layer, /mob/living)) //doesn't need to continue if not on a mob
 		return
+	if(!music_toggle) //Music player is off, skip this radio entirely
+		return
 
-	if(music_toggle == 1) //Music player is on
-		if(istype(src, /obj/item/radio/headset))
-			var/mob/living/carbon/wearer = radio_holder
-			if(!(wearer.ears == src)) //only want headsets to play music if they're equipped
-				return
-		stopmusic(radio_holder) //stop the previously playing song to make way for the new one
+	if(istype(src, /obj/item/radio/headset))
+		var/mob/living/carbon/wearer = radio_holder
+		if(!wearer || !(wearer.ears == src)) //only want headsets to play music if they're equipped
+			return
+	stopmusic(radio_holder, skip_messaging = skip_messaging) //stop the previously playing song to make way for the new one
+	if(skip_messaging)
+		// During broadcast, skip the timer and messaging overhead - just queue the sound directly
+		music_name = name_of_music
+		music_playing = TRUE
+		playsound(radio_holder, music_filepath, music_volume, channel = music_channel, extrarange = -15)
+		update_icon()
+	else
+		// Normal playback with full messaging
 		addtimer(CALLBACK(src, PROC_REF(avoiding_a_sleep), radio_holder, music_filepath, name_of_music, music_volume), 10)
 
-/obj/item/radio/proc/stopmusic(mob/living/user, music_turnoff_message_type)
-	if(music_playing)
-		music_playing = FALSE
+/obj/item/radio/proc/stopmusic(mob/living/user, music_turnoff_message_type, skip_messaging = FALSE)
+	if(!music_playing)
+		return
+	music_playing = FALSE
+	if(!skip_messaging)
 		update_icon()
-		playsound(user, null, channel = music_channel)
-		playsound(user, 'sound/machines/buzz-sigh.ogg', 50, channel = music_channel)
+		if(user)
+			playsound(user, null, channel = music_channel)
+			playsound(user, 'sound/machines/buzz-sigh.ogg', 50, channel = music_channel)
 		music_name = ""
 		switch(music_turnoff_message_type)
 			if(1)
@@ -489,11 +503,16 @@
 				src.audible_message("<span class='robot'><b>[src]</b> beeps, 'Music toggled off.' </span>") //Unused message
 			if(3)
 				src.audible_message("<span class='robot'><b>[src]</b> beeps, 'Signal interrupted.' </span>")
-		music_playing = FALSE
+	else
+		// During broadcast, still need to stop the sound channel
+		if(user)
+			playsound(user, null, channel = music_channel)
+		music_name = ""
 
 /obj/item/radio/dropped(mob/user)
 	..()
-	addtimer(CALLBACK(src, PROC_REF(droppedStopMusic), user), 3)
+	if(!QDELETED(src))
+		addtimer(CALLBACK(src, PROC_REF(droppedStopMusic), user), 3)
 
 /obj/item/radio/proc/droppedStopMusic(mob/user)
 	var/i
@@ -616,10 +635,10 @@
 	canhear_range = 2
 	w_class = WEIGHT_CLASS_NORMAL
 
-GLOBAL_VAR_INIT(redwater_frequency, null)
-GLOBAL_LIST_INIT(banned_redwater_freqs, list(FREQ_COMMON, 1488))
+GLOBAL_VAR_INIT(outlaw_frequency, null)
+GLOBAL_LIST_INIT(banned_outlaw_freqs, list(FREQ_COMMON, 1488))
 
-/obj/item/radio/redwater
+/obj/item/radio/outlaw
 	name = "handheld transceiver"
 	icon_state = "walkietalkie"
 	item_state = "walkietalkie"
@@ -631,25 +650,36 @@ GLOBAL_LIST_INIT(banned_redwater_freqs, list(FREQ_COMMON, 1488))
 
 
 
-/obj/item/radio/redwater/Initialize()
+/obj/item/radio/outlaw/Initialize()
 	. = ..()
-	setup_redwater_frequency()
-	set_frequency(GLOB.redwater_frequency)
+	setup_outlaw_frequency()
+	set_frequency(GLOB.outlaw_frequency)
 	color = "#5c5c5c"
 
-/obj/item/radio/redwater/proc/setup_redwater_frequency(mob/user)
-	if(GLOB.redwater_frequency > 1)
+/obj/item/radio/outlaw/proc/setup_outlaw_frequency(mob/user)
+	if(GLOB.outlaw_frequency > 1)
 		return // already setup!
 	var/frequency_ok = FALSE
 	var/tries_left = 5
 	while(!frequency_ok)
-		GLOB.redwater_frequency = rand(MIN_FREQ, MAX_FREQ)
-		if(GLOB.redwater_frequency in GLOB.banned_redwater_freqs)
+		GLOB.outlaw_frequency = rand(MIN_FREQ, MAX_FREQ)
+		if(GLOB.outlaw_frequency in GLOB.banned_outlaw_freqs)
 			if(tries_left-- > 0)
 				continue
 		frequency_ok = TRUE
 
-/obj/item/radio/redwater/examine(mob/user)
+/obj/item/radio/outlaw/examine(mob/user)
 	. = ..()
-	if(GLOB.redwater_frequency)
-		. += "Scratched into the bottom is a note, \"Don't forget, we're tuned to <span class='boldnotice'>[GLOB.redwater_frequency * 0.1]</span>!\""
+	if(GLOB.outlaw_frequency)
+		. += "Scratched into the bottom is a note, \"Don't forget, we're tuned to <span class='boldnotice'>[GLOB.outlaw_frequency * 0.1]</span>!\""
+
+/obj/item/radio/loudspeaker
+	name = "speaker"
+	icon = 'icons/obj/radio.dmi'
+	icon_state = "intercom_loudspeaker"
+	desc = "a speaker for concerts and political rallies."
+	freerange = TRUE
+	frequency = FREQ_VAULT
+	prison_radio = TRUE
+	canhear_range = 5
+	w_class = WEIGHT_CLASS_NORMAL

@@ -718,7 +718,7 @@ GLOBAL_LIST_EMPTY(roundstart_race_names)
 	var/not_digitigrade = TRUE
 	for(var/X in H.bodyparts)
 		var/obj/item/bodypart/O = X
-		if(!O.use_digitigrade)
+		if(!O || !O.use_digitigrade)
 			continue
 		not_digitigrade = FALSE
 		if(!(DIGITIGRADE in species_traits)) //Someone cut off a digitigrade leg and tacked it on
@@ -1268,6 +1268,10 @@ GLOBAL_LIST_EMPTY(roundstart_race_names)
 		hunger_rate *= H.physiology.hunger_mod
 		H.adjust_nutrition(-hunger_rate)
 
+	if(H.stat != DEAD)
+		H.adjust_thirst(-THIRST_FACTOR)
+		handle_thirst(H)
+		handle_hunger_damage(H)
 
 	if (H.nutrition > NUTRITION_LEVEL_FULL)
 		if(H.overeatduration < 600) //capped so people don't take forever to unfat
@@ -1305,6 +1309,10 @@ GLOBAL_LIST_EMPTY(roundstart_race_names)
 			else
 				H.remove_movespeed_modifier(/datum/movespeed_modifier/hunger)
 
+/datum/species/proc/handle_hunger_damage(mob/living/carbon/human/H)
+	if(!H.client || (H.client && (H.client.inactivity / 600 > 5))) // Let's not kill AFK mobs
+		return
+
 	switch(H.nutrition)
 		if(NUTRITION_LEVEL_FULL to INFINITY)
 			H.throw_alert("nutrition", /obj/screen/alert/fat)
@@ -1314,6 +1322,29 @@ GLOBAL_LIST_EMPTY(roundstart_race_names)
 			H.throw_alert("nutrition", /obj/screen/alert/hungry)
 		if(0 to NUTRITION_LEVEL_STARVING)
 			H.throw_alert("nutrition", /obj/screen/alert/starving)
+
+/datum/species/proc/handle_thirst(mob/living/carbon/human/H)
+	if(!H.client || (H.client && (H.client.inactivity / 600 > 5)))
+		return
+
+	switch(H.thirst)
+		if(THIRST_LEVEL_NORMAL to THIRST_LEVEL_FULL)
+			H.clear_alert("thirst")
+		if(THIRST_LEVEL_THIRSTY to THIRST_LEVEL_NORMAL)
+			H.throw_alert("thirst", /obj/screen/alert/slightly_thirsty)
+		if(THIRST_LEVEL_DEADLY_THIRSTY to THIRST_LEVEL_THIRSTY)
+			H.throw_alert("thirst", /obj/screen/alert/thirsty)
+			if((H.getStaminaLoss() <= 50) && prob(5))
+				to_chat(H, "<span class='warning'>You need some water...</span>")
+				H.adjustStaminaLoss(20, 0)
+		if(0 to THIRST_LEVEL_DEADLY_THIRSTY)
+			H.throw_alert("thirst", /obj/screen/alert/deadly_thirsty)
+			if((H.getStaminaLoss() <= 90) && prob(12))
+				to_chat(H, "<span class='warning'>You feel weak...</span>")
+				H.adjustStaminaLoss(30, 0)
+			if(prob(33))
+				H.adjustToxLoss(2, 0)
+	return
 
 /datum/species/proc/update_health_hud(mob/living/carbon/human/H)
 	return 0
@@ -1465,8 +1496,8 @@ GLOBAL_LIST_EMPTY(roundstart_race_names)
 		if(!damage || !affecting)//future-proofing for species that have 0 damage/weird cases where no zone is targeted
 			playsound(target.loc, user.dna.species.miss_sound, 25, TRUE, -1)
 			target.visible_message(span_danger("[user]'s [atk_verb] misses [target]!"), \
-							span_danger("You avoid [user]'s [atk_verb]!"), span_hear("You hear a swoosh!"), null, COMBAT_MESSAGE_RANGE, null, \
-							user, span_warning("Your [atk_verb] misses [target]!"))
+							span_danger("You avoid [user]'s [atk_verb]!"), span_hear("You hear a swoosh!"), \
+							vision_distance = COMBAT_MESSAGE_RANGE, target = user, target_message = span_warning("Your [atk_verb] misses [target]!"))
 			log_combat(user, target, "attempted to punch")
 			return FALSE
 
@@ -1476,8 +1507,8 @@ GLOBAL_LIST_EMPTY(roundstart_race_names)
 		playsound(target.loc, user.dna.species.attack_sound, 25, 1, -1)
 
 		target.visible_message(span_danger("[user] [atk_verb]s [target]!"), \
-					span_userdanger("[user] [atk_verb]s you!"), null, COMBAT_MESSAGE_RANGE, null, \
-					user, span_danger("You [atk_verb] [target]!"))
+					span_userdanger("[user] [atk_verb]s you!"), null, \
+					vision_distance = COMBAT_MESSAGE_RANGE, target = user, target_message = span_danger("You [atk_verb] [target]!"))
 
 		target.lastattacker = user.real_name
 		target.lastattackerckey = user.ckey
@@ -1941,7 +1972,7 @@ GLOBAL_LIST_EMPTY(roundstart_race_names)
 				H.adjustBruteLoss(damage_amount)
 		if(BURN)
 			H.damageoverlaytemp = 20
-			var/damage_amount = forced ? damage : damage * hit_percent * burnmod * H.physiology.burn_mod * get_special_burn_resist_multiplier(H) // S.P.E.C.I.A.L.
+			var/damage_amount = forced ? damage : damage * hit_percent * burnmod * H.physiology.burn_mod
 			if(BP)
 				if(BP.receive_damage(0, damage_amount, wound_bonus = wound_bonus, bare_wound_bonus = bare_wound_bonus, sharpness = sharpness))
 					H.update_damage_overlays()

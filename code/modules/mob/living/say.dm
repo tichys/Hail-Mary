@@ -75,7 +75,10 @@
 		return
 
 	if(stat == DEAD)
-		say_dead(original_message)
+		// Only route to dead chat if the mob has a player (ckey)
+		// NPCs should not broadcast to dead chat
+		if(ckey)
+			say_dead(original_message)
 		return
 
 	if(check_emote(original_message, just_runechat = just_chat) || !can_speak_basic(original_message, ignore_spam))
@@ -233,10 +236,12 @@
 			continue
 		if(!M.client || !client) //client is so that ghosts don't have to listen to mice
 			continue
+		if(!M.client.prefs)
+			continue
 		if(get_dist(M, source) > 7 || M.z != z) //they're out of range of normal hearing
-			if(eavesdropping_modes[message_mode] && !(M.client?.prefs.chat_toggles & CHAT_GHOSTWHISPER)) //they're whispering and we have hearing whispers at any range off
+			if(eavesdropping_modes[message_mode] && !(M.client.prefs.chat_toggles & CHAT_GHOSTWHISPER)) //they're whispering and we have hearing whispers at any range off
 				continue
-			if(!(M.client?.prefs.chat_toggles & CHAT_GHOSTEARS)) //they're talking normally and we have hearing at any range off
+			if(!(M.client.prefs.chat_toggles & CHAT_GHOSTEARS)) //they're talking normally and we have hearing at any range off
 				continue
 		listening |= M
 		the_dead[M] = TRUE
@@ -295,13 +300,24 @@
 	return 1
 
 /mob/living/proc/get_key(message)
+	if(!message || !length(message))
+		return null
 	var/key = message[1]
 	if(key in GLOB.department_radio_prefixes)
-		return lowertext(message[1 + length(key)])
+		var/index = 1 + length(key)
+		if(index > length(message))
+			return null
+		return lowertext(message[index])
+	return null
 
 /mob/living/proc/get_message_language(message)
+	if(!message || !length(message))
+		return null
 	if(message[1] == ",")
-		var/key = message[1 + length(message[1])]
+		var/index = 1 + length(message[1])
+		if(index > length(message))
+			return null
+		var/key = message[index]
 		for(var/ld in GLOB.all_languages)
 			var/datum/language/LD = ld
 			if(initial(LD.key) == key)

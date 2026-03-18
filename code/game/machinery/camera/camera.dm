@@ -54,6 +54,9 @@
 
 /obj/machinery/camera/Initialize(mapload, obj/structure/camera_assembly/CA)
 	. = ..()
+	// Ensure network is always a list
+	if(!islist(network))
+		network = list("ss13")
 	for(var/i in network)
 		network -= i
 		network += lowertext(i)
@@ -418,3 +421,9 @@
 		user.sight = 0
 		user.see_in_dark = 2
 	return 1
+
+/obj/machinery/camera/lightscameraaction
+	name = "studio camera"
+	desc = "There's no business like show business."
+	icon = 'icons/obj/Ritas.dmi'
+	icon_state = "camera"

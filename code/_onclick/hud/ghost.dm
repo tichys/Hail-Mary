@@ -34,6 +34,8 @@
 
 /obj/screen/ghost/teleport/Click()
 	var/mob/dead/observer/G = usr
+	if(!G || !istype(G, /mob/dead/observer))
+		return
 	G.dead_tele()
 
 /obj/screen/ghost/spawners
@@ -98,6 +100,8 @@
 	if(!.)
 		return
 	var/mob/screenmob = viewmob || mymob
+	if(!screenmob || !screenmob.client || !screenmob.client.prefs)
+		return
 	if(!screenmob.client.prefs.ghost_hud)
 		screenmob.client.screen -= static_inventory
 	else

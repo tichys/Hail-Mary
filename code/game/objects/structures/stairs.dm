@@ -29,6 +29,36 @@
 /obj/structure/stairs/west
 	dir = WEST
 
+/obj/structure/stairs/north/invisible
+	invisibility = INVISIBILITY_ABSTRACT
+
+/obj/structure/stairs/south/invisible
+	invisibility = INVISIBILITY_ABSTRACT
+
+/obj/structure/stairs/east/invisible
+	invisibility = INVISIBILITY_ABSTRACT
+
+/obj/structure/stairs/west/invisible
+	invisibility = INVISIBILITY_ABSTRACT
+
+/obj/structure/stairs/slopes
+	name = "slope"
+	icon = 'icons/obj/stairs.dmi'
+	icon_state = "slopes"
+	plane = FLOOR_PLANE
+
+/obj/structure/stairs/slopes/north
+	dir = NORTH
+
+/obj/structure/stairs/slopes/south
+	dir = SOUTH
+
+/obj/structure/stairs/slopes/east
+	dir = EAST
+
+/obj/structure/stairs/slopes/west
+	dir = WEST
+
 /obj/structure/stairs/Initialize(mapload)
 	if(force_open_above)
 		force_open_above()
@@ -88,10 +118,19 @@
 		return
 	if(!checking.zPassIn(climber, UP, get_turf(src)))
 		return
-	var/turf/target = get_step_multiz(get_turf(src), (dir|UP))
-	if(istype(target) && !climber.canZMove(DOWN, target, z_move_flags = ZMOVE_FALL_FLAGS)) //Don't throw them into a tile that will just dump them back down.
+	
+	// Use get_step() first, then get the Z-level above that
+	// Old code: var/turf/target = get_step_multiz(get_turf(src), (dir|UP))
+	// This was broken because (NORTH|UP) doesn't make sense as a direction
+	
+	// New code: Get the tile in front of us on the same Z, then go up from there
+	var/turf/forward_turf = get_step(get_turf(src), dir)
+	var/turf/target = get_step_multiz(forward_turf, UP)
+	
+	if(istype(target) && !climber.canZMove(DOWN, target, z_move_flags = ZMOVE_FALL_FLAGS))
 		climber.zMove(target = target, z_move_flags = ZMOVE_STAIRS_FLAGS)
-		/// Moves anything that's being dragged by src or anything buckled to it to the stairs turf.
+		
+		// Move anything being dragged
 		climber.pulling?.move_from_pull(climber, loc, climber.glide_size)
 		for(var/mob/living/buckled as anything in climber.buckled_mobs)
 			buckled.pulling?.move_from_pull(buckled, loc, buckled.glide_size)
@@ -149,3 +188,9 @@
 		if(S.dir == dir)
 			return FALSE
 	return TRUE
+
+/obj/structure/stairs/slopes/update_icon_state()
+	if(isTerminator())
+		icon_state = "slopes_t"
+	else
+		icon_state = "slopes"
