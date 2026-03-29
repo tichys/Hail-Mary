@@ -214,6 +214,9 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	var/special_a = SPECIAL_DEFAULT_ATTR_VALUE
 	var/special_l = SPECIAL_DEFAULT_ATTR_VALUE
 
+	/// Character background/origin
+	var/background = "wastelander"
+
 	/// Associative list: matchmaking_prefs[/datum/matchmaking_pref subtype] -> number of desired matches
 	var/list/matchmaking_prefs = list()
 
@@ -301,6 +304,8 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 				dat += "<center><b>Current Quirks:</b> [all_quirks.len ? all_quirks.Join(", ") : "None"]</center>"
 			dat += "<center><h2>S.P.E.C.I.A.L</h2>"
 			dat += "<a href='?_src_=prefs;preference=special;task=menu'>Allocate Points</a><br></center>"
+			dat += "<center><h2>Background</h2>"
+			dat += "<a href='?_src_=prefs;preference=background;task=menu'>Select Background</a><br></center>"
 			dat += "<table><tr><td width='340px' height='300px' valign='top'>"
 			dat += "<h2>Identity</h2>"
 			if(jobban_isbanned(user, "appearance"))
@@ -1260,6 +1265,32 @@ span.independent { display: inline-block; position: absolute; width: 20%; right:
 	user << browse(get_terminal_page(dat.Join(), "&#9654; S.P.E.C.I.A.L &#9664;"), "window=mob_occupation;size=400x550;can_close=0;can_minimize=1;can_maximize=0;can_resize=1;titlebar=1;")
 	return
 
+/datum/preferences/proc/SetBackground(mob/user)
+	var/list/dat = list()
+
+	dat += "<center><b>Select Your Background</b></center>"
+	dat += "<center>Your background affects starting items and faction reputation.</center><br>"
+
+	for(var/bg_id in GLOB.character_backgrounds)
+		var/datum/background/B = GLOB.character_backgrounds[bg_id]
+		var/selected = (background == bg_id) ? "class='linkOn'" : ""
+		var/rep_text = ""
+		if(length(B.reputation_modifiers))
+			var/list/reps = list()
+			for(var/faction in B.reputation_modifiers)
+				var/amount = B.reputation_modifiers[faction]
+				reps += "[faction]: [amount >= 0 ? "+" : ""][amount]"
+			rep_text = " ([reps.Join(", ")])"
+		
+		dat += "<a href='?_src_=prefs;preference=background;task=select;bg=[bg_id]' [selected]><b>[B.name]</b></a><br>"
+		dat += "<font size='1'><i>[B.description]</i></font>[rep_text]<br><br>"
+
+	dat += "<center><a href='?_src_=prefs;preference=background;task=close'>Done</a></center>"
+
+	user << browse(null, "window=preferences")
+	user << browse(get_terminal_page(dat.Join(), "&#9654; BACKGROUND &#9664;"), "window=mob_occupation;size=500x600;can_close=0;can_minimize=1;can_maximize=0;can_resize=1;titlebar=1;")
+	return
+
 /datum/preferences/proc/GetQuirkBalance()
 	var/bal = 5
 	for(var/V in all_quirks)
@@ -1386,6 +1417,24 @@ span.independent { display: inline-block; position: absolute; width: 20%; right:
 			if("reset")
 			else
 				SetSpecial(user)
+		return TRUE
+
+	else if(href_list["preference"] == "background")
+		switch(href_list["task"])
+			if("close")
+				user << browse(null, "window=mob_occupation")
+				ShowChoices(user)
+			if("select")
+				if(href_list["bg"])
+					var/new_bg = href_list["bg"]
+					if(GLOB.character_backgrounds[new_bg])
+						background = new_bg
+						// Save to database immediately
+						set_character_background(user.ckey, background)
+						to_chat(user, span_notice("Background set to [GLOB.character_backgrounds[new_bg].name]"))
+				SetBackground(user)
+			else
+				SetBackground(user)
 		return TRUE
 
 	switch(href_list["task"])
@@ -2241,6 +2290,14 @@ span.independent { display: inline-block; position: absolute; width: 20%; right:
 	character.special_l = special_l
 
 	character.initialize_special_stats()
+	character.update_perk_traits()
+
+	// Apply background if selected
+	if(background && GLOB.character_backgrounds[background])
+		var/datum/background/B = GLOB.character_backgrounds[background]
+		B.apply_background(character)
+		// Also save to DB if not already
+		set_character_background(character.ckey, background)
 
 	character.left_eye_color = left_eye_color
 	character.right_eye_color = right_eye_color

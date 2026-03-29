@@ -13,6 +13,14 @@
 	switch(M.a_intent)
 		if(INTENT_HELP)
 			if (health > 0)
+				// Try to open dialogue if this NPC has dialogue_type
+				if(istype(src, /mob/living/simple_animal/hostile))
+					var/mob/living/simple_animal/hostile/H = src
+					if(H.dialogue_type)
+						start_dialogue(M, H.dialogue_type)
+						return TRUE
+				
+				// Default help response
 				visible_message(span_notice("[M] [response_help_continuous] [src]."), \
 								span_notice("[M] [response_help_continuous] you."), null, null, null,
 								M, span_notice("You [response_help_simple] [src]."))

@@ -25,6 +25,8 @@ Weapons		Service Rifle, Grease Gun, 9mm pistol, all good.
 	forbids = "The NCR forbids: Chem and drug use such as jet or alcohol while on duty. Execution of unarmed or otherwise subdued targets without authorisation."
 	enforces = "The NCR expects: Obeying the lawful orders of superiors. Proper treatment of prisoners.  Good conduct within the Republic's laws. Wearing the uniform."
 	objectivesList = list("Leadership recommends the following goal for this week: Establish an outpost at the radio tower","Leadership recommends the following goal for this week: Neutralize and capture dangerous criminals", "Leadership recommends the following goal for this week: Free slaves and establish good relations with unaligned individuals.")
+	
+	// Roleplay: Base jobs have no rep requirement (see specific jobs for tiered requirements)
 
 /datum/outfit/job/ncr
 	name = "NCRdatums"
@@ -294,6 +296,10 @@ Weapons		Service Rifle, Grease Gun, 9mm pistol, all good.
 	display_order = JOB_DISPLAY_ORDER_SERGEANT
 	outfit = /datum/outfit/job/ncr/f13sergeant
 	exp_requirements = 500
+	
+	// Roleplay: Require NCR reputation
+	required_faction = "ncr"
+	required_faction_rep = 50
 
 	loadout_options = list( 
 		/datum/outfit/loadout/sergeantrifleman,	// standard service rifle with an added revolver
