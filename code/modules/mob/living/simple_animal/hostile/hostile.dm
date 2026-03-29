@@ -26,6 +26,21 @@
 	var/auto_fire_delay = GUN_AUTOFIRE_DELAY_NORMAL
 	var/projectiletype	//set ONLY it and NULLIFY casingtype var, if we have ONLY projectile
 	var/projectilesound
+	
+	// Dialogue system - allows specific NPCs to have custom dialogue
+	var/dialogue_type = null // Set to dialogue tree name for custom dialogue
+	var/dialogue_range = 3 // Range to auto-initiate dialogue with players
+	var/dialogue_cooldown = 0 // Cooldown between auto-dialogue triggers
+	var/dialogue_cooldown_time = 60 SECONDS // Time between dialogue triggers
+	
+	// Random Bark System - NPCs speak ambient lines when players are nearby
+	var/list/bark_strings = list() // Loaded from JSON dialogue files
+	var/list/bark_combat = list() // Combat barks
+	var/list/bark_greeting = list() // Greeting barks when player approaches
+	var/bark_chance = 0.03 // Probability per tick to bark (3%)
+	var/bark_cooldown = 0 // Cooldown tracker
+	var/bark_cooldown_time = 45 SECONDS // Time between barks
+	var/bark_range = 5 // Range to hear barks
 	/// Play a sound after they shoot?
 	var/sound_after_shooting
 	/// How long after shooting should it play?
@@ -399,6 +414,9 @@
 	if(MOB_EMP_DAMAGE in emp_flags)
 		smoke = new /datum/effect_system/smoke_spread/bad
 		smoke.attach(src)
+	
+	// Load barks from dialogue files if dialogue_type is set (lazy loaded via proc call)
+	load_npc_barks(src)
 
 /mob/living/simple_animal/hostile/Destroy()
 	// Clear target reference with signal cleanup
@@ -491,6 +509,64 @@
 				gib(FALSE, FALSE, FALSE, TRUE)
 		return
 	check_health()
+	check_auto_dialogue()
+	try_bark()
+
+/mob/living/simple_animal/hostile/proc/check_auto_dialogue()
+	if(!dialogue_type || dialogue_cooldown > world.time)
+		return
+	
+	for(var/mob/living/carbon/human/player in view(dialogue_range, src))
+		if(!player.client)
+			continue
+		if(stat != CONSCIOUS)
+			continue
+		
+		record_npc_interaction(src, player, "talked")
+		start_dialogue(player, dialogue_type)
+		dialogue_cooldown = world.time + dialogue_cooldown_time
+		return
+
+/mob/living/simple_animal/hostile/proc/try_bark()
+	if(stat != CONSCIOUS)
+		return
+	if(bark_cooldown > world.time)
+		return
+	
+	var/list/barks_to_use = list()
+	
+	
+	// Determine bark context
+	if(target && (AIStatus == AI_ON))
+		
+		if(bark_combat.len > 0)
+			barks_to_use = bark_combat
+		else
+			return // No combat barks
+	else
+		if(bark_strings.len > 0)
+			barks_to_use = bark_strings
+		else
+			return // No idle barks
+	
+	// Check for nearby players
+	var/player_nearby = FALSE
+	for(var/mob/living/carbon/human/H in view(bark_range, src))
+		if(H.client)
+			player_nearby = TRUE
+			break
+	
+	if(!player_nearby)
+		return
+	
+	// Random chance to bark
+	if(!prob(bark_chance))
+		return
+	
+	// Pick a bark and say it
+	var/message = pick(barks_to_use)
+	say(message)
+	bark_cooldown = world.time + bark_cooldown_time
 
 /mob/living/simple_animal/hostile/proc/check_health()
 	if(low_health_threshold <= 0)
@@ -800,6 +876,10 @@
 	if(stat == CONSCIOUS && !target && AIStatus != AI_OFF && !client && user)
 		FindTarget(list(user), 1)
 		COOLDOWN_RESET(src, sight_shoot_delay) // Let them shoot back immediately when attacked
+		
+		// Record attack in NPC memory
+		if(ishuman(user))
+			record_npc_interaction(src, user, "attacked")
 		
 		// CHAIN REACTION: This mob just woke up, alert nearby allies
 		trigger_chain_alert(user)

@@ -13,6 +13,8 @@
 	icon_living = "vault_dweller"
 	icon_dead = "vault_dweller"
 	
+	dialogue_type = "vault"
+	
 	mob_biotypes = MOB_ORGANIC|MOB_HUMANOID
 	
 	maxHealth = 100
@@ -188,6 +190,8 @@
 	icon_state = "enclave_specialist"
 	icon_living = "enclave_specialist"
 	icon_dead = "enclave_specialist"
+	
+	dialogue_type = "enclave"
 	
 	mob_biotypes = MOB_ORGANIC|MOB_HUMANOID
 	mob_armor = ARMOR_VALUE_ENCLAVE
@@ -394,6 +398,8 @@
 	icon_living = "bs_knight"
 	icon_dead = "bs_knight"
 	
+	dialogue_type = "brotherhood"
+	
 	mob_biotypes = MOB_ORGANIC|MOB_HUMANOID
 	mob_armor = ARMOR_VALUE_BOS
 	
@@ -566,6 +572,8 @@
 	icon_living = "ncr_trooper"
 	icon_dead = "ncr_trooper"
 	
+	dialogue_type = "ncr"
+	
 	mob_biotypes = MOB_ORGANIC|MOB_HUMANOID
 	mob_armor = ARMOR_VALUE_NCR
 	
@@ -735,6 +743,8 @@
 	icon_living = "legion_prime"
 	icon_dead = "legion_prime"
 	
+	dialogue_type = "legion"
+	
 	mob_biotypes = MOB_ORGANIC|MOB_HUMANOID
 	mob_armor = ARMOR_VALUE_LEGION
 	
@@ -902,6 +912,8 @@
 	icon_state = "tribal_raider"
 	icon_living = "tribal_raider"
 	icon_dead = "tribal_raider_dead"
+	
+	dialogue_type = "tribal"
 	
 	mob_biotypes = MOB_ORGANIC|MOB_HUMANOID
 	mob_armor = ARMOR_VALUE_TRIBAL
