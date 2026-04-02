@@ -11,7 +11,7 @@ GLOBAL_LIST_INIT(notebooks, list())
 	var/list/entries = list()
 	var/list/public_entries = list()
 
-/datum/notebook/New(var/ckey)
+/datum/notebook/New(ckey)
 	owner_ckey = ckey
 	load_from_db()
 
@@ -39,7 +39,7 @@ GLOBAL_LIST_INIT(notebooks, list())
 	
 	qdel(query)
 
-/datum/notebook/proc/add_entry(var/text, var/is_public = FALSE)
+/datum/notebook/proc/add_entry(text, is_public = FALSE)
 	if(entries.len >= NOTEBOOK_MAX_ENTRIES)
 		return FALSE
 	
@@ -61,7 +61,7 @@ GLOBAL_LIST_INIT(notebooks, list())
 	save_entry_to_db(entry)
 	return TRUE
 
-/datum/notebook/proc/save_entry_to_db(var/datum/notebook_entry/entry)
+/datum/notebook/proc/save_entry_to_db(datum/notebook_entry/entry)
 	if(!SSdbcore.Connect())
 		return FALSE
 	
@@ -74,7 +74,7 @@ GLOBAL_LIST_INIT(notebooks, list())
 	qdel(query)
 	return success
 
-/datum/notebook/proc/delete_entry(var/id)
+/datum/notebook/proc/delete_entry(id)
 	var/key = "[id]"
 	if(!entries[key])
 		return FALSE
@@ -100,7 +100,7 @@ GLOBAL_LIST_INIT(notebooks, list())
 
 // ============ PROC HELPERS ============
 
-/proc/get_player_notebook(var/ckey)
+/proc/get_player_notebook(ckey)
 	if(!ckey)
 		return null
 	if(!GLOB.notebooks[ckey])
@@ -181,7 +181,7 @@ GLOBAL_LIST_INIT(notebooks, list())
 	popup.set_content(html)
 	popup.open()
 
-/proc/show_notebook_ui(var/mob/user, var/datum/notebook/notebook)
+/proc/show_notebook_ui(mob/user, datum/notebook/notebook)
 	var/datum/browser/popup = new(user, "notebook", "Notebook", 700, 600)
 	
 	var/html = {"

@@ -314,7 +314,7 @@ GLOBAL_LIST_EMPTY(json_dialogue_cache)
 
 // ============ DIALOGUE FUNCTIONS ============
 
-/proc/start_dialogue(var/mob/player, var/npc_type)
+/proc/start_dialogue(mob/player, npc_type)
 	if(!GLOB.dialogue_trees.len)
 		init_dialogue_system()
 	
@@ -367,7 +367,7 @@ GLOBAL_LIST_EMPTY(json_dialogue_cache)
 	
 	return null
 
-/proc/show_dialogue_node(var/mob/player, var/npc_type, var/node_id)
+/proc/show_dialogue_node(mob/player, npc_type, node_id)
 	// Try JSON first, then fallback to hardcoded
 	#ifdef GLOBAL_LIST_INIT_json_dialogue_cache
 	var/dialogue_tree = GLOB.json_dialogue_cache[npc_type]
