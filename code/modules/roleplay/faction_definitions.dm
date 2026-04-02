@@ -20,15 +20,7 @@ GLOBAL_LIST_INIT(factions, init_factions())
 // Threshold: Public perception (what NPCs/players think)
 // Private: Faction leadership's actual opinion
 
-#define REP_IDOLIZED 100
-#define REP_ADMIRED 75
-#define REP_LIKED 50
-#define REP_ACCEPTED 25
-#define REP_NEUTRAL 10
-#define REP_SHUNNED 0
-#define REP_DISLIKED -25
-#define REP_HATED -50
-#define REP_VILIFIED -100
+// Reputation thresholds defined in code/__DEFINES/roleplay_constants.dm
 
 /datum/faction
 	var/id = ""

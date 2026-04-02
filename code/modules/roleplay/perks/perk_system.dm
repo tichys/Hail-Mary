@@ -1,6 +1,5 @@
 // Perk System Core Logic for Big Iron: Hail Mary
-
-#define MAX_PERK_POINTS 30
+// MAX_PERK_POINTS defined in code/__DEFINES/roleplay_constants.dm
 
 // Map of perk_id to conflicting quirk trait
 GLOBAL_LIST_INIT(perk_quirk_conflicts, list(

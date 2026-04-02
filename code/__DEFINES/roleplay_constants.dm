@@ -2,15 +2,31 @@
 // Centralizes all magic numbers for consistency and easy tuning
 
 // ============ KARMA SYSTEM ============
-// Note: Main karma constants are in karma.dm for proximity to the code that uses them
-// These are additional karma-related constants
+#define KARMA_MAX 1000
+#define KARMA_MIN -1000
+
+// Karma thresholds
+#define KARMA_LEGEND 750
+#define KARMA_HERO 500
+#define KARMA_GOOD 250
+#define KARMA_NEUTRAL 0
+#define KARMA_SHADY -250
+#define KARMA_VILLAIN -500
+#define KARMA_INFAMOUS -750
 
 #define KARMA_FEEDBACK_MIN 5			// Minimum karma change to show feedback
 #define KARMA_HISTORY_DISPLAY_LIMIT 50	// Max entries to show in karma history
 
 // ============ REPUTATION SYSTEM ============
-// Note: Main reputation thresholds are in faction_definitions.dm
-// These are additional reputation-related constants
+#define REP_IDOLIZED 100
+#define REP_ADMIRED 75
+#define REP_LIKED 50
+#define REP_ACCEPTED 25
+#define REP_NEUTRAL 10
+#define REP_SHUNNED 0
+#define REP_DISLIKED -25
+#define REP_HATED -50
+#define REP_VILIFIED -100
 
 #define REP_MIN -100					// Minimum possible reputation
 #define REP_MAX 250						// Maximum possible reputation (higher for special rewards)
@@ -27,7 +43,16 @@
 #define BOUNTY_HUNTER_SPAWN_MAX 3		// Maximum bounty hunters to spawn
 #define BOUNTY_HUNTER_DURATION 600		// How long bounty hunters pursue (10 minutes)
 
+// ============ PERK SYSTEM ============
+#define MAX_PERK_POINTS 30				// Maximum perk points a player can spend
+
+// ============ LEVEL SYSTEM ============
+#define XP_LEVEL_SCALING 1000			// XP required per level
+
 // ============ TRADE SYSTEM ============
+#define TRADE_STATE_REQUEST 1			// Trade has been requested
+#define TRADE_STATE_OFFERING 2			// Trade is in offering phase
+#define TRADE_STATE_CONFIRMING 3		// Trade is in confirmation phase
 #define TRADE_MAX_DISTANCE 3			// Maximum tiles between traders
 #define TRADE_REQUEST_TIMEOUT 300		// Trade request expires after 30 seconds
 #define TRADE_Z_LEVEL_CHECK TRUE		// Whether traders must be on same Z-level

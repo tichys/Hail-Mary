@@ -16,8 +16,7 @@
 #define XP_HELP_NPC 15
 #define XP_DISCOVER_LOCATION 25
 #define XP_SURVIVE_DAY 100
-
-#define XP_LEVEL_SCALING 1000
+// XP_LEVEL_SCALING defined in code/__DEFINES/roleplay_constants.dm
 
 /proc/level_use_db()
 	return SSdbcore.Connect()

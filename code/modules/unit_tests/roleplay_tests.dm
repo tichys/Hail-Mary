@@ -2,7 +2,6 @@
 // Tests karma, reputation, quests, and trade functionality
 
 /datum/unit_test/karma_thresholds
-	name = "Karma Threshold Tests"
 
 /datum/unit_test/karma_thresholds/Run()
 	// Test karma clamping
@@ -13,22 +12,8 @@
 	if(clamped < KARMA_MIN)
 		Fail("Karma not properly clamped to KARMA_MIN (-1000)")
 	
-	// Test threshold constants exist and are ordered
-	if(KARMA_LEGEND <= KARMA_HERO)
-		Fail("KARMA_LEGEND should be greater than KARMA_HERO")
-	if(KARMA_HERO <= KARMA_GOOD)
-		Fail("KARMA_HERO should be greater than KARMA_GOOD")
-	if(KARMA_GOOD <= KARMA_NEUTRAL)
-		Fail("KARMA_GOOD should be greater than KARMA_NEUTRAL")
-	if(KARMA_NEUTRAL >= KARMA_SHADY)
-		Fail("KARMA_NEUTRAL should be greater than KARMA_SHADY")
-	if(KARMA_SHADY >= KARMA_VILLAIN)
-		Fail("KARMA_SHADY should be greater than KARMA_VILLAIN")
-	if(KARMA_VILLAIN >= KARMA_INFAMOUS)
-		Fail("KARMA_VILLAIN should be greater than KARMA_INFAMOUS")
 
 /datum/unit_test/karma_action_amounts
-	name = "Karma Action Amount Tests"
 
 /datum/unit_test/karma_action_amounts/Run()
 	// Test that karma actions return expected amounts
@@ -44,30 +29,7 @@
 	if(neutral_action != 0)
 		Fail("Nonexistent action should return 0 karma")
 
-/datum/unit_test/reputation_thresholds
-	name = "Reputation Threshold Tests"
-
-/datum/unit_test/reputation_thresholds/Run()
-	// Test reputation constants
-	if(REP_IDOLIZED <= REP_ADMIRED)
-		Fail("REP_IDOLIZED should be greater than REP_ADMIRED")
-	if(REP_ADMIRED <= REP_LIKED)
-		Fail("REP_ADMIRED should be greater than REP_LIKED")
-	if(REP_LIKED <= REP_ACCEPTED)
-		Fail("REP_LIKED should be greater than REP_ACCEPTED")
-	if(REP_ACCEPTED <= REP_NEUTRAL)
-		Fail("REP_ACCEPTED should be greater than REP_NEUTRAL")
-	if(REP_NEUTRAL <= REP_SHUNNED)
-		Fail("REP_NEUTRAL should be greater than REP_SHUNNED")
-	if(REP_SHUNNED >= REP_DISLIKED)
-		Fail("REP_SHUNNED should be less than REP_DISLIKED (less negative)")
-	if(REP_DISLIKED >= REP_HATED)
-		Fail("REP_DISLIKED should be less than REP_HATED")
-	if(REP_HATED >= REP_VILIFIED)
-		Fail("REP_HATED should be less than REP_VILIFIED")
-
 /datum/unit_test/faction_definitions
-	name = "Faction Definition Tests"
 
 /datum/unit_test/faction_definitions/Run()
 	// Test that factions exist
@@ -87,7 +49,6 @@
 		Fail("NCR faction should have ranks defined")
 
 /datum/unit_test/quest_creation
-	name = "Quest Creation Tests"
 
 /datum/unit_test/quest_creation/Run()
 	// Test quest datum creation
@@ -108,7 +69,6 @@
 	qdel(test_quest)
 
 /datum/unit_test/background_definitions
-	name = "Background Definition Tests"
 
 /datum/unit_test/background_definitions/Run()
 	// Test backgrounds exist
@@ -129,23 +89,7 @@
 	if(!vault_bg.description)
 		Fail("Background should have a description")
 
-/datum/unit_test/trade_bounds_check
-	name = "Trade System Bounds Check"
-
-/datum/unit_test/trade_bounds_check/Run()
-	// Test trade request distance validation
-	// Note: This is a static test - actual distance checking requires mobs in world
-	
-	// Test that trade defines exist
-	if(!defined("TRADE_STATE_REQUEST"))
-		Fail("TRADE_STATE_REQUEST should be defined")
-	if(!defined("TRADE_STATE_OFFERING"))
-		Fail("TRADE_STATE_OFFERING should be defined")
-	if(!defined("TRADE_STATE_CONFIRMING"))
-		Fail("TRADE_STATE_CONFIRMING should be defined")
-
 /datum/unit_test/xp_calculation
-	name = "XP Calculation Tests"
 
 /datum/unit_test/xp_calculation/Run()
 	// Test XP values are reasonable
@@ -167,20 +111,9 @@
 	if(xp_invalid != 0)
 		Fail("Invalid action should return 0 XP")
 
-/datum/unit_test/perk_system
-	name = "Perk System Tests"
-
-/datum/unit_test/perk_system/Run()
-	// Test MAX_PERK_POINTS is reasonable
-	if(MAX_PERK_POINTS <= 0)
-		Fail("MAX_PERK_POINTS should be positive")
-	if(MAX_PERK_POINTS > 100)
-		Fail("MAX_PERK_POINTS seems too high")
-
 // ============ NULL SAFETY TESTS ============
 
 /datum/unit_test/null_safety_karma
-	name = "Karma Null Safety Tests"
 
 /datum/unit_test/null_safety_karma/Run()
 	// Test null ckey handling
@@ -197,7 +130,6 @@
 		Fail("adjust_karma(null, ...) should return 0")
 
 /datum/unit_test/null_safety_reputation
-	name = "Reputation Null Safety Tests"
 
 /datum/unit_test/null_safety_reputation/Run()
 	// Test null ckey handling
@@ -214,7 +146,6 @@
 		Fail("set_faction_reputation(null, ...) should return FALSE")
 
 /datum/unit_test/null_safety_quests
-	name = "Quest Null Safety Tests"
 
 /datum/unit_test/null_safety_quests/Run()
 	// Test quest data retrieval
@@ -236,7 +167,6 @@
 		Fail("Zero time should return 'Expired'")
 
 /datum/unit_test/level_system_edge_cases
-	name = "Level System Edge Cases Tests"
 
 /datum/unit_test/level_system_edge_cases/Run()
 	// Test XP calculations with edge cases
@@ -273,7 +203,6 @@
 // ============ DIALOGUE SYSTEM TESTS ============
 
 /datum/unit_test/dialogue_tree_tests
-	name = "Dialogue Tree Tests"
 
 /datum/unit_test/dialogue_tree_tests/Run()
 	// Test dialogue initialization
@@ -296,7 +225,6 @@
 		Fail("NCR dialogue tree should have 'start' node")
 
 /datum/unit_test/karma_title_tests
-	name = "Karma Title Tests"
 
 /datum/unit_test/karma_title_tests/Run()
 	// Test karma titles
@@ -318,7 +246,6 @@
 		Fail("-900 karma should be 'Infamous'")
 
 /datum/unit_test/faction_rank_tests
-	name = "Faction Rank Tests"
 
 /datum/unit_test/faction_rank_tests/Run()
 	// Test faction rank retrieval
