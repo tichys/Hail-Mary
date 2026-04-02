@@ -1433,7 +1433,8 @@ span.independent { display: inline-block; position: absolute; width: 20%; right:
 						background = new_bg
 						// Save to database immediately
 						set_character_background(user.ckey, background)
-						to_chat(user, span_notice("Background set to [GLOB.character_backgrounds[new_bg].name]"))
+						var/datum/background/selected_bg = GLOB.character_backgrounds[new_bg]
+						to_chat(user, span_notice("Background set to [selected_bg.name]"))
 				SetBackground(user)
 			else
 				SetBackground(user)

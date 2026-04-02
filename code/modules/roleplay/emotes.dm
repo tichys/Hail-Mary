@@ -55,21 +55,21 @@
 		to_chat(src, span_warning("You can't wave at yourself."))
 		return
 	
-	emote("waves at [target]", check_for_sleep = FALSE)
+	emote("waves at [target]")
 	visible_message(span_notice("[src] waves at [target]."), span_notice("You wave at [target]."))
 
 /mob/verb/nod_respectfully()
 	set category = "IC"
 	set name = "Nod Respectfully"
 	
-	emote("nods respectfully", check_for_sleep = FALSE)
+	emote("nods respectfully")
 	visible_message(span_notice("[src] nods respectfully."), span_notice("You nod respectfully."))
 
 /mob/verb/shrug_emote()
 	set category = "IC"
 	set name = "Shrug"
 	
-	emote("shrugs", check_for_sleep = FALSE)
+	emote("shrugs")
 	visible_message(span_notice("[src] shrugs."), span_notice("You shrug."))
 
 /mob/verb/bow_to(mob/target as mob in oview())
@@ -80,70 +80,70 @@
 		to_chat(src, span_warning("You can't bow to yourself."))
 		return
 	
-	emote("bows to [target]", check_for_sleep = FALSE)
+	emote("bows to [target]")
 	visible_message(span_notice("[src] bows to [target]."), span_notice("You bow to [target]."))
 
 /mob/verb/point_at(atom/target as atom in view())
 	set category = "IC"
 	set name = "Point"
 	
-	emote("points at [target]", check_for_sleep = FALSE)
+	emote("points at [target]")
 	visible_message(span_notice("[src] points at [target]."), span_notice("You point at [target]."))
 
 /mob/verb/gesture_emote()
 	set category = "IC"
 	set name = "Gesture"
 	
-	emote("makes a gesture", check_for_sleep = FALSE)
+	emote("makes a gesture")
 	visible_message(span_notice("[src] makes a vague gesture."), span_notice("You make a gesture."))
 
 /mob/verb/scratch_head_emote()
 	set category = "IC"
 	set name = "Scratch Head"
 	
-	emote("scratches their head", check_for_sleep = FALSE)
+	emote("scratches their head")
 	visible_message(span_notice("[src] scratches their head."), span_notice("You scratch your head."))
 
 /mob/verb/look_around()
 	set category = "IC"
 	set name = "Look Around"
 	
-	emote("looks around", check_for_sleep = FALSE)
+	emote("looks around")
 	visible_message(span_notice("[src] looks around."), span_notice("You look around."))
 
 /mob/verb/think_emote()
 	set category = "IC"
 	set name = "Think"
 	
-	emote("appears to be thinking", check_for_sleep = FALSE)
+	emote("appears to be thinking")
 	visible_message(span_notice("[src] appears to be deep in thought."), span_notice("You think deeply."))
 
 /mob/verb/pray_emote()
 	set category = "IC"
 	set name = "Pray"
 	
-	emote("prays", check_for_sleep = FALSE)
+	emote("prays")
 	visible_message(span_notice("[src] kneels and prays."), span_notice("You kneel and pray."))
 
 /mob/verb/combat_stance()
 	set category = "IC"
 	set name = "Combat Stance"
 	
-	emote("takes a combat stance", check_for_sleep = FALSE)
+	emote("takes a combat stance")
 	visible_message(span_notice("[src] drops into a combat stance."), span_notice("You drop into a combat stance."))
 
 /mob/verb/scan_area()
 	set category = "IC"
 	set name = "Scan Area"
 	
-	emote("scans the area", check_for_sleep = FALSE)
+	emote("scans the area")
 	visible_message(span_notice("[src] scans the area carefully."), span_notice("You scan the area."))
 
 /mob/verb/check_geiger()
 	set category = "IC"
 	set name = "Check Geiger"
 	
-	emote("checks for radiation", check_for_sleep = FALSE)
+	emote("checks for radiation")
 	visible_message(span_notice("[src] checks for radiation."), span_notice("You check for radiation."))
 	
 	// Simple radiation check message
@@ -159,7 +159,7 @@
 		to_chat(src, span_warning("You're already resting."))
 		return
 	
-	emote("sits down to rest", check_for_sleep = FALSE)
+	emote("sits down to rest")
 	visible_message(span_notice("[src] sits down to rest."), span_notice("You sit down to rest."))
 	
 	// Simple rest action

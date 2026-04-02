@@ -3,10 +3,7 @@
 
 GLOBAL_LIST_EMPTY(active_trades)
 GLOBAL_LIST_EMPTY(pending_trade_requests)
-
-#define TRADE_STATE_REQUEST 1
-#define TRADE_STATE_OFFERING 2
-#define TRADE_STATE_CONFIRMING 3
+// Trade state constants defined in code/__DEFINES/roleplay_constants.dm
 
 /datum/trade_request
 	var/mob/living/carbon/human/sender

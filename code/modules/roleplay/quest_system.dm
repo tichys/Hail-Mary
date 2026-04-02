@@ -1,6 +1,13 @@
 // Quest System for Big Iron: Hail Mary
 // Simple but functional quest tracking with failure/expiration support
 
+/datum/quest
+	var/id = ""
+	var/name = ""
+	var/description = ""
+	var/objective = ""
+	var/completed = FALSE
+
 GLOBAL_LIST_INIT(quests, list(
 	"ncr_raiders" = list("name" = "Clear Raiders", "desc" = "Eliminate raider threat", "faction" = "ncr", "rep" = 15, "caps" = 50, "karma_type" = "good"),
 	"ncr_scout" = list("name" = "Scout Mission", "desc" = "Survey territory", "faction" = "ncr", "rep" = 20, "caps" = 75, "karma_type" = "neutral"),

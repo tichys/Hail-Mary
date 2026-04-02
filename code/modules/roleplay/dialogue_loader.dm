@@ -195,12 +195,15 @@ GLOBAL_LIST_EMPTY(dialogue_json_cache)
 	if(dialogue_data["barks"])
 		var/list/barks = dialogue_data["barks"]
 		if(barks["idle"])
-			npc.bark_strings = barks["idle"].Copy()
+			var/list/idle_barks = barks["idle"]
+			npc.bark_strings = idle_barks.Copy()
 			loaded = TRUE
 		if(barks["combat"])
-			npc.bark_combat = barks["combat"].Copy()
+			var/list/combat_barks = barks["combat"]
+			npc.bark_combat = combat_barks.Copy()
 		if(barks["greeting"])
-			npc.bark_greeting = barks["greeting"].Copy()
+			var/list/greeting_barks = barks["greeting"]
+			npc.bark_greeting = greeting_barks.Copy()
 	
 	if(dialogue_data["bark_chance"])
 		npc.bark_chance = dialogue_data["bark_chance"]

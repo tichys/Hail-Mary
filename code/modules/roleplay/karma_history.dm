@@ -60,8 +60,9 @@ GLOBAL_LIST_INIT(karma_history_cache, list())
 	SSpersistence.karma_history_data[ckey] += list(entry)
 	
 	// Keep only last 100 entries per player
-	if(SSpersistence.karma_history_data[ckey].len > 100)
-		SSpersistence.karma_history_data[ckey].Cut(1, SSpersistence.karma_history_data[ckey].len - 99)
+	var/list/ckey_history = SSpersistence.karma_history_data[ckey]
+	if(ckey_history.len > 100)
+		ckey_history.Cut(1, ckey_history.len - 99)
 	
 	GLOB.karma_history_cache -= ckey
 	return TRUE

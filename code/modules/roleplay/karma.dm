@@ -1,17 +1,6 @@
 // Karma System for Big Iron: Hail Mary
 // Tracks player moral alignment (Good/Evil)
-
-#define KARMA_MAX 1000
-#define KARMA_MIN -1000
-
-// Karma thresholds
-#define KARMA_LEGEND 750
-#define KARMA_HERO 500
-#define KARMA_GOOD 250
-#define KARMA_NEUTRAL 0
-#define KARMA_SHADY -250
-#define KARMA_VILLAIN -500
-#define KARMA_INFAMOUS -750
+// Karma constants defined in code/__DEFINES/roleplay_constants.dm
 
 // Forward declarations for procs in other files
 // log_karma_action defined in karma_history.dm
