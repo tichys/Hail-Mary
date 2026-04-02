@@ -65,6 +65,8 @@
 
 // Adjust karma with feedback
 /proc/adjust_karma(ckey, amount)
+	if(!ckey)
+		return 0
 	var/current = get_karma(ckey)
 	var/new_value = clamp(current + amount, KARMA_MIN, KARMA_MAX)
 	set_karma(ckey, new_value)
