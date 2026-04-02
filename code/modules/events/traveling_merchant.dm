@@ -98,7 +98,7 @@ GLOBAL_LIST_INIT(traveling_merchants, list())
 	var/list/inventory = list()
 	var/price_multiplier = 1.0
 
-/datum/component/merchant_inventory/Initialize(var/list/new_inventory, var/multiplier = 1.0)
+/datum/component/merchant_inventory/Initialize(list/new_inventory, multiplier = 1.0)
 	inventory = new_inventory
 	price_multiplier = multiplier
 	RegisterSignal(parent, COMSIG_CLICK_ALT, .proc/on_alt_click)
