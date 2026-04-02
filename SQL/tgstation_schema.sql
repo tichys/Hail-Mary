@@ -552,7 +552,7 @@ DROP TABLE IF EXISTS `player_levels`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `player_levels` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `ckey` varchar(32) NOT NULL UNIQUE,
+  `ckey` varchar(32) NOT NULL,
   `xp` bigint NOT NULL DEFAULT 0,
   `level` int NOT NULL DEFAULT 1,
   `special_bonuses` varchar(20) DEFAULT '',
