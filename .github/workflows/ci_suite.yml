@@ -35,6 +35,10 @@ jobs:
           cache: "yarn"
           cache-dependency-path: ./tgui/yarn.lock
 
+      - name: Install TGUI dependencies
+        run: yarn install
+        working-directory: tgui
+
       - run: pip install -r tools/requirements.txt
       - name: Run Linters
         run: |
