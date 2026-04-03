@@ -1,5 +1,7 @@
 // Faction Reputation System for Big Iron: Hail Mary
 // Tracks player standing with different factions
+// faction_reputation_cache doubles as write-through cache: populated on first DB read,
+// kept in sync on every write, so subsequent reads within a round cost nothing.
 
 GLOBAL_LIST_EMPTY(faction_reputation_cache)
 
@@ -7,8 +9,12 @@ GLOBAL_LIST_EMPTY(faction_reputation_cache)
 /proc/get_faction_reputation(ckey, faction_id)
 	if(!ckey || !faction_id)
 		return 0
-	
-	// Try database first
+
+	// Check in-memory cache first
+	if(GLOB.faction_reputation_cache[ckey] && !isnull(GLOB.faction_reputation_cache[ckey][faction_id]))
+		return GLOB.faction_reputation_cache[ckey][faction_id]
+
+	// Cache miss: try database
 	if(SSdbcore.Connect())
 		var/datum/db_query/query = SSdbcore.NewQuery(
 			"SELECT reputation_value FROM [format_table_name("faction_reputation")] WHERE ckey = :ckey AND faction_id = :faction_id",
@@ -24,19 +30,22 @@ GLOBAL_LIST_EMPTY(faction_reputation_cache)
 			rep_value = text2num(query.item[1]) || 0
 		
 		qdel(query)
+		LAZYINITLIST(GLOB.faction_reputation_cache[ckey])
+		GLOB.faction_reputation_cache[ckey][faction_id] = rep_value
 		return rep_value
-	
-	// Fallback to persistence/global cache
-	if(GLOB.faction_reputation_cache[ckey])
-		return GLOB.faction_reputation_cache[ckey][faction_id] || 0
-	
+
+	// No DB: return 0 (cache was already uninitialised, nothing to fall back to)
 	return 0
 
 /proc/set_faction_reputation(ckey, faction_id, value)
 	if(!ckey || !faction_id)
 		return FALSE
-	
-	// Try database first
+
+	// Always update the in-memory cache
+	LAZYINITLIST(GLOB.faction_reputation_cache[ckey])
+	GLOB.faction_reputation_cache[ckey][faction_id] = value
+
+	// Try database
 	if(SSdbcore.Connect())
 		var/datum/db_query/query = SSdbcore.NewQuery(
 			"INSERT INTO [format_table_name("faction_reputation")] (ckey, faction_id, reputation_value, rank_title, last_updated) VALUES (:ckey, :faction_id, :value, :rank, NOW()) ON DUPLICATE KEY UPDATE reputation_value = :value, rank_title = :rank, last_updated = NOW()",
@@ -46,11 +55,7 @@ GLOBAL_LIST_EMPTY(faction_reputation_cache)
 		var/success = query.Execute()
 		qdel(query)
 		return success
-	
-	// Fallback to persistence/global cache
-	if(!GLOB.faction_reputation_cache[ckey])
-		GLOB.faction_reputation_cache[ckey] = list()
-	GLOB.faction_reputation_cache[ckey][faction_id] = value
+
 	return TRUE
 
 /proc/adjust_faction_reputation(ckey, faction_id, amount)

@@ -1,4 +1,7 @@
 // Level System Database Operations for Big Iron: Hail Mary
+// player_xp_cache: write-through cache so get_player_xp_db never hits DB twice per event
+
+GLOBAL_LIST_EMPTY(player_xp_cache)
 
 /proc/get_player_level_db(ckey)
 	if(!SSdbcore.Connect())
@@ -21,6 +24,10 @@
 	return level
 
 /proc/get_player_xp_db(ckey)
+	// Check in-memory cache first
+	if(!isnull(GLOB.player_xp_cache[ckey]))
+		return GLOB.player_xp_cache[ckey]
+
 	if(!SSdbcore.Connect())
 		return 0
 	
@@ -38,6 +45,7 @@
 		xp = text2num(query.item[1]) || 0
 	
 	qdel(query)
+	GLOB.player_xp_cache[ckey] = xp
 	return xp
 
 /proc/add_xp_db(ckey, amount, source)
@@ -45,6 +53,7 @@
 		return FALSE
 	
 	var/current_xp = get_player_xp_db(ckey)
+	var/old_level = calculate_level_from_xp(current_xp) // compute BEFORE the update
 	var/new_xp = max(0, current_xp + amount)
 	var/new_level = calculate_level_from_xp(new_xp)
 	
@@ -63,7 +72,7 @@
 	qdel(query)
 	
 	if(success)
-		var/old_level = get_player_level_db(ckey)
+		GLOB.player_xp_cache[ckey] = new_xp // keep cache in sync
 		if(new_level > old_level)
 			handle_level_up(ckey, old_level, new_level)
 		
