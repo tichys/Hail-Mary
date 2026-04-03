@@ -1,0 +1,79 @@
+@use '../base.scss';
+
+$background-color: rgba(10, 15, 10, 0.95) !default;
+
+.CharacterSetup__left {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: base.em(480px);
+  overflow: hidden;
+}
+
+.CharacterSetup__right {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: base.em(480px);
+  right: 0;
+  background-color: $background-color;
+  border-left: 2px solid #4cff4c;
+  display: flex;
+  flex-direction: column;
+}
+
+.CharacterSetup__preview-label {
+  font-family: 'VT323', monospace;
+  font-size: 14px;
+  color: #4cff4c;
+  padding: 10px;
+  border-bottom: 2px solid #4cff4c;
+  background-color: rgba(76, 255, 76, 0.1);
+  flex-shrink: 0;
+}
+
+.CharacterSetup__preview {
+  flex: 1;
+  margin: 10px;
+  background-color: #0a0f0a;
+  border: 2px solid #4cff4c;
+  position: relative;
+}
+
+.CharacterSetup__map {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.CharacterSetup__preview-loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #4cff4c;
+  font-family: 'VT323', monospace;
+}
+
+.CharacterSetup__header {
+  font-family: 'VT323', monospace;
+  font-size: 12px;
+  padding: 8px;
+  border-bottom: 2px solid #4cff4c;
+  background-color: rgba(76, 255, 76, 0.1);
+  color: #4cff4c;
+  margin-bottom: 10px;
+}
+
+.CharacterSetup__footer {
+  font-family: 'VT323', monospace;
+  font-size: 12px;
+  padding: 8px;
+  border-top: 2px solid #4cff4c;
+  background-color: rgba(76, 255, 76, 0.1);
+  color: #4cff4c;
+  margin-top: 10px;
+}
