@@ -38,6 +38,10 @@ jobs:
         run: yarn install
         working-directory: tgui
 
+      - name: Install TGUI dependencies
+        run: yarn install
+        working-directory: tgui
+
       - run: pip install -r tools/requirements.txt
       - name: Run Linters
         run: |
