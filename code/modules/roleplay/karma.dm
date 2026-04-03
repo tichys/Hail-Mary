@@ -5,6 +5,9 @@
 // Forward declarations for procs in other files
 // log_karma_action defined in karma_history.dm
 
+// In-memory write-through cache: avoids a DB SELECT on every karma read
+GLOBAL_LIST_EMPTY(karma_cache)
+
 // Check if DB is available
 /proc/karma_use_db()
 	return SSdbcore.Connect()
@@ -21,6 +24,10 @@
 
 // Get karma from database
 /proc/get_karma_db(ckey)
+	// Check in-memory cache first — avoids a DB round trip on every read
+	if(!isnull(GLOB.karma_cache[ckey]))
+		return GLOB.karma_cache[ckey]
+
 	var/datum/db_query/query = SSdbcore.NewQuery(
 		"SELECT karma_value FROM [format_table_name("player_karma")] WHERE ckey = :ckey",
 		list("ckey" = ckey)
@@ -35,6 +42,7 @@
 		karma_value = text2num(query.item[1])
 	
 	qdel(query)
+	GLOB.karma_cache[ckey] = karma_value
 	return karma_value
 
 // Set karma directly
@@ -53,6 +61,7 @@
 // Set karma in database
 /proc/set_karma_db(ckey, value)
 	value = clamp(value, KARMA_MIN, KARMA_MAX)
+	GLOB.karma_cache[ckey] = value	// keep cache in sync immediately
 	
 	var/datum/db_query/query = SSdbcore.NewQuery(
 		"INSERT INTO [format_table_name("player_karma")] (ckey, karma_value, last_updated) VALUES (:ckey, :value, NOW()) ON DUPLICATE KEY UPDATE karma_value = :value, last_updated = NOW()",

@@ -29,14 +29,14 @@
 	preview_screen.name = "preview"
 	preview_screen.assigned_map = map_name
 	preview_screen.del_on_map_removal = FALSE
-	preview_screen.screen_loc = "[map_name]:1,1"
+	preview_screen.screen_loc = "[map_name]:CENTER,CENTER"
 	preview_screen.transform = matrix(4, MATRIX_SCALE)
 	
 	preview_plane_master = new
 	preview_plane_master.name = "plane_master"
 	preview_plane_master.assigned_map = map_name
 	preview_plane_master.del_on_map_removal = FALSE
-	preview_plane_master.screen_loc = "[map_name]:1,1"
+	preview_plane_master.screen_loc = "[map_name]:CENTER,CENTER"
 	
 	preview_background = new
 	preview_background.assigned_map = map_name
