@@ -2,11 +2,7 @@
 	var/client/owner
 	var/datum/preferences/prefs
 	var/current_tab = 0
-	var/map_name
-	var/obj/screen/preview_screen
-	var/obj/screen/plane_master/lighting/preview_plane_master
-	var/obj/screen/background/preview_background
-	var/obj/effect/preview_holder
+	var/const/map_name = "character_preview_map"
 
 /datum/tgui_character_setup/New(client/C)
 	if(!istype(C))
@@ -17,40 +13,10 @@
 	if(!prefs)
 		qdel(src)
 		return
-	setup_map()
-
-/datum/tgui_character_setup/proc/setup_map()
-	map_name = "charsetupmap_[REF(src)]_map"
-	
-	preview_holder = new(locate(1, 1, 1))
-	preview_holder.name = "preview_holder"
-	
-	preview_screen = new
-	preview_screen.name = "preview"
-	preview_screen.assigned_map = map_name
-	preview_screen.del_on_map_removal = FALSE
-	preview_screen.screen_loc = "[map_name]:CENTER,CENTER"
-	preview_screen.transform = matrix(4, MATRIX_SCALE)
-	
-	preview_plane_master = new
-	preview_plane_master.name = "plane_master"
-	preview_plane_master.assigned_map = map_name
-	preview_plane_master.del_on_map_removal = FALSE
-	preview_plane_master.screen_loc = "[map_name]:CENTER,CENTER"
-	
-	preview_background = new
-	preview_background.assigned_map = map_name
-	preview_background.del_on_map_removal = FALSE
-	preview_background.icon_state = "clear"
-	preview_background.fill_rect(1, 1, 2, 2)
 
 /datum/tgui_character_setup/Destroy()
-	if(owner && map_name)
-		owner.clear_map(map_name)
-	QDEL_NULL(preview_screen)
-	QDEL_NULL(preview_plane_master)
-	QDEL_NULL(preview_background)
-	QDEL_NULL(preview_holder)
+	if(owner)
+		owner.clear_character_previews()
 	owner = null
 	prefs = null
 	return ..()
@@ -61,9 +27,6 @@
 /datum/tgui_character_setup/ui_interact(mob/user, datum/tgui/ui)
 	ui = SStgui.try_update_ui(user, src, ui)
 	if(!ui)
-		owner?.register_map_obj(preview_screen)
-		owner?.register_map_obj(preview_plane_master)
-		owner?.register_map_obj(preview_background)
 		ui = new(user, src, "CharacterSetup")
 		ui.open()
 	update_preview()
@@ -540,42 +503,41 @@
 	return TRUE
 
 /datum/tgui_character_setup/proc/update_preview()
-	if(!prefs || !owner || !map_name)
+	if(!prefs || !owner)
 		return
+	
 	var/mob/living/carbon/human/dummy/mannequin = generate_or_wait_for_human_dummy(DUMMY_HUMAN_SLOT_PREFERENCES)
 	mannequin.cut_overlays()
+	
 	for(var/obj/item/I in mannequin.get_all_gear())
 		mannequin.dropItemToGround(I, TRUE)
 		qdel(I)
 	mannequin.delete_equipment()
+	
 	mannequin.add_overlay(mutable_appearance('fallout/icons/ui/backgrounds.dmi', "traitor", layer = SPACE_LAYER))
+	
 	var/equip_job = TRUE
 	switch(current_tab)
 		if(APPEARANCE_TAB)
 			equip_job = FALSE
+	
 	prefs.copy_to(mannequin, initial_spawn = TRUE)
+	
 	var/datum/job/previewJob = prefs.get_highest_job()
 	if(previewJob && equip_job)
 		if(istype(previewJob, /datum/job/ai))
-			show_preview(image('icons/mob/ai.dmi', icon_state = resolve_ai_icon(prefs.preferred_ai_core_display), dir = SOUTH))
+			owner.show_character_previews(image('icons/mob/ai.dmi', icon_state = resolve_ai_icon(prefs.preferred_ai_core_display), dir = SOUTH))
 			unset_busy_human_dummy(DUMMY_HUMAN_SLOT_PREFERENCES)
 			return
 		if(istype(previewJob, /datum/job/cyborg))
-			show_preview(image('icons/mob/robots.dmi', icon_state = "robot", dir = SOUTH))
+			owner.show_character_previews(image('icons/mob/robots.dmi', icon_state = "robot", dir = SOUTH))
 			unset_busy_human_dummy(DUMMY_HUMAN_SLOT_PREFERENCES)
 			return
 		mannequin.job = previewJob.title
 		previewJob.equip(mannequin, TRUE, preference_source = owner)
+	
 	mannequin.regenerate_icons()
 	COMPILE_OVERLAYS(mannequin)
-	show_preview(new /mutable_appearance(mannequin))
+	
+	owner.show_character_previews(new /mutable_appearance(mannequin))
 	unset_busy_human_dummy(DUMMY_HUMAN_SLOT_PREFERENCES)
-
-/datum/tgui_character_setup/proc/show_preview(mutable_appearance/MA)
-	if(!owner || !map_name || !MA || !preview_screen || !preview_holder)
-		return
-	preview_holder.appearance = MA
-	preview_holder.dir = SOUTH
-	preview_holder.transform = matrix(4, MATRIX_SCALE)
-	preview_screen.vis_contents.Cut()
-	preview_screen.vis_contents += preview_holder

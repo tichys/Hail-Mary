@@ -8,7 +8,6 @@ import {
   ProgressBar, Dropdown, TextArea, Divider,
 } from '../components';
 import { Window } from '../layouts';
-import { ByondUi } from '../components/ByondUi';
 
 const TAB_CHARACTER = 0;
 const TAB_GAMEPREFS = 1;
@@ -18,7 +17,6 @@ const TAB_KEYBINDS = 4;
 
 type CharacterSetupData = {
   current_tab: number;
-  mapRef: string;
   real_name: string;
   gender: string;
   age: number;
@@ -105,29 +103,10 @@ type KeybindData = {
   keys: string[];
 };
 
-const CharacterPreview = ({ mapRef }) => (
-  <div className="CharacterSetup__preview">
-    {mapRef ? (
-      <ByondUi
-        className="CharacterSetup__map"
-        params={{
-          id: mapRef,
-          type: 'map',
-        }}
-      />
-    ) : (
-      <Box className="CharacterSetup__preview-loading">
-        LOADING...
-      </Box>
-    )}
-  </div>
-);
-
 export const CharacterSetup = (props, context) => {
   const { act, data } = useBackend<CharacterSetupData>(context);
   const {
     current_tab = TAB_CHARACTER,
-    mapRef = '',
     real_name = '',
     gender = 'male',
     age = 30,
@@ -589,7 +568,9 @@ export const CharacterSetup = (props, context) => {
       </div>
       <div className="CharacterSetup__right">
         <Box className="CharacterSetup__preview-label">&gt; PREVIEW</Box>
-        <CharacterPreview mapRef={mapRef} />
+        <Box style={{ padding: '20px', color: '#4cff4c', 'text-align': 'center' }}>
+          Character preview displayed in main window.
+        </Box>
       </div>
     </Window>
   );
