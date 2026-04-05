@@ -76,6 +76,7 @@
 		if("gamemode_panel")
 			if(SSticker?.mode && istype(SSticker.mode, /datum/game_mode/dynamic))
 				SSticker.mode.ui_interact(usr)
+				return TRUE
 		if("create_object")
 			holder.create_object_tgui(usr)
 		if("quick_create_object")

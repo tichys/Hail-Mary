@@ -2527,6 +2527,8 @@
 #include "code\modules\mob\dead\new_player\login.dm"
 #include "code\modules\mob\dead\new_player\logout.dm"
 #include "code\modules\mob\dead\new_player\new_player.dm"
+#include "code\modules\mob\dead\new_player\lobby_menu_tgui.dm"
+#include "code\modules\mob\dead\new_player\latejoin_panel_tgui.dm"
 #include "code\modules\mob\dead\new_player\poll.dm"
 #include "code\modules\mob\dead\new_player\preferences_setup.dm"
 #include "code\modules\mob\dead\new_player\sprite_accessories\_sprite_accessories.dm"
@@ -3919,6 +3921,7 @@
 #include "code\modules\roleplay\emotes.dm"
 #include "code\modules\roleplay\bounty_system.dm"
 #include "code\modules\roleplay\player_stats.dm"
+#include "code\modules\roleplay\tgui_panels.dm"
 #include "code\modules\roleplay\roleplay_topic.dm"
 #include "code\modules\roleplay\admin_verbs.dm"
 #include "code\modules\roleplay\perks\perk_system.dm"
@@ -3928,6 +3931,10 @@
 #include "code\modules\roleplay\perks\perk_menu.dm"
 // END_INCLUDE
 #include "code\modules\admin\player_panel_tgui.dm"
+#include "code\modules\admin\create_panel_tgui.dm"
 #include "code\modules\admin\game_panel_tgui.dm"
 #include "code\modules\admin\individual_player_panel_tgui.dm"
 #include "code\modules\admin\view_variables\tgui_view_variables.dm"
+#include "code\modules\admin\gamemode_panel_tgui.dm"
+
+

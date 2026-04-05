@@ -88,7 +88,7 @@ export const GamePanel = (props, context) => {
           </Section>
         )}
 
-        {round_started && (
+        {round_started && master_mode === 'dynamic' && (
           <Section title="ROUND MANAGEMENT">
             <Button
               content="> GAME MODE PANEL"
