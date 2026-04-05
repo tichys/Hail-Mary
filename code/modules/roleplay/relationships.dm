@@ -142,7 +142,7 @@ GLOBAL_LIST_EMPTY(relationship_proposals)
 // Player verb to propose relationship
 /client/verb/propose_relationship()
 	set name = "Propose Relationship"
-	set category = "Character"
+	set category = "Admin"
 	set desc = "Propose a relationship with another player nearby"
 	
 	var/list/possible_targets = list()

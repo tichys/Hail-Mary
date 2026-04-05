@@ -166,7 +166,7 @@ GLOBAL_LIST_EMPTY(background_cache)
 
 /client/verb/select_background()
 	set name = "Select Background"
-	set category = "Character"
+	set category = "Admin"
 	set desc = "Choose your character's backstory"
 	
 	// Build the list for selection
@@ -278,3 +278,4 @@ GLOBAL_LIST_EMPTY(background_cache)
 		return TRUE
 	
 	return FALSE
+

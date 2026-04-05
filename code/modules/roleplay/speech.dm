@@ -102,10 +102,10 @@ GLOBAL_LIST_INIT(accent_replacements, list(
 	else
 		to_chat(src, span_warning("Invalid accent type."))
 
-// Player verb to set accent
+// Player verb to set accent (admin only)
 /client/verb/set_accent()
 	set name = "Set Accent"
-	set category = "Character"
+	set category = "Admin"
 	set desc = "Change your character's speech accent"
 	
 	var/choice = input(usr, "Choose your accent:", "Accent Selection") as null|anything in GLOB.accent_types + list("None")
