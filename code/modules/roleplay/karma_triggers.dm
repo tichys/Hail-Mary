@@ -1,4 +1,3 @@
-// Karma and Reputation Triggers for Big Iron: Hail Mary
 // Simplified trigger system with cooldowns
 
 // Cooldown globals

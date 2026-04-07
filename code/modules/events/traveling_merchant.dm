@@ -1,4 +1,3 @@
-// Traveling Merchant Event for Big Iron: Hail Mary
 // Comprehensive merchant system with trade UI
 
 // ============ EVENT DEFINITION ============

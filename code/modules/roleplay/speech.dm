@@ -1,4 +1,3 @@
-// Speech Accent System for Big Iron: Hail Mary
 // Text transformation for roleplay flavor
 
 GLOBAL_LIST_INIT(accent_types, list("tribal", "ghoul", "raider", "bos", "ncr", "robot"))

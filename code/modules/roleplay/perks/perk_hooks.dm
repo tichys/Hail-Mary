@@ -1,4 +1,3 @@
-// Perk System Game Integration Hooks for Big Iron: Hail Mary
 // Implements the actual effects of perks in gameplay
 
 // ==========================================

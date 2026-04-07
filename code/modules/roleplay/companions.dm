@@ -1,4 +1,3 @@
-// Companion System for Big Iron: Hail Mary
 // Hireable follower NPCs that follow and assist players
 
 GLOBAL_LIST_EMPTY(active_companions)

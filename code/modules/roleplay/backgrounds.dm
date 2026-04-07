@@ -1,4 +1,3 @@
-// Character Background System for Big Iron: Hail Mary
 // Provides backstory selection at roundstart with mechanical benefits
 
 GLOBAL_LIST_INIT(character_backgrounds, init_character_backgrounds())

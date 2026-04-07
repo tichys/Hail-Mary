@@ -1,4 +1,3 @@
-// Karma System for Big Iron: Hail Mary
 // Tracks player moral alignment (Good/Evil)
 // Karma constants defined in code/__DEFINES/roleplay_constants.dm
 

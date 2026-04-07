@@ -1,4 +1,3 @@
-// NPC Memory System for Big Iron: Hail Mary
 // Tracks individual NPCs' opinions of specific players
 
 GLOBAL_LIST_EMPTY(npc_memory_cache)

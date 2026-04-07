@@ -1,4 +1,3 @@
-// Karma History System for Big Iron: Hail Mary
 // Tracks and logs all karma changes
 
 GLOBAL_LIST_INIT(karma_history_cache, list())

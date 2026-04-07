@@ -1,4 +1,3 @@
-// Quest System for Big Iron: Hail Mary
 // Simple but functional quest tracking with failure/expiration support
 
 /datum/quest

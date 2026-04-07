@@ -1,4 +1,3 @@
-// Perk Database Operations for Big Iron: Hail Mary
 // Handles saving/loading perk data from database
 
 #define PERK_PLAYTIME_INTERVAL 7200 // 2 hours in seconds = 1 perk point

@@ -1,4 +1,3 @@
-// Consolidated Roleplay Topic Handler for Big Iron: Hail Mary
 // Called from client_procs.dm - do NOT define /client/Topic here
 
 // Main entry point - call this from client_procs.dm

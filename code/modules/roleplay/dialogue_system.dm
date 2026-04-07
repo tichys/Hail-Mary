@@ -1,4 +1,3 @@
-// NPC Dialogue System for Big Iron: Hail Mary
 // Branching dialogue trees with reputation requirements
 // Supports JSON loading from config/dialogues/
 

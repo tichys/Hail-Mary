@@ -1,4 +1,3 @@
-// Wasteland Events for Big Iron: Hail Mary
 // Comprehensive Fallout-specific events
 
 // ============ RAD STORM ============

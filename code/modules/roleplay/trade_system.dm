@@ -1,4 +1,3 @@
-// Player-to-Player Trading System for Big Iron: Hail Mary
 // Allows direct trades between players with caps support
 
 GLOBAL_LIST_EMPTY(active_trades)

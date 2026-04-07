@@ -1,4 +1,3 @@
-// Level System Database Operations for Big Iron: Hail Mary
 // player_xp_cache: write-through cache so get_player_xp_db never hits DB twice per event
 
 GLOBAL_LIST_EMPTY(player_xp_cache)

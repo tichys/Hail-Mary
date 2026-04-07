@@ -1,4 +1,3 @@
-// Reputation Effects for Big Iron: Hail Mary
 // Faction-specific benefits and access levels
 
 // ============ VENDOR ACCESS LEVELS ============

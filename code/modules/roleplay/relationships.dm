@@ -1,4 +1,3 @@
-// Character Relationship System for Big Iron: Hail Mary
 // Tracks player-to-player relationships
 
 GLOBAL_LIST_INIT(relationship_types, list("friend", "enemy", "family", "rival", "mentor", "student"))

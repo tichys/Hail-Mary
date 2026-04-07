@@ -1,4 +1,3 @@
-// Bounty System for Big Iron: Hail Mary
 // Places bounties on players with negative karma and manages bounty hunters
 
 GLOBAL_LIST_INIT(bounties, list())

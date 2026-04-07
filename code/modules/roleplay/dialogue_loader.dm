@@ -1,4 +1,3 @@
-// Dialogue Loader System for Big Iron: Hail Mary
 // Loads dialogue trees from JSON config files
 
 GLOBAL_LIST_EMPTY(dialogue_json_cache)

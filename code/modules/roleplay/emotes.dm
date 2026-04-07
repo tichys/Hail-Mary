@@ -1,4 +1,3 @@
-// Extended Emote System for Big Iron: Hail Mary
 // Additional social and roleplay emotes
 
 /mob/verb/extended_emotes()

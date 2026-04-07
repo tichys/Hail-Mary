@@ -1,4 +1,3 @@
-// Level System for Big Iron: Hail Mary
 // XP-based leveling with SPECIAL bonuses and perk point bonuses
 
 #define XP_KILL_RAIDER 10

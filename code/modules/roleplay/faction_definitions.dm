@@ -1,4 +1,3 @@
-// Faction Definitions for Big Iron: Hail Mary
 // Defines all playable factions and their rank structures
 
 GLOBAL_LIST_INIT(factions, init_factions())

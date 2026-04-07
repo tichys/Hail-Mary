@@ -1,4 +1,3 @@
-// Player Shops System for Big Iron: Hail Mary
 // Placeable merchant stands that players can operate
 
 GLOBAL_LIST_EMPTY(player_shops)

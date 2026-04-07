@@ -1,4 +1,3 @@
-// NPC Attitude System for Big Iron: Hail Mary
 // Provides attitude-based effects (shop discounts, dialogue options, etc.)
 
 // Attitude thresholds

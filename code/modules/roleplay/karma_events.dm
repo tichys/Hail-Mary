@@ -1,4 +1,3 @@
-// Karma-Based World Events for Big Iron: Hail Mary
 // Random encounters and effects based on player karma
 
 GLOBAL_VAR_INIT(karma_event_enabled, TRUE)

@@ -1,4 +1,3 @@
-// Faction Reputation System for Big Iron: Hail Mary
 // Tracks player standing with different factions
 // faction_reputation_cache doubles as write-through cache: populated on first DB read,
 // kept in sync on every write, so subsequent reads within a round cost nothing.

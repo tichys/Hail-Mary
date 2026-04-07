@@ -1,4 +1,3 @@
-// Reputation Actions for Big Iron: Hail Mary
 // Comprehensive action triggers and death integration
 
 // Handle death for reputation/karma changes - called from on_player_death

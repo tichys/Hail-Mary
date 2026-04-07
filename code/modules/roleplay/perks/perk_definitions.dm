@@ -1,4 +1,3 @@
-// Perk Definitions for Big Iron: Hail Mary
 // 42 perks across 7 SPECIAL categories
 
 GLOBAL_LIST_EMPTY(perk_datums)

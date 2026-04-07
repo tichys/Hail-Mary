@@ -1,4 +1,3 @@
-// Perk Menu UI for Big Iron: Hail Mary
 
 /client/verb/open_perk_menu()
 	set name = "Perk Menu"

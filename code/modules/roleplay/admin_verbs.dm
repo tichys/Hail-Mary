@@ -1,4 +1,3 @@
-// Roleplay Admin Verbs for Big Iron: Hail Mary
 // Centralized admin controls for karma, reputation, backgrounds, and relationships
 
 // ============ REPUTATION VERBS ============

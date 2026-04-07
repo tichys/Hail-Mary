@@ -1,4 +1,3 @@
-// Roleplay Enhancement Module for Big Iron: Hail Mary
 // This module adds faction reputation, karma, backgrounds, and other RP features
 
 #define ROLEPLAY_MODULE

@@ -1,4 +1,3 @@
-// Character Notebook System for Big Iron: Hail Mary
 // In-game journal for notes and quest tracking
 
 GLOBAL_LIST_INIT(notebooks, list())

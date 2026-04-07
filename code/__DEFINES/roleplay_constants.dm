@@ -1,4 +1,3 @@
-// Roleplay System Constants for Big Iron: Hail Mary
 // Centralizes all magic numbers for consistency and easy tuning
 
 // ============ KARMA SYSTEM ============

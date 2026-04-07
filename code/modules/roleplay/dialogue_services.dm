@@ -1,4 +1,3 @@
-// Dialogue-Based Services for Big Iron: Hail Mary
 // Allows NPCs to offer services (healing, repair, storage, training) via dialogue
 
 GLOBAL_LIST_EMPTY(npc_services_cache)
