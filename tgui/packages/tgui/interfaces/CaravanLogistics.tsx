@@ -134,9 +134,9 @@ export const CaravanLogistics = (props, context) => {
                       <Button
                         content="[CANCEL ESCORT]"
                         color="bad"
-                        onClick={() =>
-                          act('cancel_escort', { caravan_id: caravan.id })
-                        }
+                        onClick={() => act('cancel_escort', {
+                          caravan_id: caravan.id,
+                        })}
                       />
                     )}
                   </Flex.Item>
@@ -190,7 +190,13 @@ export const CaravanLogistics = (props, context) => {
                       Cargo: {caravan.caps_earned} caps,{' '}
                       {caravan.supplies_delivered} supplies
                     </Box>
-                    <Box style={{ color: caravan.integrity < 50 ? '#ff4444' : '#44ff44', marginTop: '5px' }}>
+                    <Box
+                      style={{
+                        color:
+                          caravan.integrity < 50 ? '#ff4444' : '#44ff44',
+                        marginTop: '5px',
+                      }}
+                    >
                       Integrity: {caravan.integrity}/{caravan.max_integrity}
                     </Box>
                   </Flex.Item>
@@ -199,18 +205,18 @@ export const CaravanLogistics = (props, context) => {
                       <Button
                         content="[RECALL]"
                         color="bad"
-                        onClick={() =>
-                          act('recall_caravan', { caravan_id: caravan.id })
-                        }
+                        onClick={() => act('recall_caravan', {
+                          caravan_id: caravan.id,
+                        })}
                       />
                     )}
                     {caravan.status === 'traveling' &&
                       !caravan.guards.includes('current_user') && (
                         <Button
                           content="[JOIN ESCORT]"
-                          onClick={() =>
-                            act('sign_up_escort', { route_id: caravan.route_id })
-                          }
+                          onClick={() => act('sign_up_escort', {
+                            route_id: caravan.route_id,
+                          })}
                         />
                       )}
                   </Flex.Item>
@@ -234,7 +240,7 @@ export const CaravanLogistics = (props, context) => {
                       fontWeight: 'bold',
                     }}
                   >
-                    ⚠ CARAVAN UNDER ATTACK - ASSIST IMMEDIATELY ⚠
+                    CARAVAN UNDER ATTACK - ASSIST IMMEDIATELY
                   </Box>
                 )}
               </Box>

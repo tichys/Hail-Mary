@@ -76,9 +76,12 @@ export const PrisonManagement = (props, context) => {
               <Box>
                 Sentence: {my_status.sentence_minutes} minutes
               </Box>
-              <Box>Time Served: {Math.floor(my_status.time_served)} minutes</Box>
+              <Box>
+                Time Served: {Math.floor(my_status.time_served)} minutes
+              </Box>
               <Box style={{ color: '#ffd700' }}>
-                Time Remaining: {Math.floor(my_status.time_remaining)} minutes
+                Time Remaining:{' '}
+                {Math.floor(my_status.time_remaining)} minutes
               </Box>
               <Box style={{ marginTop: '10px' }}>
                 Escape Attempts: {my_status.escape_attempts}
@@ -92,12 +95,13 @@ export const PrisonManagement = (props, context) => {
                   color="good"
                   onClick={() => act('work_detail')}
                 />
-                {my_status.parole_eligible && !my_status.parole_requested && (
-                  <Button
-                    content="[REQUEST PAROLE]"
-                    onClick={() => act('request_parole')}
-                  />
-                )}
+                {my_status.parole_eligible &&
+                  !my_status.parole_requested && (
+                    <Button
+                      content="[REQUEST PAROLE]"
+                      onClick={() => act('request_parole')}
+                    />
+                  )}
                 {my_status.parole_requested && (
                   <Box style={{ color: '#4cff4c' }}>Parole Requested</Box>
                 )}
@@ -145,12 +149,10 @@ export const PrisonManagement = (props, context) => {
             <Button
               content="[ARREST]"
               color="bad"
-              onClick={() =>
-                act('arrest_player', {
-                  target_ckey: targetCkey,
-                  crime: selectedCrime,
-                })
-              }
+              onClick={() => act('arrest_player', {
+                target_ckey: targetCkey,
+                crime: selectedCrime,
+              })}
             />
           </Section>
         )}
@@ -193,30 +195,24 @@ export const PrisonManagement = (props, context) => {
                         <Button
                           content="[RELEASE]"
                           color="good"
-                          onClick={() =>
-                            act('release_prisoner', {
-                              target_ckey: prisoner.prisoner_ckey,
-                            })
-                          }
+                          onClick={() => act('release_prisoner', {
+                            target_ckey: prisoner.prisoner_ckey,
+                          })}
                         />
                         <Button
                           content="+5 MIN"
-                          onClick={() =>
-                            act('add_time', {
-                              target_ckey: prisoner.prisoner_ckey,
-                              time: 5,
-                            })
-                          }
+                          onClick={() => act('add_time', {
+                            target_ckey: prisoner.prisoner_ckey,
+                            time: 5,
+                          })}
                         />
                         {is_judge && prisoner.parole_eligible && (
                           <Button
                             content="[PAROLE]"
                             color="good"
-                            onClick={() =>
-                              act('offer_parole', {
-                                target_ckey: prisoner.prisoner_ckey,
-                              })
-                            }
+                            onClick={() => act('offer_parole', {
+                              target_ckey: prisoner.prisoner_ckey,
+                            })}
                           />
                         )}
                       </Flex>
@@ -264,9 +260,9 @@ export const PrisonManagement = (props, context) => {
                       <Button
                         content="[TRACK]"
                         color="good"
-                        onClick={() =>
-                          act('track_escapee', { target_ckey: alert.ckey })
-                        }
+                        onClick={() => act('track_escapee', {
+                          target_ckey: alert.ckey,
+                        })}
                       />
                     )}
                   </Flex.Item>

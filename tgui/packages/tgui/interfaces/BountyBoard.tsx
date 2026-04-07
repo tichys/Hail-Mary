@@ -151,7 +151,8 @@ export const BountyBoard = (props, context) => {
               }}
             >
               <Box style={{ color: '#44ff44' }}>
-                You have an active contract. Complete it before accepting another.
+                You have an active contract. Complete it
+                before accepting another.
               </Box>
             </Box>
           )}

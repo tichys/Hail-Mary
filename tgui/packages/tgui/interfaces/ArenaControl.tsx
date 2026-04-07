@@ -195,9 +195,15 @@ export const ArenaControl = (props, context) => {
                 </Button>
               </Flex.Item>
               <Flex.Item ml={2}>
-                <Button onClick={() => setBetAmount(Math.max(10, betAmount - 50))}>-</Button>
+                <Button
+                  onClick={() => setBetAmount(Math.max(10, betAmount - 50))}>
+                  -
+                </Button>
                 <Box as="span" mx={1}>{betAmount} caps</Box>
-                <Button onClick={() => setBetAmount(Math.min(500, betAmount + 50))}>+</Button>
+                <Button
+                  onClick={() => setBetAmount(Math.min(500, betAmount + 50))}>
+                  +
+                </Button>
               </Flex.Item>
               <Flex.Item ml={2}>
                 <Button

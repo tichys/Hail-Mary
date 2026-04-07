@@ -197,7 +197,8 @@ export const EyebotControl = (props, context) => {
                       <Flex.Item>
                         <Box color="silver">{route.name}</Box>
                         <Box color="grey" fontSize="12px">
-                          {route.waypoints_count} waypoints | Loop: {route.loop_mode}
+                          {route.waypoints_count} waypoints |
+                          Loop: {route.loop_mode}
                         </Box>
                       </Flex.Item>
                     </Flex>

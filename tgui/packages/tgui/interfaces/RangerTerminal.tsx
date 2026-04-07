@@ -48,7 +48,12 @@ const difficultyStars = (level: number): string => {
 
 export const RangerTerminal = (props, context) => {
   const { act, data } = useBackend<RangerTerminalData>(context);
-  const { progression, ncr_reputation, can_advance, available_missions = [] } = data;
+  const {
+    progression,
+    ncr_reputation,
+    can_advance,
+    available_missions = [],
+  } = data;
 
   const nextTier = tierReqs.find((t) => t.tier === progression.ranger_tier + 1);
 
@@ -67,12 +72,17 @@ export const RangerTerminal = (props, context) => {
                 {progression.tier_name}
               </Box>
               <Box style={{ color: '#b8d4f0', marginTop: '5px' }}>
-                Missions: {progression.successful_missions}/{progression.total_missions} successful
+                Missions: {progression.successful_missions}/
+                {progression.total_missions} successful
               </Box>
             </Flex.Item>
             <Flex.Item>
               {can_advance && (
-                <Button content="[ADVANCE TIER]" color="good" onClick={() => act('advance_tier')} />
+                <Button
+                  content="[ADVANCE TIER]"
+                  color="good"
+                  onClick={() => act('advance_tier')}
+                />
               )}
             </Flex.Item>
           </Flex>

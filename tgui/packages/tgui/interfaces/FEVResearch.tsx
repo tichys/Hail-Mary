@@ -153,95 +153,110 @@ export const FEVResearch = (props, context) => {
           {tab === 1 && (
             <>
               <NoticeBox warning>
-                PROJECT EFFECTS ARE CLASSIFIED. Testing required to discover
-                outcomes. Risk levels are estimates only.
+                PROJECT EFFECTS ARE CLASSIFIED. Testing required to
+                discover outcomes. Risk levels are estimates only.
               </NoticeBox>
 
-              {Object.entries(projectsByCategory).map(([category, catProjects]) => (
-                <Section
-                  key={category}
-                  title={`> ${categoryLabels[category] || category} PROJECTS`}
-                >
-                  <Stack vertical>
-                    {catProjects.map((project) => (
-                      <Box
-                        key={project.id}
-                        p={1}
-                        backgroundColor="rgba(30,50,30,0.5)"
-                        style={{
-                          borderLeft: `3px solid ${
-                            categoryColors[category] || '#888'
-                          }`,
-                        }}
-                      >
-                        <Flex justify="space-between" align="flex-start">
-                          <Flex.Item grow={1}>
-                            <Flex align="center" gap={1}>
-                              <Box
-                                color={project.unlocked ? '#4cff4c' : '#d0d0d0'}
-                                bold
-                              >
-                                {project.name}
-                              </Box>
-                              {project.unlocked && project.tests_successful > 0 && (
-                                <Box color="#888" fontSize="11px">
-                                  [Tests: {project.tests_successful}]
+              {Object.entries(projectsByCategory).map(
+                ([category, catProjects]) => (
+                  <Section
+                    key={category}
+                    title={`> ${
+                      categoryLabels[category] || category
+                    } PROJECTS`}
+                  >
+                    <Stack vertical>
+                      {catProjects.map((project) => (
+                        <Box
+                          key={project.id}
+                          p={1}
+                          backgroundColor="rgba(30,50,30,0.5)"
+                          style={{
+                            borderLeft: `3px solid ${
+                              categoryColors[category] || '#888'
+                            }`,
+                          }}
+                        >
+                          <Flex
+                            justify="space-between"
+                            align="flex-start"
+                          >
+                            <Flex.Item grow={1}>
+                              <Flex align="center" gap={1}>
+                                <Box
+                                  color={
+                                    project.unlocked
+                                      ? '#4cff4c'
+                                      : '#d0d0d0'
+                                  }
+                                  bold
+                                >
+                                  {project.name}
                                 </Box>
-                              )}
-                            </Flex>
-                            <Box color="grey" fontSize="12px">
-                              {project.discovered_effects}
-                            </Box>
-                            <Box fontSize="12px">Cost: {project.cost} RP</Box>
-                          </Flex.Item>
-                          <Flex.Item>
-                            {!project.unlocked && (
-                              <Button
-                                disabled={
-                                  (research_points || 0) < (project.cost || 0)
-                                }
-                                onClick={() =>
-                                  act('unlock_project', {
-                                    project_id: project.id,
-                                  })
-                                }
-                              >
-                                Unlock
-                              </Button>
-                            )}
-                            {project.unlocked && (
-                              <Flex gap={1}>
+                                {project.unlocked &&
+                                  project.tests_successful > 0 && (
+                                    <Box color="#888" fontSize="11px">
+                                      [Tests: {project.tests_successful}]
+                                    </Box>
+                                  )}
+                              </Flex>
+                              <Box color="grey" fontSize="12px">
+                                {project.discovered_effects}
+                              </Box>
+                              <Box fontSize="12px">
+                                Cost: {project.cost} RP
+                              </Box>
+                            </Flex.Item>
+                            <Flex.Item>
+                              {!project.unlocked && (
                                 <Button
-                                  color="bad"
+                                  disabled={
+                                    (research_points || 0) <
+                                    (project.cost || 0)
+                                  }
                                   onClick={() =>
-                                    act('test_project', {
+                                    act('unlock_project', {
                                       project_id: project.id,
                                     })
                                   }
                                 >
-                                  Test on Self
+                                  Unlock
                                 </Button>
-                                {project.discovered_effects !==
-                                  'Not yet tested' && (
+                              )}
+                              {project.unlocked && (
+                                <Flex gap={1}>
                                   <Button
+                                    color="bad"
                                     onClick={() =>
-                                      act('extract_genetic_data', {
+                                      act('test_project', {
                                         project_id: project.id,
                                       })
                                     }
                                   >
-                                    Extract Data
+                                    Test on Self
                                   </Button>
-                                )}
-                              </Flex>
-                            )}
-                          </Flex.Item>
-                        </Flex>
-                      </Box>
-                    ))}
-                  </Stack>
-                </Section>
-              ))}
+                                  {project.discovered_effects !==
+                                    'Not yet tested' && (
+                                    <Button
+                                      onClick={() =>
+                                        act('extract_genetic_data', {
+                                          project_id: project.id,
+                                        })
+                                      }
+                                    >
+                                      Extract Data
+                                    </Button>
+                                  )}
+                                </Flex>
+                              )}
+                            </Flex.Item>
+                          </Flex>
+                        </Box>
+                      ))}
+                    </Stack>
+                  </Section>
+                )
+              )}
             </>
           )}
 
@@ -275,8 +290,8 @@ export const FEVResearch = (props, context) => {
 
               <Section title="> AVAILABLE STRAINS">
                 <NoticeBox info>
-                  Each strain has different effect biases and success modifiers.
-                  Higher stability = more predictable results.
+                  Each strain has different effect biases and success
+                  modifiers. Higher stability = more predictable results.
                 </NoticeBox>
                 <Table>
                   <Table.Row header>
@@ -319,7 +334,9 @@ export const FEVResearch = (props, context) => {
                         <Table.Cell>
                           <Box
                             color={
-                              (strain.success_mod || 0) >= 0 ? 'good' : 'bad'
+                              (strain.success_mod || 0) >= 0
+                                ? 'good'
+                                : 'bad'
                             }
                           >
                             {(strain.success_mod || 0) >= 0 ? '+' : ''}
@@ -329,10 +346,14 @@ export const FEVResearch = (props, context) => {
                         <Table.Cell>
                           <Box
                             color={
-                              (strain.magnitude_mod || 0) >= 0 ? 'good' : 'bad'
+                              (strain.magnitude_mod || 0) >= 0
+                                ? 'good'
+                                : 'bad'
                             }
                           >
-                            {(strain.magnitude_mod || 0) >= 0 ? '+' : ''}
+                            {(strain.magnitude_mod || 0) >= 0
+                              ? '+'
+                              : ''}
                             {strain.magnitude_mod}
                           </Box>
                         </Table.Cell>
@@ -351,7 +372,9 @@ export const FEVResearch = (props, context) => {
                             disabled={!canSynth}
                             color={canSynth ? 'good' : undefined}
                             onClick={() =>
-                              act('synthesize_strain', { strain_type: strain.id })
+                              act('synthesize_strain', {
+                                strain_type: strain.id,
+                              })
                             }
                           >
                             Synthesize
@@ -370,36 +393,34 @@ export const FEVResearch = (props, context) => {
                   {max_custom_strains} custom strains.
                 </NoticeBox>
                 <Flex gap={1} wrap>
-                  {['physical', 'sensory', 'mental', 'resistance', 'healing'].map(
-                    (cat) => (
-                      <Flex.Item key={cat}>
-                        <Box color={categoryColors[cat]} fontSize="12px">
-                          {categoryLabels[cat]} Priority
-                        </Box>
-                        <Button
-                          onClick={() =>
-                            act('set_priority', { cat, val: 1 })
-                          }
-                        >
-                          Low
-                        </Button>
-                        <Button
-                          onClick={() =>
-                            act('set_priority', { cat, val: 2 })
-                          }
-                        >
-                          Med
-                        </Button>
-                        <Button
-                          onClick={() =>
-                            act('set_priority', { cat, val: 4 })
-                          }
-                        >
-                          High
-                        </Button>
-                      </Flex.Item>
-                    )
-                  )}
+                  {[
+                    'physical',
+                    'sensory',
+                    'mental',
+                    'resistance',
+                    'healing',
+                  ].map((cat) => (
+                    <Flex.Item key={cat}>
+                      <Box color={categoryColors[cat]} fontSize="12px">
+                        {categoryLabels[cat]} Priority
+                      </Box>
+                      <Button
+                        onClick={() => act('set_priority', { cat, val: 1 })}
+                      >
+                        Low
+                      </Button>
+                      <Button
+                        onClick={() => act('set_priority', { cat, val: 2 })}
+                      >
+                        Med
+                      </Button>
+                      <Button
+                        onClick={() => act('set_priority', { cat, val: 4 })}
+                      >
+                        High
+                      </Button>
+                    </Flex.Item>
+                  ))}
                 </Flex>
                 <Box mt={1}>
                   <Button
@@ -420,13 +441,14 @@ export const FEVResearch = (props, context) => {
               <Section title="> TEST SUBJECTS">
                 {test_subjects.length === 0 ? (
                   <Box color="grey">
-                    No test subjects available. Drag a restrained human to the
-                    terminal to add.
+                    No test subjects available. Drag a restrained human
+                    to the terminal to add.
                   </Box>
                 ) : (
                   <>
                     <NoticeBox warning>
-                      Test subjects are consumed in research. Karma penalty: -30
+                      Test subjects are consumed in research. Karma
+                      penalty: -30
                     </NoticeBox>
                     <Table>
                       <Table.Row header>
@@ -440,7 +462,9 @@ export const FEVResearch = (props, context) => {
                             <Button
                               color="bad"
                               onClick={() =>
-                                act('consume_subject', { ckey: subject.ckey })
+                                act('consume_subject', {
+                                  ckey: subject.ckey,
+                                })
                               }
                             >
                               Use for Research
@@ -456,14 +480,16 @@ export const FEVResearch = (props, context) => {
               {can_create_weapons && (
                 <Section title="> FEV WEAPONS">
                   <NoticeBox warning>
-                    FEV weapons cause genetic damage. Karma penalty: -15 per
-                    item.
+                    FEV weapons cause genetic damage. Karma penalty:
+                    -15 per item.
                   </NoticeBox>
                   <Flex gap={1} wrap>
                     <Button
                       color="bad"
                       onClick={() =>
-                        act('create_weapon', { weapon_type: 'fev_grenade' })
+                        act('create_weapon', {
+                          weapon_type: 'fev_grenade',
+                        })
                       }
                     >
                       Synthesize FEV Grenade
@@ -493,8 +519,8 @@ export const FEVResearch = (props, context) => {
           <NoticeBox info>
             <Box bold>Important Notes:</Box>
             <Box>
-              - Project effects are RANDOMIZED each round - no two tests are
-              guaranteed the same
+              - Project effects are RANDOMIZED each round - no two tests
+              are guaranteed the same
             </Box>
             <Box>
               - Strain stability affects predictability - higher is better

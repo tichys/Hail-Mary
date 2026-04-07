@@ -140,7 +140,8 @@ export const SlaveManagement = (props, context) => {
                   <Flex.Item grow>
                     <Box color="red">{slave.slave_name}</Box>
                     <Box color="grey" fontSize="12px">
-                      Type: {slave.slave_type.toUpperCase()} | Owner: {slave.owner_name}
+                      Type: {slave.slave_type.toUpperCase()} |
+                      Owner: {slave.owner_name}
                     </Box>
                     <Box color={obedienceColor(slave.obedience)} fontSize="12px">
                       Obedience: {slave.obedience}%
