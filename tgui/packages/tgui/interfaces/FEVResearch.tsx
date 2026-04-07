@@ -1,5 +1,4 @@
-import * as React from 'react';
-import { useBackend } from '../backend';
+import { useBackend, useLocalState } from '../backend';
 import {
   Button,
   Section,
@@ -96,7 +95,7 @@ export const FEVResearch = (props, context) => {
     max_custom_strains = 5,
   } = data;
 
-  const [tab, setTab] = React.useState(1);
+  const [tab, setTab] = useLocalState(context, 'fev-tab', 1);
 
   const projectsByCategory = projects.reduce(
     (acc, project) => {
