@@ -10,6 +10,37 @@
 #define FEV_MUT_SIZE 5
 #define FEV_MUT_EYES 6
 
+// SPECIAL stat defines for FEV system
+#define STAT_STR "strength"
+#define STAT_END "endurance"
+#define STAT_PER "perception"
+#define STAT_INT "intelligence"
+#define STAT_AGI "agility"
+
+// Custom traits for FEV effects
+#define TRAIT_FEV_PAIN_RESIST "fev_pain_resist"
+#define TRAIT_FEV_GOOD_HEARING "fev_good_hearing"
+#define TRAIT_FEV_SECURITY_HUD "fev_security_hud"
+#define TRAIT_FEV_PHOTOSHOT "fev_photoshot"
+
+// ============ FEV HELPER PROCS ============
+
+/proc/fev_change_stat(mob/living/carbon/human/target, stat_type, amount)
+	if(!target || !istype(target))
+		return FALSE
+	switch(stat_type)
+		if(STAT_STR)
+			target.special_s = clamp(target.special_s + amount, SPECIAL_MIN_ATTR_VALUE, SPECIAL_MAX_ATTR_VALUE)
+		if(STAT_END)
+			target.special_e = clamp(target.special_e + amount, SPECIAL_MIN_ATTR_VALUE, SPECIAL_MAX_ATTR_VALUE)
+		if(STAT_PER)
+			target.special_p = clamp(target.special_p + amount, SPECIAL_MIN_ATTR_VALUE, SPECIAL_MAX_ATTR_VALUE)
+		if(STAT_INT)
+			target.special_i = clamp(target.special_i + amount, SPECIAL_MIN_ATTR_VALUE, SPECIAL_MAX_ATTR_VALUE)
+		if(STAT_AGI)
+			target.special_a = clamp(target.special_a + amount, SPECIAL_MIN_ATTR_VALUE, SPECIAL_MAX_ATTR_VALUE)
+	return TRUE
+
 // ============ FEV RESEARCH MANAGER ============
 
 /datum/enclave_fev_research
@@ -62,7 +93,7 @@
 		return list("success" = FALSE, "effect" = "error")
 
 	var/list/outcome = list()
-	var/seed = project.internal_seed + round_seed + (subject ? subject.ckey.len : 0) + world.time
+	var/seed = project.internal_seed + round_seed + (subject ? length(subject.ckey) : 0) + world.time
 	var/rng = rustg_hash_string(RUSTG_HASH_MD5, "[seed]")
 
 	var/success_roll = text2num(copytext(rng, 1, 3), 16)
@@ -72,7 +103,7 @@
 
 	var/base_success = 65
 	if(subject)
-		if(subject.get_species() == "Ghoul")
+		if(subject.dna?.species?.id == "ghoul")
 			base_success -= 20
 		if(subject.radiation > 50)
 			base_success -= 10
@@ -114,7 +145,7 @@
 
 	if(effect_type == "super_mutant")
 		magnitude = 1
-		if(subject && subject.get_species() == "Ghoul")
+		if(subject && subject.dna?.species?.id == "ghoul")
 			outcome["success"] = FALSE
 			outcome["failure_type"] = "critical_failure"
 			return outcome
@@ -150,40 +181,40 @@
 
 	switch(effect_type)
 		if("strength")
-			target.change_stat(STAT_STR, magnitude)
+			fev_change_stat(target, STAT_STR, magnitude)
 		if("endurance")
-			target.change_stat(STAT_END, magnitude)
+			fev_change_stat(target, STAT_END, magnitude)
 		if("speed")
 			var/speed_bonus = 0.1 * magnitude
 			target.add_or_update_variable_movespeed_modifier(/datum/movespeed_modifier/enclave_fev, multiplicative_slowdown = -speed_bonus)
 		if("melee_armor")
 			target.physiology.armor.melee += (5 * magnitude)
 		if("pain_resist")
-			ADD_TRAIT(target, TRAIT_PAIN_RESIST_SUPER, "fev_[effect_type]")
+			ADD_TRAIT(target, TRAIT_FEV_PAIN_RESIST, "fev_[effect_type]")
 		if("size")
 			target.resize = min(1.5, target.resize + (0.1 * magnitude))
 			target.update_transform()
 		if("perception")
-			target.change_stat(STAT_PER, magnitude)
+			fev_change_stat(target, STAT_PER, magnitude)
 		if("night_vision")
 			target.see_invisible = SEE_INVISIBLE_MINIMUM
 			if(magnitude >= 2)
 				target.sight |= (SEE_MOBS | SEE_OBJS)
 		if("hearing")
-			ADD_TRAIT(target, TRAIT_GOOD_HEARING, "fev_[effect_type]")
+			ADD_TRAIT(target, TRAIT_FEV_GOOD_HEARING, "fev_[effect_type]")
 		if("awareness")
-			ADD_TRAIT(target, TRAIT_SECURITY_HUD, "fev_[effect_type]")
+			ADD_TRAIT(target, TRAIT_FEV_SECURITY_HUD, "fev_[effect_type]")
 		if("intelligence")
-			target.change_stat(STAT_INT, magnitude)
+			fev_change_stat(target, STAT_INT, magnitude)
 		if("willpower")
 			ADD_TRAIT(target, TRAIT_FEARLESS, "fev_[effect_type]")
 		if("memory")
 		if("focus")
-			ADD_TRAIT(target, TRAIT_PHOTOSHOT, "fev_[effect_type]")
+			ADD_TRAIT(target, TRAIT_FEV_PHOTOSHOT, "fev_[effect_type]")
 		if("rad_immune")
 			ADD_TRAIT(target, TRAIT_RADIMMUNE, "fev_[effect_type]")
 		if("toxin_immune")
-			ADD_TRAIT(target, TRAIT_TOXIMMUNE, "fev_[effect_type]")
+			ADD_TRAIT(target, TRAIT_TOXINIMMUNE, "fev_[effect_type]")
 		if("thermal_resist")
 			target.physiology.heat_mod *= (1 - (0.15 * magnitude))
 			target.physiology.cold_mod *= (1 - (0.15 * magnitude))
@@ -198,8 +229,8 @@
 		if("super_mutant")
 			return transform_to_super_mutant(target)
 		if("enhanced_mutant")
-			target.change_stat(STAT_STR, 2)
-			target.change_stat(STAT_END, 2)
+			fev_change_stat(target, STAT_STR, 2)
+			fev_change_stat(target, STAT_END, 2)
 			ADD_TRAIT(target, TRAIT_RADIMMUNE, "fev_[effect_type]")
 
 	if(outcome["visual"])
@@ -253,7 +284,7 @@
 		if("stat_loss")
 			var/list/stats = list(STAT_STR, STAT_END, STAT_PER, STAT_INT)
 			var/lost_stat = pick(stats)
-			target.change_stat(lost_stat, -severity)
+			fev_change_stat(target, lost_stat, -severity)
 			to_chat(target, span_warning("Genetic degradation: -[severity] [lost_stat]"))
 		if("mutation")
 			apply_visual_mutation(target, pick(FEV_MUT_SKIN_GREEN, FEV_MUT_SKIN_YELLOW, FEV_MUT_SKIN_BLUE))
@@ -266,11 +297,11 @@
 			if(severity >= 3 && prob(40))
 				target.gib()
 				to_chat(target, span_userdanger("Catastrophic genetic failure!"))
-			else
-				target.adjustBruteLoss(50)
-				target.adjustToxLoss(50)
-				target.change_stat(STAT_INT, -2)
-				to_chat(target, span_userdanger("Severe genetic destabilization!"))
+		else
+			target.adjustBruteLoss(50)
+			target.adjustToxLoss(50)
+			fev_change_stat(target, STAT_INT, -2)
+			to_chat(target, span_userdanger("Severe genetic destabilization!"))
 
 	return FALSE
 
@@ -278,16 +309,16 @@
 	if(!target || !istype(target))
 		return FALSE
 
-	if(target.get_species() == "Super Mutant")
+	if(target.dna?.species?.id == "smutant")
 		to_chat(target, span_warning("Already a Super Mutant."))
 		return FALSE
 
-	var/seed = round_seed + target.ckey.len + world.time
+	var/seed = round_seed + length(target.ckey) + world.time
 	var/rng = rustg_hash_string(RUSTG_HASH_MD5, "[seed]")
 	var/survive_roll = text2num(copytext(rng, 1, 3), 16)
 
 	var/survival_chance = 50
-	if(target.get_species() == "Ghoul")
+	if(target.dna?.species?.id == "ghoul")
 		survival_chance = 20
 	if(target.radiation > 100)
 		survival_chance += 10
@@ -309,7 +340,7 @@
 
 	target.set_species(/datum/species/smutant)
 
-	var/seed = round_seed + target.ckey.len
+	var/seed = round_seed + length(target.ckey)
 	var/rng = rustg_hash_string(RUSTG_HASH_MD5, "[seed]")
 	var/stat_roll = text2num(copytext(rng, 1, 2), 16)
 
@@ -317,17 +348,17 @@
 	var/end_gain = 3 + ((stat_roll + 1) % 3)
 	var/int_loss = 3 + ((stat_roll + 2) % 3)
 
-	target.change_stat(STAT_STR, str_gain)
-	target.change_stat(STAT_END, end_gain)
-	target.change_stat(STAT_INT, -int_loss)
-	target.change_stat(STAT_AGI, -2)
+	fev_change_stat(target, STAT_STR, str_gain)
+	fev_change_stat(target, STAT_END, end_gain)
+	fev_change_stat(target, STAT_INT, -int_loss)
+	fev_change_stat(target, STAT_AGI, -2)
 
 	target.skin_tone = "green1"
 	target.dna.update_ui_block(DNA_SKIN_TONE_BLOCK)
 	target.update_body()
 
 	ADD_TRAIT(target, TRAIT_RADIMMUNE, "super_mutant")
-	ADD_TRAIT(target, TRAIT_TOXIMMUNE, "super_mutant")
+	ADD_TRAIT(target, TRAIT_TOXINIMMUNE, "super_mutant")
 
 	to_chat(target, span_notice("Transformation complete."))
 	message_admins("[key_name(target)] transformed to Super Mutant via FEV.")
@@ -358,7 +389,7 @@
 	if(!target || !istype(target))
 		return FALSE
 
-	if(target.get_species() == "Super Mutant")
+	if(target.dna?.species?.id == "smutant")
 		to_chat(target, span_warning("Super Mutants cannot be tested further."))
 		return FALSE
 
@@ -399,15 +430,17 @@
 		if(FEV_MUT_SKIN_BLUE)
 			target.skin_tone = "blue1"
 		if(FEV_MUT_GLOW)
-			target.AddElement(/datum/element/glow, GLOW_COLOR_GREEN, GLOW_RADIUS_MEDIUM)
+			target.set_light(3, 2, "#00ff00")
 		if(FEV_MUT_SIZE)
 			target.resize = min(1.5, target.resize + 0.1)
 			target.update_transform()
 		if(FEV_MUT_EYES)
-			target.eye_color = "0f0"
+			target.left_eye_color = "0f0"
+			target.right_eye_color = "0f0"
 
 	target.dna.update_ui_block(DNA_SKIN_TONE_BLOCK)
-	target.dna.update_ui_block(DNA_EYE_COLOR_BLOCK)
+	target.dna.update_ui_block(DNA_LEFT_EYE_COLOR_BLOCK)
+	target.dna.update_ui_block(DNA_RIGHT_EYE_COLOR_BLOCK)
 	target.update_body()
 
 /datum/enclave_fev_research/proc/get_project_by_id(project_id)
@@ -612,12 +645,12 @@
 /obj/machinery/fev_vat
 	name = "FEV Vat"
 	desc = "Contains Forced Evolutionary Virus. Results are unpredictable."
-	icon = 'icons/obj/machines/fabricators.dmi'
-	icon_state = "vat"
+	icon = 'icons/obj/computer.dmi'
+	icon_state = "dna"
 	density = TRUE
 	anchored = TRUE
 	var/processing = FALSE
-	var/mob/living/carbon/human/occupant = null
+	var/mob/living/carbon/human/vat_occupant = null
 
 /obj/machinery/fev_vat/relaymove(mob/user)
 	return
@@ -626,19 +659,18 @@
 	if(processing)
 		to_chat(user, span_warning("Currently processing."))
 		return
-	if(occupant)
-		occupant.forceMove(get_turf(src))
-		occupant = null
+	if(vat_occupant)
+		vat_occupant.forceMove(get_turf(src))
+		vat_occupant = null
 	else
 		to_chat(user, span_notice("Empty."))
 
 /obj/machinery/fev_vat/attackby(obj/item/I, mob/user, params)
-	if(istype(I, /obj/item/grab))
-		var/obj/item/grab/G = I
-		if(ishuman(G.affecting))
-			var/mob/living/carbon/human/H = G.affecting
+	if(iscarbon(user.pulling) && user.Adjacent(user.pulling))
+		var/mob/living/carbon/human/H = user.pulling
+		if(istype(H))
 			H.forceMove(src)
-			occupant = H
+			vat_occupant = H
 			to_chat(user, span_notice("[H] placed in vat."))
 			return TRUE
 	return ..()
@@ -651,7 +683,6 @@
 	icon = 'icons/obj/grenade.dmi'
 	icon_state = "fev_grenade"
 	w_class = WEIGHT_CLASS_SMALL
-	detonator = /obj/item/assembly/timer
 
 /obj/item/grenade/fev_grenade/prime()
 	var/turf/T = get_turf(src)
@@ -669,21 +700,20 @@
 	name = "FEV Dart"
 	desc = "Unstable FEV compound."
 	icon_state = "dart"
-	projectile_type = /obj/projectile/bullet/dart/fev
+	projectile_type = /obj/item/projectile/bullet/dart/fev
 	caliber = "dart"
 
-/obj/projectile/bullet/dart/fev
+/obj/item/projectile/bullet/dart/fev
 	name = "FEV dart"
-	damage = 10
-	damage_type = TOX
+	piercing = TRUE
 
-/obj/projectile/bullet/dart/fev/on_hit(atom/target, blocked)
+/obj/item/projectile/bullet/dart/fev/on_hit(atom/target, blocked = FALSE, skip = FALSE)
+	. = ..(target, blocked, TRUE)
 	if(ishuman(target))
 		var/mob/living/carbon/human/H = target
 		H.adjustToxLoss(20 + rand(0, 15))
 		if(prob(30))
 			GLOB.enclave_fev_research.apply_visual_mutation(H, pick(FEV_MUT_SKIN_GREEN, FEV_MUT_SKIN_YELLOW))
-	return ..()
 
 /obj/item/reagent_containers/glass/bottle/fev_extract
 	name = "FEV Extract"
@@ -706,11 +736,23 @@
 	if(prob(4))
 		var/effect = pick("str", "end", "int")
 		if(effect == "str")
-			M.change_stat(STAT_STR, prob(50) ? 1 : -1)
+			if(ishuman(M))
+				var/mob/living/carbon/human/H = M
+				fev_change_stat(H, STAT_STR, prob(50) ? 1 : -1)
 		if(effect == "end")
-			M.change_stat(STAT_END, prob(50) ? 1 : -1)
+			if(ishuman(M))
+				var/mob/living/carbon/human/H = M
+				fev_change_stat(H, STAT_END, prob(50) ? 1 : -1)
 		if(effect == "int")
-			M.change_stat(STAT_INT, -1)
+			if(ishuman(M))
+				var/mob/living/carbon/human/H = M
+				fev_change_stat(H, STAT_INT, -1)
 	if(prob(2) && ishuman(M))
-		GLOB.enclave_fev_research.apply_visual_mutation(M, pick(FEV_MUT_SKIN_GREEN, FEV_MUT_SKIN_YELLOW, FEV_MUT_GLOW))
+		var/mob/living/carbon/human/H = M
+		GLOB.enclave_fev_research.apply_visual_mutation(H, pick(FEV_MUT_SKIN_GREEN, FEV_MUT_SKIN_YELLOW, FEV_MUT_GLOW))
 	return ..()
+
+// ============ MOVESPEED MODIFIER ============
+
+/datum/movespeed_modifier/enclave_fev
+	multiplicative_slowdown = 0

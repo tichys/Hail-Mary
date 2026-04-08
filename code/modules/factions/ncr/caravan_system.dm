@@ -326,8 +326,8 @@ GLOBAL_LIST_EMPTY(ncr_routes)
 /obj/effect/caravan_waypoint
 	name = "caravan waypoint"
 	desc = "A waypoint for NCR caravan routes."
-	icon = 'icons/obj/markers.dmi'
-	icon_state = "caravan_waypoint"
+	icon = 'icons/obj/computer.dmi'
+	icon_state = "station_marker"
 	invisibility = INVISIBILITY_ABSTRACT
 	anchored = TRUE
 	layer = POINT_LAYER
@@ -409,8 +409,8 @@ GLOBAL_LIST_EMPTY(ncr_routes)
 /obj/vehicle/caravan
 	name = "NCR Supply Caravan"
 	desc = "A pack brahmin carrying NCR supplies. Protect it from raiders!"
-	icon = 'icons/fallout/mobs/brahmin.dmi'
-	icon_state = "brahmin"
+	icon = 'icons/obj/computer.dmi'
+	icon_state = "oldpack"
 	max_integrity = 200
 	armor = list("melee" = 20, "bullet" = 20, "laser" = 10, "energy" = 10, "bomb" = 10, "bio" = 0, "rad" = 0, "fire" = 50, "acid" = 50)
 	density = TRUE
@@ -551,7 +551,7 @@ GLOBAL_LIST_EMPTY(ncr_routes)
 /obj/vehicle/caravan/proc/spawn_ambushers(count)
 	var/list/spawn_turfs = list()
 	for(var/turf/T in range(7, src))
-		if(!T.density && !T.is_blocked_turf())
+		if(!T.density && !is_blocked_turf(T))
 			spawn_turfs += T
 
 	if(!spawn_turfs.len)
@@ -564,17 +564,16 @@ GLOBAL_LIST_EMPTY(ncr_routes)
 		var/mob/living/carbon/human/ambusher
 		if(prob(60))
 			ambusher = new /mob/living/carbon/human(spawn_loc)
-			ambusher.randomize_human_appearance()
-			ambusher.equip_to_slot_or_del(new /obj/item/clothing/under/f13/raider(straight = TRUE), SLOT_W_UNIFORM)
-			ambusher.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/f13/raider/iconic, SLOT_WEAR_SUIT)
+			randomize_human(ambusher)
+			ambusher.equip_to_slot_or_del(new /obj/item/clothing/under/f13/raider_leather, SLOT_W_UNIFORM)
 			ambusher.equip_to_slot_or_del(new /obj/item/gun/ballistic/automatic/pistol/n99, SLOT_BELT)
-			ambusher.equip_to_slot_or_del(new /obj/item/ammo_box/magazine/m11mm(straight = TRUE), SLOT_R_HAND)
+			ambusher.put_in_hands(new /obj/item/ammo_box/magazine/m10mm)
 		else
 			ambusher = new /mob/living/carbon/human(spawn_loc)
-			ambusher.randomize_human_appearance()
-			ambusher.equip_to_slot_or_del(new /obj/item/clothing/under/f13/legion(straight = TRUE), SLOT_W_UNIFORM)
-			ambusher.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/f13/legion/vet_armor, SLOT_WEAR_SUIT)
-			ambusher.equip_to_slot_or_del(new /obj/item/melee/onehanded/machete/launcher, SLOT_BELT)
+			randomize_human(ambusher)
+			ambusher.equip_to_slot_or_del(new /obj/item/clothing/under/f13/legskirt, SLOT_W_UNIFORM)
+			ambusher.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/legion/recruit, SLOT_WEAR_SUIT)
+			ambusher.equip_to_slot_or_del(new /obj/item/melee/onehanded/machete, SLOT_BELT)
 
 		ambusher.faction = list("raider")
 

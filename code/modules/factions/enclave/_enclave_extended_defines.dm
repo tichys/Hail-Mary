@@ -70,7 +70,6 @@
 
 // Global Registries
 GLOBAL_DATUM_INIT(enclave_covert_ops, /datum/enclave_covert_ops, new())
-GLOBAL_DATUM_INIT(enclave_fev_research, /datum/enclave_fev_research, new())
 GLOBAL_DATUM_INIT(enclave_propaganda, /datum/enclave_propaganda, new())
 GLOBAL_DATUM_INIT(enclave_soldier_progression, /datum/enclave_soldier_progression_manager, new())
 GLOBAL_DATUM_INIT(enclave_secret_base, /datum/enclave_secret_base, new())

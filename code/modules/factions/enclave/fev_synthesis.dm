@@ -341,8 +341,8 @@
 /obj/machinery/fev_processor
 	name = "FEV Processor"
 	desc = "Processes biological materials into FEV synthesis components."
-	icon = 'icons/obj/machines/fabricators.dmi'
-	icon_state = "processor"
+	icon = 'icons/obj/computer.dmi'
+	icon_state = "dna"
 	density = TRUE
 	anchored = TRUE
 	var/processing = FALSE
@@ -358,14 +358,12 @@
 		return TRUE
 	
 	if(istype(I, /obj/item/organ))
-		var/obj/item/organ/O = I
 		queued_materials["biological_matter"] = (queued_materials["biological_matter"] || 0) + 10
 		qdel(I)
 		to_chat(user, span_notice("Organ processed for biological matter."))
 		return TRUE
 	
 	if(istype(I, /obj/item/reagent_containers/blood))
-		var/obj/item/reagent_containers/blood/B = I
 		queued_materials["biological_matter"] = (queued_materials["biological_matter"] || 0) + 5
 		queued_materials["genetic_data"] = (queued_materials["genetic_data"] || 0) + 5
 		qdel(I)
@@ -416,7 +414,7 @@
 
 /datum/enclave_fev_research/proc/generate_strain_outcome(obj/item/fev_vial/vial, mob/living/carbon/human/subject)
 	var/list/outcome = list()
-	var/seed = round_seed + vial.stability + (subject ? subject.ckey.len : 0) + world.time
+	var/seed = round_seed + vial.stability + (subject ? length(subject.ckey) : 0) + world.time
 	var/rng = rustg_hash_string(RUSTG_HASH_MD5, "[seed]")
 	
 	var/success_roll = text2num(copytext(rng, 1, 3), 16)
@@ -427,7 +425,7 @@
 	var/base_success = 65 + vial.success_modifier + round((vial.stability - 50) / 5)
 	
 	if(subject)
-		if(subject.get_species() == "Ghoul")
+		if(subject.dna?.species?.id == "ghoul")
 			base_success -= 20
 		if(subject.radiation > 50)
 			base_success -= 10
@@ -474,7 +472,7 @@
 	
 	if(effect_type == "super_mutant")
 		magnitude = 1
-		if(subject && subject.get_species() == "Ghoul")
+		if(subject && subject.dna?.species?.id == "ghoul")
 			outcome["success"] = FALSE
 			outcome["failure_type"] = "critical_failure"
 			return outcome
@@ -495,7 +493,7 @@
 	switch(action)
 		if("synthesize_strain")
 			var/strain_type = params["strain_type"]
-			if(synthesize_strain(strain_type, usr))
+			if(GLOB.enclave_fev_research.synthesize_strain(strain_type, usr))
 				to_chat(usr, span_notice("Strain synthesized successfully."))
 			else
 				to_chat(usr, span_warning("Cannot synthesize - insufficient materials."))
@@ -510,7 +508,7 @@
 				"resistance" = text2num(params["resistance"]) || 1,
 				"healing" = text2num(params["healing"]) || 1,
 			)
-			if(create_custom_strain(strain_name, priorities, usr))
+			if(GLOB.enclave_fev_research.create_custom_strain(strain_name, priorities, usr))
 				to_chat(usr, span_notice("Custom strain created: [strain_name]"))
 			else
 				to_chat(usr, span_warning("Cannot create more custom strains."))
@@ -518,9 +516,9 @@
 		
 		if("extract_genetic_data")
 			var/project_id = params["project_id"]
-			var/datum/fev_project/project = get_project_by_id(project_id)
+			var/datum/fev_project/project = GLOB.enclave_fev_research.get_project_by_id(project_id)
 			if(project && project.discovered_effects.len > 0)
-				add_synthesis_material("genetic_data", project.discovered_effects.len * 10)
+				GLOB.enclave_fev_research.add_synthesis_material("genetic_data", project.discovered_effects.len * 10)
 				project.discovered_effects = list()
 				to_chat(usr, span_notice("Genetic data extracted from [project.name]."))
 			return TRUE
@@ -552,3 +550,6 @@
 	data["available_strains"] = strains_data
 	
 	return data
+
+// Global datum initialization - must be after all datum definitions
+GLOBAL_DATUM_INIT(enclave_fev_research, /datum/enclave_fev_research, new())
