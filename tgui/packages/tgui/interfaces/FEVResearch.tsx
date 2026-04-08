@@ -221,10 +221,9 @@ export const FEVResearch = (props, context) => {
                                     < (project.cost || 0)
                                   }
                                   onClick={() =>
-                                    act('unlock_project', {
-                                      project_id: project.id,
-                                    })
-                                  }
+                                  act('unlock_project', {
+                                    project_id: project.id,
+                                  })}
                                 >
                                   Unlock
                                 </Button>
@@ -236,8 +235,7 @@ export const FEVResearch = (props, context) => {
                                     onClick={() =>
                                       act('test_project', {
                                         project_id: project.id,
-                                      })
-                                    }
+                                      })}
                                   >
                                     Test on Self
                                   </Button>
@@ -245,13 +243,9 @@ export const FEVResearch = (props, context) => {
                                     !== 'Not yet tested' && (
                                     <Button
                                       onClick={() =>
-                                        act(
-                                          'extract_genetic_data',
-                                          {
-                                            project_id: project.id,
-                                          }
-                                        )
-                                      }
+                                        act('extract_genetic_data', {
+                                          project_id: project.id,
+                                        })}
                                     >
                                       Extract Data
                                     </Button>
@@ -322,13 +316,13 @@ export const FEVResearch = (props, context) => {
                   {available_strains.map((strain) => {
                     const canSynth =
                       fev_vat_level >= (strain.fev_cost || 0)
-                      && Object.entries(
-                        strain.materials || {}
-                      ).every(
-                        ([mat, cost]) =>
-                          (synthesis_materials[mat] || 0)
-                          >= (cost || 0)
-                      );
+                        && Object.entries(
+                          strain.materials || {}
+                        ).every(
+                          ([mat, cost]) =>
+                            (synthesis_materials[mat] || 0)
+                            >= (cost || 0)
+                        );
                     return (
                       <Table.Row key={strain.id}>
                         <Table.Cell>
@@ -400,8 +394,7 @@ export const FEVResearch = (props, context) => {
                             onClick={() =>
                               act('synthesize_strain', {
                                 strain_type: strain.id,
-                              })
-                            }
+                              })}
                           >
                             Synthesize
                           </Button>
@@ -435,23 +428,17 @@ export const FEVResearch = (props, context) => {
                       </Box>
                       <Button
                         onClick={() =>
-                          act('set_priority', { cat, val: 1 })
-                        }
-                      >
+                          act('set_priority', { cat, val: 1 })}>
                         Low
                       </Button>
                       <Button
                         onClick={() =>
-                          act('set_priority', { cat, val: 2 })
-                        }
-                      >
+                          act('set_priority', { cat, val: 2 })}>
                         Med
                       </Button>
                       <Button
                         onClick={() =>
-                          act('set_priority', { cat, val: 4 })
-                        }
-                      >
+                          act('set_priority', { cat, val: 4 })}>
                         High
                       </Button>
                     </Flex.Item>
@@ -465,8 +452,7 @@ export const FEVResearch = (props, context) => {
                     onClick={() =>
                       act('create_custom_strain', {
                         name: 'Custom',
-                      })
-                    }
+                      })}
                   >
                     Create Custom Strain
                   </Button>
@@ -505,8 +491,7 @@ export const FEVResearch = (props, context) => {
                               onClick={() =>
                                 act('consume_subject', {
                                   ckey: subject.ckey,
-                                })
-                              }
+                                })}
                             >
                               Use for Research
                             </Button>
@@ -529,9 +514,7 @@ export const FEVResearch = (props, context) => {
                       onClick={() =>
                         act('create_weapon', {
                           weapon_type: 'fev_grenade',
-                        })
-                      }
-                    >
+                        })}>
                       Synthesize FEV Grenade
                     </Button>
                     <Button
@@ -539,9 +522,7 @@ export const FEVResearch = (props, context) => {
                       onClick={() =>
                         act('create_weapon', {
                           weapon_type: 'fev_dart',
-                        })
-                      }
-                    >
+                        })}>
                       Synthesize FEV Dart
                     </Button>
                     <Button
@@ -549,9 +530,7 @@ export const FEVResearch = (props, context) => {
                       onClick={() =>
                         act('create_weapon', {
                           weapon_type: 'fev_vial',
-                        })
-                      }
-                    >
+                        })}>
                       Synthesize FEV Extract
                     </Button>
                   </Flex>

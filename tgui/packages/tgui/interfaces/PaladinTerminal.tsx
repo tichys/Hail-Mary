@@ -122,14 +122,14 @@ export const PaladinTerminal = (props, context) => {
                 <LabeledList.Item label="PA Boost">
                   <Button
                     color={
-                      !is_wearing_pa ||
-                      progression?.pa_boost_cooldown > 0
+                      !is_wearing_pa
+                        || progression?.pa_boost_cooldown > 0
                         ? 'grey'
                         : 'good'
                     }
                     disabled={
-                      !is_wearing_pa ||
-                      progression?.pa_boost_cooldown > 0
+                      !is_wearing_pa
+                        || progression?.pa_boost_cooldown > 0
                     }
                     onClick={() => act('use_power_armor_boost')}
                   >

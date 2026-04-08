@@ -95,13 +95,13 @@ export const PrisonManagement = (props, context) => {
                   color="good"
                   onClick={() => act('work_detail')}
                 />
-                {my_status.parole_eligible &&
-                  !my_status.parole_requested && (
-                    <Button
-                      content="[REQUEST PAROLE]"
-                      onClick={() => act('request_parole')}
-                    />
-                  )}
+                {my_status.parole_eligible
+                  && !my_status.parole_requested && (
+                  <Button
+                    content="[REQUEST PAROLE]"
+                    onClick={() => act('request_parole')}
+                  />
+                )}
                 {my_status.parole_requested && (
                   <Box style={{ color: '#4cff4c' }}>Parole Requested</Box>
                 )}

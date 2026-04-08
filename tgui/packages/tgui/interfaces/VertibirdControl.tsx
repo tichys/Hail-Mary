@@ -106,8 +106,8 @@ export const VertibirdControl = (props, context) => {
                 </LabeledList.Item>
                 <LabeledList.Item label="Fuel">
                   <Box color="silver">
-                    {vertibird_fuel}/{vertibird_max_fuel} (
-                    {fuelPercent(vertibird_fuel, vertibird_max_fuel)}%)
+                    {vertibird_fuel}/{vertibird_max_fuel}
+                    ({fuelPercent(vertibird_fuel, vertibird_max_fuel)}%)
                   </Box>
                 </LabeledList.Item>
                 <LabeledList.Item label="Hull Integrity">

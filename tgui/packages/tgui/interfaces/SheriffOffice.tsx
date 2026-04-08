@@ -148,8 +148,7 @@ export const SheriffOffice = (props, context) => {
                     value={fineAmount}
                     type="number"
                     onInput={(e, value) =>
-                      setFineAmount(parseInt(value, 10) || 0)
-                    }
+                      setFineAmount(parseInt(value, 10) || 0)}
                     placeholder="Amount"
                   />
                   <Input
