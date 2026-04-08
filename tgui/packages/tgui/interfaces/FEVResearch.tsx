@@ -221,9 +221,9 @@ export const FEVResearch = (props, context) => {
                                     < (project.cost || 0)
                                   }
                                   onClick={() =>
-                                  act('unlock_project', {
-                                    project_id: project.id,
-                                  })}
+                                    act('unlock_project', {
+                                      project_id: project.id,
+                                    })}
                                 >
                                   Unlock
                                 </Button>
@@ -314,15 +314,11 @@ export const FEVResearch = (props, context) => {
                     <Table.Cell>Action</Table.Cell>
                   </Table.Row>
                   {available_strains.map((strain) => {
-                    const canSynth =
-                      fev_vat_level >= (strain.fev_cost || 0)
-                        && Object.entries(
-                          strain.materials || {}
-                        ).every(
-                          ([mat, cost]) =>
-                            (synthesis_materials[mat] || 0)
-                            >= (cost || 0)
-                        );
+                    const canSynth = fev_vat_level >= (strain.fev_cost || 0)
+                      && Object.entries(strain.materials || {}).every(
+                        ([mat, cost]) =>
+                          (synthesis_materials[mat] || 0) >= (cost || 0)
+                      );
                     return (
                       <Table.Row key={strain.id}>
                         <Table.Cell>
