@@ -3941,8 +3941,9 @@
 
 
 #include "code\modules\factions\ncr\_ncr_defines.dm"
+#include "code\modules\factions\ncr\bounty_contracts.dm"
 #include "code\modules\factions\ncr\bounty_board.dm"
-#include "code\modules\factions\ncr\bounty_contracts.dm"`r`n#include "code\\modules\\factions\\ncr\\caravan_system.dm"
+#include "code\\modules\\factions\\ncr\\caravan_system.dm"
 #include "code\modules\research\techweb\nodes\bos_nodes.dm"
 #include "code\modules\research\designs\bos_designs.dm"
 #include "code\modules\research\bos_research.dm"
@@ -3953,4 +3954,6 @@
 #include "code\modules\factions\enclave\_enclave_defines.dm"
 #include "code\modules\factions\enclave\vertibird_console.dm"
 #include "code\modules\factions\enclave\extraction_beacon.dm"
-#include "code\modules\factions\enclave\eyebot_network.dm"`n#include "code\modules\factions\enclave\fev_research.dm"`n#include "code\modules\factions\enclave\fev_synthesis.dm"
+#include "code\modules\factions\enclave\eyebot_network.dm"
+#include "code\modules\factions\enclave\fev_research.dm"
+#include "code\modules\factions\enclave\fev_synthesis.dm"
