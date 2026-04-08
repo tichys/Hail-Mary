@@ -78,8 +78,7 @@ export const PropagandaNetwork = (props, context) => {
                       <Flex.Item grow={1}>
                         <Box color="green">{broadcast.method?.toUpperCase()}</Box>
                         <Box color="grey" fontSize="12px">
-                          Target: {broadcast.target}
-                          {' | '}Msg: {broadcast.message}
+                          Tgt: {broadcast.target} | {broadcast.message}
                         </Box>
                         <Box fontSize="12px">
                           Remaining:{' '}
@@ -114,8 +113,7 @@ export const PropagandaNetwork = (props, context) => {
                     <Flex.Item>
                       <Box
                         color={influenceColor(settlement.influence || 0)}
-                        bold
-                      >
+                        bold>
                         {settlement.status}
                       </Box>
                     </Flex.Item>

@@ -221,9 +221,9 @@ export const FEVResearch = (props, context) => {
                                     < (project.cost || 0)
                                   }
                                   onClick={() =>
-                                      act('unlock_project', {
-                                        project_id: project.id,
-                                      })}
+                                    act('unlock_project', {
+                                      project_id: project.id,
+                                    })}
                                 >
                                   Unlock
                                 </Button>
