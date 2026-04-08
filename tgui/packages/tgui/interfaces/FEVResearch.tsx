@@ -81,7 +81,6 @@ const materialLabels: Record<string, string> = {
 
 export const FEVResearch = (props, context) => {
   const { act, data } = useBackend<FEVResearchData>(context);
-
   const {
     research_points = 0,
     projects = [],
@@ -94,13 +93,13 @@ export const FEVResearch = (props, context) => {
     custom_strain_count = 0,
     max_custom_strains = 5,
   } = data;
-
   const [tab, setTab] = useLocalState(context, 'fev-tab', 1);
-
   const projectsByCategory = projects.reduce(
     (acc, project) => {
       const cat = project.category || 'physical';
-      if (!acc[cat]) acc[cat] = [];
+      if (!acc[cat]) {
+        acc[cat] = [];
+      }
       acc[cat].push(project);
       return acc;
     },
@@ -114,7 +113,9 @@ export const FEVResearch = (props, context) => {
           <Section title="> ENCLAVE FEV RESEARCH">
             <Flex justify="space-between" align="center" wrap>
               <Flex.Item>
-                <Box color="silver">GENETIC MODIFICATION DIVISION</Box>
+                <Box color="silver">
+                  GENETIC MODIFICATION DIVISION
+                </Box>
               </Flex.Item>
               <Flex.Item>
                 <Box>
@@ -129,7 +130,9 @@ export const FEVResearch = (props, context) => {
                   FEV Vat:{' '}
                   <Box
                     as="span"
-                    color={fev_vat_level > 50 ? '#4cff4c' : '#ffcc00'}
+                    color={
+                      fev_vat_level > 50 ? '#4cff4c' : '#ffcc00'
+                    }
                   >
                     {fev_vat_level}/{max_fev_vat}
                   </Box>
@@ -153,10 +156,10 @@ export const FEVResearch = (props, context) => {
           {tab === 1 && (
             <>
               <NoticeBox warning>
-                PROJECT EFFECTS ARE CLASSIFIED. Testing required to
-                discover outcomes. Risk levels are estimates only.
+                PROJECT EFFECTS ARE CLASSIFIED. Testing
+                required to discover outcomes. Risk levels
+                are estimates only.
               </NoticeBox>
-
               {Object.entries(projectsByCategory).map(
                 ([category, catProjects]) => (
                   <Section
@@ -193,12 +196,15 @@ export const FEVResearch = (props, context) => {
                                 >
                                   {project.name}
                                 </Box>
-                                {project.unlocked &&
-                                  project.tests_successful > 0 && (
-                                    <Box color="#888" fontSize="11px">
-                                      [Tests: {project.tests_successful}]
-                                    </Box>
-                                  )}
+                                {project.unlocked
+                                  && project.tests_successful > 0 && (
+                                  <Box
+                                    color="#888"
+                                    fontSize="11px"
+                                  >
+                                    [Tests: {project.tests_successful}]
+                                  </Box>
+                                )}
                               </Flex>
                               <Box color="grey" fontSize="12px">
                                 {project.discovered_effects}
@@ -211,8 +217,8 @@ export const FEVResearch = (props, context) => {
                               {!project.unlocked && (
                                 <Button
                                   disabled={
-                                    (research_points || 0) <
-                                    (project.cost || 0)
+                                    (research_points || 0)
+                                    < (project.cost || 0)
                                   }
                                   onClick={() =>
                                     act('unlock_project', {
@@ -235,13 +241,16 @@ export const FEVResearch = (props, context) => {
                                   >
                                     Test on Self
                                   </Button>
-                                  {project.discovered_effects !==
-                                    'Not yet tested' && (
+                                  {project.discovered_effects
+                                    !== 'Not yet tested' && (
                                     <Button
                                       onClick={() =>
-                                        act('extract_genetic_data', {
-                                          project_id: project.id,
-                                        })
+                                        act(
+                                          'extract_genetic_data',
+                                          {
+                                            project_id: project.id,
+                                          }
+                                        )
                                       }
                                     >
                                       Extract Data
@@ -268,9 +277,13 @@ export const FEVResearch = (props, context) => {
                     ([material, amount]) => (
                       <LabeledList.Item
                         key={material}
-                        label={materialLabels[material] || material}
+                        label={
+                          materialLabels[material] || material
+                        }
                       >
-                        <Box color={amount > 0 ? '#4cff4c' : '#888'}>
+                        <Box
+                          color={amount > 0 ? '#4cff4c' : '#888'}
+                        >
                           {amount}
                         </Box>
                       </LabeledList.Item>
@@ -281,17 +294,20 @@ export const FEVResearch = (props, context) => {
                   <ProgressBar
                     value={fev_vat_level}
                     maxValue={max_fev_vat}
-                    color={fev_vat_level > 50 ? 'good' : 'average'}
+                    color={
+                      fev_vat_level > 50 ? 'good' : 'average'
+                    }
                   >
-                    FEV Vat Level: {fev_vat_level}/{max_fev_vat}
+                    FEV Vat: {fev_vat_level}/{max_fev_vat}
                   </ProgressBar>
                 </Box>
               </Section>
 
               <Section title="> AVAILABLE STRAINS">
                 <NoticeBox info>
-                  Each strain has different effect biases and success
-                  modifiers. Higher stability = more predictable results.
+                  Each strain has different effect biases and
+                  success modifiers. Higher stability = more
+                  predictable results.
                 </NoticeBox>
                 <Table>
                   <Table.Row header>
@@ -305,10 +321,13 @@ export const FEVResearch = (props, context) => {
                   </Table.Row>
                   {available_strains.map((strain) => {
                     const canSynth =
-                      fev_vat_level >= (strain.fev_cost || 0) &&
-                      Object.entries(strain.materials || {}).every(
+                      fev_vat_level >= (strain.fev_cost || 0)
+                      && Object.entries(
+                        strain.materials || {}
+                      ).every(
                         ([mat, cost]) =>
-                          (synthesis_materials[mat] || 0) >= (cost || 0)
+                          (synthesis_materials[mat] || 0)
+                          >= (cost || 0)
                       );
                     return (
                       <Table.Row key={strain.id}>
@@ -339,7 +358,9 @@ export const FEVResearch = (props, context) => {
                                 : 'bad'
                             }
                           >
-                            {(strain.success_mod || 0) >= 0 ? '+' : ''}
+                            {(strain.success_mod || 0) >= 0
+                              ? '+'
+                              : ''}
                             {strain.success_mod}%
                           </Box>
                         </Table.Cell>
@@ -357,20 +378,25 @@ export const FEVResearch = (props, context) => {
                             {strain.magnitude_mod}
                           </Box>
                         </Table.Cell>
-                        <Table.Cell>{strain.fev_cost}</Table.Cell>
                         <Table.Cell>
-                          {Object.entries(strain.materials || {}).map(
-                            ([mat, cost]) => (
-                              <Box key={mat} fontSize="11px">
-                                {materialLabels[mat] || mat}: {cost}
-                              </Box>
-                            )
-                          )}
+                          {strain.fev_cost}
+                        </Table.Cell>
+                        <Table.Cell>
+                          {Object.entries(
+                            strain.materials || {}
+                          ).map(([mat, cost]) => (
+                            <Box key={mat} fontSize="11px">
+                              {materialLabels[mat] || mat}:{' '}
+                              {cost}
+                            </Box>
+                          ))}
                         </Table.Cell>
                         <Table.Cell>
                           <Button
                             disabled={!canSynth}
-                            color={canSynth ? 'good' : undefined}
+                            color={
+                              canSynth ? 'good' : undefined
+                            }
                             onClick={() =>
                               act('synthesize_strain', {
                                 strain_type: strain.id,
@@ -388,9 +414,9 @@ export const FEVResearch = (props, context) => {
 
               <Section title="> CUSTOM STRAIN CREATOR">
                 <NoticeBox>
-                  Custom strains allow you to prioritize specific effect
-                  categories. You have created {custom_strain_count}/
-                  {max_custom_strains} custom strains.
+                  Custom strains let you prioritize specific
+                  effect categories. Created:{' '}
+                  {custom_strain_count}/{max_custom_strains}.
                 </NoticeBox>
                 <Flex gap={1} wrap>
                   {[
@@ -401,21 +427,30 @@ export const FEVResearch = (props, context) => {
                     'healing',
                   ].map((cat) => (
                     <Flex.Item key={cat}>
-                      <Box color={categoryColors[cat]} fontSize="12px">
+                      <Box
+                        color={categoryColors[cat]}
+                        fontSize="12px"
+                      >
                         {categoryLabels[cat]} Priority
                       </Box>
                       <Button
-                        onClick={() => act('set_priority', { cat, val: 1 })}
+                        onClick={() =>
+                          act('set_priority', { cat, val: 1 })
+                        }
                       >
                         Low
                       </Button>
                       <Button
-                        onClick={() => act('set_priority', { cat, val: 2 })}
+                        onClick={() =>
+                          act('set_priority', { cat, val: 2 })
+                        }
                       >
                         Med
                       </Button>
                       <Button
-                        onClick={() => act('set_priority', { cat, val: 4 })}
+                        onClick={() =>
+                          act('set_priority', { cat, val: 4 })
+                        }
                       >
                         High
                       </Button>
@@ -424,9 +459,13 @@ export const FEVResearch = (props, context) => {
                 </Flex>
                 <Box mt={1}>
                   <Button
-                    disabled={custom_strain_count >= max_custom_strains}
+                    disabled={
+                      custom_strain_count >= max_custom_strains
+                    }
                     onClick={() =>
-                      act('create_custom_strain', { name: 'Custom' })
+                      act('create_custom_strain', {
+                        name: 'Custom',
+                      })
                     }
                   >
                     Create Custom Strain
@@ -441,14 +480,14 @@ export const FEVResearch = (props, context) => {
               <Section title="> TEST SUBJECTS">
                 {test_subjects.length === 0 ? (
                   <Box color="grey">
-                    No test subjects available. Drag a restrained human
-                    to the terminal to add.
+                    No test subjects available. Drag a
+                    restrained human to the terminal.
                   </Box>
                 ) : (
                   <>
                     <NoticeBox warning>
-                      Test subjects are consumed in research. Karma
-                      penalty: -30
+                      Test subjects are consumed in research.
+                      Karma penalty: -30
                     </NoticeBox>
                     <Table>
                       <Table.Row header>
@@ -457,7 +496,9 @@ export const FEVResearch = (props, context) => {
                       </Table.Row>
                       {test_subjects.map((subject, idx) => (
                         <Table.Row key={idx}>
-                          <Table.Cell>{subject.name}</Table.Cell>
+                          <Table.Cell>
+                            {subject.name}
+                          </Table.Cell>
                           <Table.Cell>
                             <Button
                               color="bad"
@@ -476,12 +517,11 @@ export const FEVResearch = (props, context) => {
                   </>
                 )}
               </Section>
-
               {can_create_weapons && (
                 <Section title="> FEV WEAPONS">
                   <NoticeBox warning>
-                    FEV weapons cause genetic damage. Karma penalty:
-                    -15 per item.
+                    FEV weapons cause genetic damage. Karma
+                    penalty: -15 per item.
                   </NoticeBox>
                   <Flex gap={1} wrap>
                     <Button
@@ -497,7 +537,9 @@ export const FEVResearch = (props, context) => {
                     <Button
                       color="bad"
                       onClick={() =>
-                        act('create_weapon', { weapon_type: 'fev_dart' })
+                        act('create_weapon', {
+                          weapon_type: 'fev_dart',
+                        })
                       }
                     >
                       Synthesize FEV Dart
@@ -505,7 +547,9 @@ export const FEVResearch = (props, context) => {
                     <Button
                       color="bad"
                       onClick={() =>
-                        act('create_weapon', { weapon_type: 'fev_vial' })
+                        act('create_weapon', {
+                          weapon_type: 'fev_vial',
+                        })
                       }
                     >
                       Synthesize FEV Extract
@@ -519,14 +563,19 @@ export const FEVResearch = (props, context) => {
           <NoticeBox info>
             <Box bold>Important Notes:</Box>
             <Box>
-              - Project effects are RANDOMIZED each round - no two tests
-              are guaranteed the same
+              - Project effects are RANDOMIZED each round -
+              no two tests are guaranteed the same
             </Box>
             <Box>
-              - Strain stability affects predictability - higher is better
+              - Strain stability affects predictability -
+              higher is better
             </Box>
-            <Box>- Side effects are RANDOM and can be severe</Box>
-            <Box>- Super Mutant transformation is irreversible</Box>
+            <Box>
+              - Side effects are RANDOM and can be severe
+            </Box>
+            <Box>
+              - Super Mutant transformation is irreversible
+            </Box>
           </NoticeBox>
         </Stack>
       </Window.Content>

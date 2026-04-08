@@ -148,8 +148,8 @@ export const EnclaveTerminal = (props, context) => {
                   <Table.Cell>{entry.name}</Table.Cell>
                   <Table.Cell>{entry.rank}</Table.Cell>
                   <Table.Cell>
-                    {tier >= ENCLAVE_RANK_SERGEANT &&
-                      entry.ckey !== data.ckey && (
+                    {tier >= ENCLAVE_RANK_SERGEANT
+                      && entry.ckey !== data.ckey && (
                       <Flex gap={1}>
                         <Button onClick={() => act(
                           'promote_soldier',

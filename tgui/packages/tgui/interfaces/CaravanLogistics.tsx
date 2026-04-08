@@ -210,15 +210,15 @@ export const CaravanLogistics = (props, context) => {
                         })}
                       />
                     )}
-                    {caravan.status === 'traveling' &&
-                      !caravan.guards.includes('current_user') && (
-                        <Button
-                          content="[JOIN ESCORT]"
-                          onClick={() => act('sign_up_escort', {
-                            route_id: caravan.route_id,
-                          })}
-                        />
-                      )}
+                    {caravan.status === 'traveling'
+                      && !caravan.guards.includes('current_user') && (
+                      <Button
+                        content="[JOIN ESCORT]"
+                        onClick={() => act('sign_up_escort', {
+                          route_id: caravan.route_id,
+                        })}
+                      />
+                    )}
                   </Flex.Item>
                 </Flex>
                 {caravan.status === 'traveling' && (
