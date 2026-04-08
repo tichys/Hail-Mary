@@ -262,6 +262,7 @@
 	icon = 'icons/obj/stack_objects.dmi'
 	icon_state = "sheet-metal"
 	max_amount = 10
+	merge_type = /obj/item/stack/sheet/bos_pa_plating
 
 /obj/item/stack/sheet/bos_vertibird_armor
 	name = "vertibird armor plating"
@@ -270,3 +271,4 @@
 	icon = 'icons/obj/stack_objects.dmi'
 	icon_state = "sheet-metal"
 	max_amount = 5
+	merge_type = /obj/item/stack/sheet/bos_vertibird_armor
