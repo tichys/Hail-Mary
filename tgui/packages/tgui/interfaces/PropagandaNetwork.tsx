@@ -79,7 +79,7 @@ export const PropagandaNetwork = (props, context) => {
                         <Box color="green">{broadcast.method?.toUpperCase()}</Box>
                         <Box color="grey" fontSize="12px">
                           Target: {broadcast.target}
-                          {' | '}Message: {broadcast.message}
+                          {' | '}Msg: {broadcast.message}
                         </Box>
                         <Box fontSize="12px">
                           Remaining:{' '}
