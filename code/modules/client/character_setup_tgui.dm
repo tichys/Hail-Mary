@@ -302,6 +302,13 @@
 	if(..()) return TRUE
 	
 	switch(action)
+		if("close")
+			SStgui.close_uis(src)
+			var/mob/dead/new_player/np = owner?.mob
+			if(istype(np))
+				np.new_player_panel()
+			return TRUE
+		
 		if("set_tab")
 			current_tab = text2num(params["tab"]) || 0
 			update_preview()
@@ -499,8 +506,48 @@
 				var/datum/keybinding/kb = GLOB.keybindings_by_name[name]
 				if(kb?.hotkey_keys)
 					prefs.key_bindings[name] = kb.hotkey_keys.Copy()
+		
+		if("open_flavor_editor")
+			var/datum/flavor_text_editor/editor = new(src)
+			editor.ui_interact(owner?.mob)
 	
 	return TRUE
+
+/datum/flavor_text_editor
+	var/datum/tgui_character_setup/parent
+
+/datum/flavor_text_editor/New(datum/tgui_character_setup/parent)
+	src.parent = parent
+
+/datum/flavor_text_editor/Destroy()
+	parent = null
+	return ..()
+
+/datum/flavor_text_editor/ui_state(mob/user)
+	return GLOB.always_state
+
+/datum/flavor_text_editor/ui_interact(mob/user, datum/tgui/ui)
+	ui = SStgui.try_update_ui(user, src, ui)
+	if(!ui)
+		ui = new(user, src, "FlavorTextEditor")
+		ui.open()
+
+/datum/flavor_text_editor/ui_data(mob/user)
+	var/list/data = list()
+	data["flavor_text"] = parent?.prefs?.features?["flavor_text"] || ""
+	return data
+
+/datum/flavor_text_editor/ui_act(action, params)
+	if(..())
+		return TRUE
+	switch(action)
+		if("set_flavor_text")
+			parent?.prefs?.features["flavor_text"] = copytext(params["text"], 1, 2001)
+			return TRUE
+		if("close")
+			SStgui.close_uis(src)
+			return TRUE
+	return FALSE
 
 /datum/tgui_character_setup/proc/update_preview()
 	if(!prefs || !owner)

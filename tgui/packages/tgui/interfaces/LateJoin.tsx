@@ -32,94 +32,97 @@ export const LateJoin = (props, context) => {
 
   const [selectedFaction, setSelectedFaction] = useLocalState(context, 'selFaction', '');
 
+  let globalJobIndex = 1;
+
   return (
-    <Window width={960} height={720} title="ROBCO TERMINAL" theme="fallout" resizable>
+    <Window width={900} height={700} title="ROBCO TERMINAL" theme="fallout" resizable>
       <Window.Content scrollable>
-        <Box className="CharacterSetup__header">
-          ROBCO INDUSTRIES (TM) TERMLINK PROTOCOL
-          <span style={{ float: 'right' }}>VAULT-TEC CORP</span>
-        </Box>
+        <Box className="LateJoin__container">
+          <Box className="terminal-header">
+            <Box className="LateJoin__header-line">
+              SETTLEMENT PERSONNEL ASSIGNMENT TERMINAL
+              <Button content="[X]" color="bad" onClick={() => act('close')} style={{ float: 'right' }} />
+            </Box>
+            <Box className="LateJoin__subheader">
+              ROBCO INDUSTRIES WORKFORCE MANAGEMENT SYSTEM
+            </Box>
+          </Box>
 
-        <Section>
-          <Flex justify="center">
-            <Flex.Item style={{ color: '#2a7a52', fontSize: '12px' }}>
-              Round Duration: {round_duration}
-            </Flex.Item>
-            {evacuation_status && (
-              <Flex.Item style={{ color: '#c8160a', marginLeft: '20px' }}>
-                {evacuation_status}
+          <Box className="LateJoin__status-bar">
+            <Flex justify="space-between">
+              <Flex.Item className="LateJoin__status-item">
+                ROUND TIME: {round_duration}
               </Flex.Item>
-            )}
-          </Flex>
-        </Section>
+              {evacuation_status && (
+                <Flex.Item className="LateJoin__status-item LateJoin__status-item--alert">
+                  {evacuation_status}
+                </Flex.Item>
+              )}
+            </Flex>
+          </Box>
 
-        <Flex wrap>
+          <Box className="LateJoin__section">
+            <Box className="LateJoin__section-title">
+              {'>'} AVAILABLE POSITIONS
+            </Box>
+            <Box className="terminal-divider" />
+          </Box>
+
           {factions.map(faction => (
-            <Flex.Item
-              key={faction.name}
-              basis="25%"
-              style={{ padding: '5px' }}
-            >
-              <Section
-                title={`> ${faction.name}`}
-                style={{
-                  height: '100%',
-                  border: selectedFaction === faction.name ? '2px solid #4cff4c' : '1px solid #1a5e38',
-                }}
-              >
-                <Box style={{ maxHeight: '180px', overflowY: 'auto' }}>
-                  {faction.jobs.map(job => (
+            <Box key={faction.name} className="LateJoin__faction">
+              <Box className="LateJoin__faction-header">
+                {faction.name}
+              </Box>
+              <Box className="LateJoin__faction-jobs">
+                {faction.jobs.map(job => {
+                  const jobNum = globalJobIndex++;
+                  return (
                     <Flex
                       key={job.title}
                       align="center"
-                      justify="space-between"
-                      style={{
-                        padding: '2px 0',
-                        borderBottom: '1px solid #0d3322',
+                      className="LateJoin__job-row"
+                      onClick={() => {
+                        if (!job.locked && job.available) {
+                          act('join_job', { job: job.title });
+                        }
                       }}
                     >
-                      <Flex.Item
-                        grow
-                        style={{
-                          color: job.locked ? '#2a4a38' : job.available ? '#4cff4c' : '#2a7a52',
-                        }}
-                      >
+                      <Flex.Item className="LateJoin__job-number">
+                        [{String(jobNum).padStart(2, '0')}]
+                      </Flex.Item>
+                      <Flex.Item grow className={`LateJoin__job-title ${job.locked ? 'LateJoin__job-title--locked' : !job.available ? 'LateJoin__job-title--full' : ''}`}>
                         {job.title}
                       </Flex.Item>
-                      <Flex.Item>
+                      <Flex.Item className="LateJoin__job-status">
                         {job.locked ? (
-                          <Button
-                            compact
-                            content="LOCKED"
-                            color="bad"
-                            tooltip={job.lock_reason}
-                          />
+                          <Box className="LateJoin__status LateJoin__status--locked" title={job.lock_reason}>
+                            LOCKED
+                          </Box>
                         ) : job.available ? (
-                          <Button
-                            compact
-                            content={`JOIN (${job.current}/${job.total === -1 ? '∞' : job.total})`}
-                            onClick={() => act('join_job', { job: job.title })}
-                          />
+                          <Box className="LateJoin__status LateJoin__status--available">
+                            {job.current}/{job.total === -1 ? '∞' : job.total}
+                          </Box>
                         ) : (
-                          <Button
-                            compact
-                            content="FULL"
-                            disabled
-                          />
+                          <Box className="LateJoin__status LateJoin__status--full">
+                            FULL
+                          </Box>
                         )}
                       </Flex.Item>
                     </Flex>
-                  ))}
-                </Box>
-              </Section>
-            </Flex.Item>
+                  );
+                })}
+              </Box>
+            </Box>
           ))}
-        </Flex>
 
-        <Divider />
-
-        <Box className="CharacterSetup__footer">
-          JOIN GAME | SELECT OCCUPATION
+          <Box className="terminal-footer">
+            <Flex justify="space-between">
+              <Flex.Item>ROBCO INDUSTRIES (TM) TERMLINK PROTOCOL</Flex.Item>
+              <Flex.Item>
+                <Box className="terminal-cursor" />
+              </Flex.Item>
+            </Flex>
+          </Box>
         </Box>
       </Window.Content>
     </Window>

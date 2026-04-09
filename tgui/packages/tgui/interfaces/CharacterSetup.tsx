@@ -204,7 +204,10 @@ export const CharacterSetup = (props, context) => {
               className="CharacterSetup__header"
             >
               ROBCO INDUSTRIES (TM) TERMLINK PROTOCOL
-              <span style={{ float: 'right' }}>VAULT-TEC CORP</span>
+              <span style={{ float: 'right' }}>
+                <Button content="[X]" color="bad" onClick={() => act('close')} style={{ 'margin-right': '10px' }} />
+                VAULT-TEC CORP
+              </span>
             </Box>
 
             <Flex mb={2}>
@@ -399,13 +402,15 @@ export const CharacterSetup = (props, context) => {
             {current_tab === TAB_APPEARANCE && (
               <Box>
                 <Section title="> FLAVOR TEXT">
-                  <TextArea
-                    value={flavor_text}
-                    onInput={(_, v) => act('set_flavor_text', { text: v })}
-                    fluid
-                    rows={3}
-                    maxLength={500}
-                  />
+                  <Flex align="center" justify="space-between">
+                    <Flex.Item style={{ color: flavor_text ? '#4cff4c' : '#888' }}>
+                      {flavor_text ? `${flavor_text.length} characters` : 'Not set'}
+                    </Flex.Item>
+                    <Button
+                      content={flavor_text ? '> EDIT' : '> CREATE'}
+                      onClick={() => act('open_flavor_editor')}
+                    />
+                  </Flex>
                 </Section>
 
                 <Section title="> BODY">

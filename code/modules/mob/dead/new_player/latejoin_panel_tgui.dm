@@ -103,6 +103,12 @@
 		return
 	
 	switch(action)
+		if("close")
+			SStgui.close_uis(src)
+			if(istype(np))
+				np.new_player_panel()
+			return TRUE
+		
 		if("join_job")
 			var/job = params["job"]
 			if(!job)
@@ -116,6 +122,14 @@
 				to_chat(usr, span_notice("There is an administrative lock on entering the game!"))
 				return
 			
+			if((length_char(owner?.prefs?.features?["flavor_text"])) < MIN_FLAVOR_LEN)
+				alert(usr, "Your flavor text must be at least [MIN_FLAVOR_LEN] characters. Please edit your character in the Character Creator.", "Flavor Text Required")
+				SStgui.close_uis(src)
+				if(istype(np))
+					np.new_player_panel()
+				return TRUE
+			
+			SStgui.close_uis(src)
 			np.AttemptLateSpawn(job)
 			return TRUE
 	

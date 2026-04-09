@@ -23,13 +23,18 @@
 	if(owner && owner.prefs)
 		var/pname = owner.prefs.be_random_name ? "WANDERER" : uppertext(owner.prefs.real_name)
 		data["character_name"] = pname
+		data["current_slot"] = owner.prefs.default_slot || 1
 	else
 		data["character_name"] = "WANDERER"
+		data["current_slot"] = 1
 	
 	if(SSticker.current_state <= GAME_STATE_PREGAME)
 		data["game_state"] = "pregame"
+		var/mob/dead/new_player/np = owner?.mob
+		data["ready"] = istype(np) && np.ready == PLAYER_READY_TO_PLAY
 	else
 		data["game_state"] = "running"
+		data["ready"] = FALSE
 	
 	data["has_polls"] = FALSE
 	
@@ -71,6 +76,7 @@
 	
 	switch(action)
 		if("show_preferences")
+			SStgui.close_uis(src)
 			var/datum/tgui_character_setup/panel = new(owner)
 			panel.ui_interact(np)
 			return TRUE
@@ -87,6 +93,10 @@
 			if(!SSticker || !SSticker.IsRoundInProgress())
 				to_chat(usr, span_danger("The round is either not ready, or has already finished..."))
 				return
+			if((length_char(owner?.prefs?.features?["flavor_text"])) < MIN_FLAVOR_LEN)
+				alert(usr, "Your flavor text must be at least [MIN_FLAVOR_LEN] characters. Please edit your character in the Character Creator.", "Flavor Text Required")
+				return
+			SStgui.close_uis(src)
 			np.LateChoices()
 			return TRUE
 		
