@@ -1,21 +1,5 @@
 // XP-based leveling with SPECIAL bonuses and perk point bonuses
-
-#define XP_KILL_RAIDER 10
-#define XP_KILL_FERAL 15
-#define XP_KILL_VETERAN 50
-#define XP_KILL_BOSS 200
-#define XP_KILL_PLAYER -50
-#define XP_COMPLETE_QUEST_GOOD 200
-#define XP_COMPLETE_QUEST_EVIL -100
-#define XP_COMPLETE_QUEST_NEUTRAL 100
-#define XP_EXPLORE_NEW 50
-#define XP_CRAFT_ITEM 25
-#define XP_TRADE 10
-#define XP_HELP_PLAYER 30
-#define XP_HELP_NPC 15
-#define XP_DISCOVER_LOCATION 25
-#define XP_SURVIVE_DAY 100
-// XP_LEVEL_SCALING defined in code/__DEFINES/roleplay_constants.dm
+// XP defines are in code/__DEFINES/roleplay_constants.dm
 
 /proc/level_use_db()
 	return SSdbcore.Connect()
@@ -349,6 +333,17 @@
 		if("survive_day")
 			return XP_SURVIVE_DAY
 	return 0
+
+/proc/get_xp_for_mob_kill(mob/living/simple_animal/hostile/M)
+	if(!M)
+		return 0
+	if(istype(M, /mob/living/simple_animal/hostile/megafauna))
+		return XP_KILL_BOSS
+	if(M.maxHealth >= 300)
+		return XP_KILL_VETERAN
+	if(M.maxHealth >= 100)
+		return XP_KILL_FERAL
+	return XP_KILL_RAIDER
 
 /mob/living/carbon/human/Topic(href, href_list)
 	if(href_list["allocate_special"])

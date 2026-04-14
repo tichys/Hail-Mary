@@ -185,5 +185,9 @@ GLOBAL_VAR_INIT(last_karma_event_time, 0)
 
 /mob/living/carbon/human/Life()
 	. = ..()
-	if(. && client && prob(1))
-		handle_karma_events(src)
+	if(.)
+		if(ckey && !initialized_perks)
+			initialize_perk_system()
+			initialized_perks = TRUE
+		if(client && prob(1))
+			handle_karma_events(src)

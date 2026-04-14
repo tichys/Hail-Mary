@@ -46,11 +46,10 @@ GLOBAL_LIST_EMPTY(scavenger_items)
 	)
 
 /datum/scavenger_hunt/proc/generate_items()
-	var/area/area_list = list()
-	for(var/area/A in world)
-		if(!istype(A, /area/wasteland) && !istype(A, /area/fallout))
-			continue
-		area_list += A
+	var/list/area/area_list = get_areas(/area/f13)
+
+	if(!area_list.len)
+		return
 
 	var/list/item_types = list(
 		/obj/item/scavenger_token/common,
@@ -61,18 +60,23 @@ GLOBAL_LIST_EMPTY(scavenger_items)
 	var/num_items = min(required_items.len, 5)
 	for(var/i = 1 to num_items)
 		var/area/spawn_area = pick(area_list)
-		var/list/turfs = list()
-		for(var/turf/T in spawn_area)
-			if(!T.density && !istype(T, /turf/space))
-				turfs += T
+		var/list/turfs = get_area_turfs(spawn_area.type)
+		if(!turfs.len)
+			continue
 
-		if(turfs.len > 0)
-			var/turf/spawn_turf = pick(turfs)
-			var/item_type = pick(item_types)
-			var/obj/item/scavenger_token/token = new item_type(spawn_turf)
-			token.hunt_id = hunt_id
-			token.item_index = i
-			GLOB.scavenger_items += token
+		var/list/valid_turfs = list()
+		for(var/turf/T in turfs)
+			if(!T.density && !istype(T, /turf/open/space))
+				valid_turfs += T
+		if(!valid_turfs.len)
+			continue
+
+		var/turf/spawn_turf = pick(valid_turfs)
+		var/item_type = pick(item_types)
+		var/obj/item/scavenger_token/token = new item_type(spawn_turf)
+		token.hunt_id = hunt_id
+		token.item_index = i
+		GLOB.scavenger_items += token
 
 /datum/scavenger_hunt/proc/start(mob/user)
 	if(status != "available")
@@ -170,7 +174,7 @@ GLOBAL_LIST_EMPTY(scavenger_items)
 	name = "Hidden Cache Hunt"
 	description = "Find a well-hidden collection of valuable items."
 	reward_caps = 300
-	reward_item = /obj/item/weapon/energy/laser/pistol
+	reward_item = /obj/item/gun/energy/laser/pistol
 	difficulty = 3
 	required_items = list("token", "token", "token", "token")
 	time_limit = 45 MINUTES
@@ -190,7 +194,7 @@ GLOBAL_LIST_EMPTY(scavenger_items)
 /obj/item/scavenger_token
 	name = "scavenger token"
 	desc = "A token marked with a symbol. Someone might be looking for these."
-	icon = 'icons/obj/items.dmi'
+	icon = 'icons/obj/objects.dmi'
 	icon_state = "scavenger_token"
 	w_class = WEIGHT_CLASS_TINY
 	var/hunt_id
@@ -282,7 +286,13 @@ GLOBAL_LIST_EMPTY(scavenger_items)
 	)
 
 /obj/machinery/scavenger_terminal/proc/get_player_total_found(ckey)
-	return 0
+	if(!ckey)
+		return 0
+	var/total = 0
+	for(var/datum/scavenger_hunt/hunt as anything in GLOB.scavenger_hunts)
+		if(hunt.assigned_to == ckey)
+			total += hunt.found_items
+	return total
 
 /obj/machinery/scavenger_terminal/proc/can_start_hunt(mob/user)
 	if(GLOB.active_scavengers[user.ckey])
@@ -320,11 +330,16 @@ GLOBAL_LIST_EMPTY(scavenger_items)
 // ============ WORLD SPAWNER ============
 
 /proc/spawn_random_scavenger_tokens()
-	var/list/turf/valid_turfs = list()
-	for(var/turf/T in world)
-		if(!T.density && !istype(T, /turf/space))
-			if(prob(0.1))
-				valid_turfs += T
+	var/list/area/f13_areas = get_areas(/area/f13)
+	if(!f13_areas.len)
+		return
+	var/list/valid_turfs = list()
+	for(var/area/A in f13_areas)
+		var/list/area_turfs = get_area_turfs(A.type)
+		for(var/turf/T in area_turfs)
+			if(!T.density && !istype(T, /turf/open/space))
+				if(prob(1))
+					valid_turfs += T
 
 	for(var/i = 1 to min(valid_turfs.len, 10))
 		var/turf/T = pick(valid_turfs)

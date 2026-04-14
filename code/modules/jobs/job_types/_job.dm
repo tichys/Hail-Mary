@@ -76,6 +76,7 @@
 
 	var/paycheck = PAYCHECK_MINIMAL
 	var/paycheck_department = ACCOUNT_CIV
+	var/caps_paycheck = PAYCHECK_CAPS_MINIMAL
 
 	var/list/mind_traits // Traits added to the mind of the mob assigned this job
 	var/list/blacklisted_quirks		//list of quirk typepaths blacklisted.

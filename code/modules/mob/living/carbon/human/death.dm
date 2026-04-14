@@ -40,6 +40,7 @@
 	// Trigger karma/reputation for player kills
 	if(lastattackerckey && ckey(lastattackerckey) != ckey)
 		on_player_death(src, lastattacker)
+		check_bounty_on_death(src, lastattacker)
 
 	dizziness = 0
 	jitteriness = 0

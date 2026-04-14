@@ -12,7 +12,7 @@
 // Get available perk points for a player
 /proc/get_perk_points(ckey)
 	if(!SSdbcore.Connect())
-		return 0
+		return get_bonus_perk_points_total(ckey)
 
 	var/datum/db_query/query = SSdbcore.NewQuery(
 		"SELECT points_available FROM [format_table_name("perk_points")] WHERE ckey = :ckey",
@@ -21,13 +21,14 @@
 
 	if(!query.Execute())
 		qdel(query)
-		return 0
+		return get_bonus_perk_points_total(ckey)
 
 	var/points = 0
 	if(query.NextRow())
 		points = text2num(query.item[1])
 
 	qdel(query)
+	points += get_bonus_perk_points_total(ckey)
 	return points
 
 // Get total points earned (lifetime)

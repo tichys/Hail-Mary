@@ -239,11 +239,4 @@
 	// Load and apply perks
 	load_player_perks(src)
 
-// Hook into spawn
-/mob/living/carbon/human/Life()
-	. = ..()
-	if(. && ckey && !initialized_perks)
-		initialize_perk_system()
-		initialized_perks = TRUE
-
 /mob/living/carbon/human/var/initialized_perks = FALSE

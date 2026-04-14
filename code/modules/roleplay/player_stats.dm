@@ -169,7 +169,15 @@
 	// Perks section
 	html += "<h2>Perks</h2>"
 	html += "<div class='stat-row'>"
-	html += "<div style='color: #ffcc66; font-size: 1.3em;'>Earn perks through gameplay</div>"
+	var/perk_points = get_perk_points(target_ckey)
+	html += "<div style='color: #ffcc66;'>Perk Points: [perk_points]</div>"
+	var/list/active_perks = get_active_perks(target_ckey)
+	if(active_perks.len)
+		for(var/perk_id in active_perks)
+			var/list/info = get_perk_info(perk_id)
+			html += "<div style='color: #d4a574;'>[info["name"]]</div>"
+	else
+		html += "<div style='color: #996633;'>No perks unlocked yet.</div>"
 	html += "</div>"
 	
 	// Action buttons
@@ -200,7 +208,7 @@
 		return TRUE
 	
 	if(href_list["open_perks"])
-		to_chat(C.mob, span_notice("Perk system coming soon!"))
+		show_perk_menu(C.mob, C.ckey)
 		return TRUE
 	
 	if(href_list["allocate_special_ui"])

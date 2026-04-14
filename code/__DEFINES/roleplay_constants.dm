@@ -69,7 +69,7 @@
 
 // ============ QUEST SYSTEM ============
 #define QUEST_MAX_ACTIVE 5				// Maximum active quests per player
-#define QUEST_DEFAULT_TIME_LIMIT 0		// Default time limit (0 = no limit)
+#define QUEST_DEFAULT_TIME_LIMIT 12000	// Default time limit (20 minutes in deciseconds)
 #define QUEST_TRACKING_RANGE 50			// Range for objective tracking
 
 // ============ NPC MEMORY SYSTEM ============
@@ -84,10 +84,35 @@
 // ============ LEVEL/XP SYSTEM ============
 #define XP_LEVEL_CAP 50					// Maximum player level
 #define XP_SPECIAL_BONUS_PER_LEVEL 1	// SPECIAL points per level
+#define XP_KILL_RAIDER 10
+#define XP_KILL_FERAL 15
+#define XP_KILL_VETERAN 50
+#define XP_KILL_BOSS 200
+#define XP_KILL_PLAYER -50
+#define XP_COMPLETE_QUEST_GOOD 200
+#define XP_COMPLETE_QUEST_EVIL -100
+#define XP_COMPLETE_QUEST_NEUTRAL 100
+#define XP_EXPLORE_NEW 50
+#define XP_CRAFT_ITEM 25
+#define XP_TRADE 10
+#define XP_HELP_PLAYER 30
+#define XP_HELP_NPC 15
+#define XP_DISCOVER_LOCATION 25
+#define XP_SURVIVE_DAY 100
 
 // ============ CAPS SYSTEM ============
 #define CAPS_STARTING_DEFAULT 50		// Default starting caps for new characters
 #define CAPS_MAX_IN_WALLET 10000		// Maximum caps that can be carried
+
+// ============ CAPS PAYCHECK SYSTEM ============
+#define PAYCHECK_INTERVAL 10 MINUTES
+#define PAYCHECK_CAPS_NONE 0
+#define PAYCHECK_CAPS_MINIMAL 15
+#define PAYCHECK_CAPS_LOW 25
+#define PAYCHECK_CAPS_MEDIUM 40
+#define PAYCHECK_CAPS_HIGH 60
+#define PAYCHECK_CAPS_COMMAND 80
+#define PAYCHECK_CAPS_LEADERSHIP 100
 
 // ============ PERK SYSTEM ============
 #define PERK_POINTS_PER_LEVEL 1			// Perk points gained per level

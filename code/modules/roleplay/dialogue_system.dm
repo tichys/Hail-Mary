@@ -35,6 +35,7 @@ GLOBAL_LIST_EMPTY(json_dialogue_cache)
 				"I need supplies" = "ncr_supplies",
 				"Looking for work" = "ncr_work",
 				"Any missions?" = "ncr_missions",
+				"Got any jobs?" = "_quest_offer",
 				"How's the situation?" = "ncr_situation"
 			)
 		),
@@ -44,14 +45,16 @@ GLOBAL_LIST_EMPTY(json_dialogue_cache)
 			responses = list(
 				"I need supplies" = "ncr_supplies",
 				"Looking for work" = "ncr_work",
-				"Any special missions?" = "ncr_hero_mission"
+				"Any special missions?" = "ncr_hero_mission",
+				"Got any jobs?" = "_quest_offer"
 			)
 		),
 		"start_villain" = list(
 			text = "I've heard about you. The NCR has eyes everywhere. Watch yourself.",
 			requirements = list("max_karma" = -500),
 			responses = list(
-				"Just passing through" = "ncr_situation"
+				"Just passing through" = "ncr_situation",
+				"Got any jobs?" = "_quest_offer"
 			)
 		),
 		"ncr_hero_mission" = list(
@@ -100,7 +103,8 @@ GLOBAL_LIST_EMPTY(json_dialogue_cache)
 			responses = list(
 				"I seek information" = "legion_info",
 				"I wish to join" = "legion_join",
-				"Any work available?" = "legion_work"
+				"Any work available?" = "legion_work",
+				"Got any jobs?" = "_quest_offer"
 			)
 		),
 		"start_hero" = list(
@@ -108,14 +112,16 @@ GLOBAL_LIST_EMPTY(json_dialogue_cache)
 			requirements = list("min_karma" = 500),
 			responses = list(
 				"I seek information" = "legion_info",
-				"Any work available?" = "legion_work"
+				"Any work available?" = "legion_work",
+				"Got any jobs?" = "_quest_offer"
 			)
 		),
 		"start_villain" = list(
 			text = "Ah, a pragmatist. The ends justify the means. Good. We have work.",
 			requirements = list("max_karma" = -250),
 			responses = list(
-				"What work?" = "legion_evil_work"
+				"What work?" = "legion_evil_work",
+				"Got any jobs?" = "_quest_offer"
 			)
 		),
 		"legion_evil_work" = list(
@@ -151,6 +157,7 @@ GLOBAL_LIST_EMPTY(json_dialogue_cache)
 			responses = list(
 				"I bring technology" = "bos_donate",
 				"Seeking knowledge" = "bos_knowledge",
+				"Got any jobs?" = "_quest_offer",
 				"Just passing through" = "bos_pass"
 			)
 		),
@@ -175,6 +182,7 @@ GLOBAL_LIST_EMPTY(json_dialogue_cache)
 				"What do you have?" = "trader_wares",
 				"Any rumors?" = "trader_rumors",
 				"I'm looking to sell" = "trader_sell",
+				"Got any jobs?" = "_quest_offer",
 				"Any discounts?" = "trader_discount"
 			)
 		),
@@ -184,6 +192,7 @@ GLOBAL_LIST_EMPTY(json_dialogue_cache)
 			responses = list(
 				"What do you have?" = "trader_wares",
 				"Any rumors?" = "trader_rumors",
+				"Got any jobs?" = "_quest_offer",
 				"Best deal?" = "trader_hero_deal"
 			)
 		),
@@ -191,7 +200,8 @@ GLOBAL_LIST_EMPTY(json_dialogue_cache)
 			text = "I've heard of you... Stay back. Don't touch my wares.",
 			requirements = list("max_karma" = -500),
 			responses = list(
-				"Just looking" = "trader_wares"
+				"Just looking" = "trader_wares",
+				"Got any jobs?" = "_quest_offer"
 			)
 		),
 		"trader_wares" = list(
@@ -222,6 +232,7 @@ GLOBAL_LIST_EMPTY(json_dialogue_cache)
 			responses = list(
 				"I need medical help" = "followers_medical",
 				"Looking for work" = "followers_work",
+				"Got any jobs?" = "_quest_offer",
 				"What do you do?" = "followers_mission"
 			)
 		),
@@ -244,6 +255,7 @@ GLOBAL_LIST_EMPTY(json_dialogue_cache)
 			text = "Hey there, traveler. Watch yourself out in the wastes.",
 			responses = list(
 				"Any news?" = "generic_news",
+				"Got any jobs?" = "_quest_offer",
 				"Stay safe" = "generic_end"
 			)
 		),
@@ -261,7 +273,8 @@ GLOBAL_LIST_EMPTY(json_dialogue_cache)
 			text = "Citizen. State your business.",
 			responses = list(
 				"Just passing through" = "enclave_pass",
-				"Who are you?" = "enclave_info"
+				"Who are you?" = "enclave_info",
+				"Got any jobs?" = "_quest_offer"
 			)
 		),
 		"enclave_pass" = list(
@@ -278,7 +291,8 @@ GLOBAL_LIST_EMPTY(json_dialogue_cache)
 			text = "Welcome to our Vault. We don't get many visitors.",
 			responses = list(
 				"Nice to meet you" = "vault_greet",
-				"Any work?" = "vault_work"
+				"Any work?" = "vault_work",
+				"Got any jobs?" = "_quest_offer"
 			)
 		),
 		"vault_greet" = list(
@@ -296,7 +310,8 @@ GLOBAL_LIST_EMPTY(json_dialogue_cache)
 			text = "Welcome to Bighorn. We're a peaceful town, but we can handle ourselves.",
 			responses = list(
 				"What's there to do?" = "bighorn_activities",
-				"Any trouble?" = "bighorn_trouble"
+				"Any trouble?" = "bighorn_trouble",
+				"Got any jobs?" = "_quest_offer"
 			)
 		),
 		"bighorn_activities" = list(
@@ -367,6 +382,19 @@ GLOBAL_LIST_EMPTY(json_dialogue_cache)
 	return null
 
 /proc/show_dialogue_node(mob/player, npc_type, node_id)
+	// Special handling: quest offer
+	if(node_id == "_quest_offer")
+		var/mob/living/simple_animal/hostile/quest_npc = null
+		for(var/mob/living/simple_animal/hostile/npc in view(7, player))
+			if(npc.dialogue_type == npc_type && npc.stat == CONSCIOUS)
+				quest_npc = npc
+				break
+		if(quest_npc && ishuman(player))
+			quest_npc.offer_quest(player)
+		else
+			to_chat(player, span_warning("Nobody here has work for you."))
+		return
+
 	// Try JSON first, then fallback to hardcoded
 	#ifdef GLOBAL_LIST_INIT_json_dialogue_cache
 	var/dialogue_tree = GLOB.json_dialogue_cache[npc_type]

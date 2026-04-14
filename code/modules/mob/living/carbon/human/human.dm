@@ -27,6 +27,9 @@ GLOBAL_VAR_INIT(crotch_call_cooldown, 0)
 	// Dialogue system - allows specific NPCs to have custom dialogue
 	var/dialogue_type = null // Set to dialogue tree name for custom dialogue
 
+	// Quest tracking
+	var/recent_hostile_kill_time = 0
+
 /mob/living/carbon/human/Initialize()
 	add_verb(src, /mob/living/proc/mob_sleep)
 	add_verb(src, /mob/living/proc/lay_down)

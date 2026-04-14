@@ -44,9 +44,6 @@ GLOBAL_LIST_INIT(perk_quirk_conflicts, list(
 	// Check if has enough points
 	var/available_points = get_perk_points(ckey)
 	if(available_points <= 0)
-		// If soft capped, only allow elite perks
-		if(perk.tier > 1)
-			return FALSE
 		return FALSE
 
 	// Check soft cap - regular perks (tier 1) blocked if at cap
@@ -109,6 +106,10 @@ GLOBAL_LIST_INIT(perk_quirk_conflicts, list(
 	// Apply the perk's trait
 	if(perk.trait_given)
 		ADD_TRAIT(user, perk.trait_given, "perk")
+	// Also apply the corresponding quirk trait so game code recognizes it
+	var/quirk_trait = GLOB.perk_quirk_conflicts[perk_id]
+	if(quirk_trait)
+		ADD_TRAIT(user, quirk_trait, "perk")
 
 	to_chat(user, span_notice("You unlocked [perk.name]!"))
 	to_chat(user, span_notice(perk.desc))
@@ -138,6 +139,9 @@ GLOBAL_LIST_INIT(perk_quirk_conflicts, list(
 	// Remove the perk's trait
 	if(perk.trait_given)
 		REMOVE_TRAIT(user, perk.trait_given, "perk")
+	var/quirk_trait = GLOB.perk_quirk_conflicts[perk_id]
+	if(quirk_trait)
+		REMOVE_TRAIT(user, quirk_trait, "perk")
 
 	to_chat(user, span_warning("You have removed [perk.name]."))
 
@@ -155,6 +159,9 @@ GLOBAL_LIST_INIT(perk_quirk_conflicts, list(
 		var/datum/perk/perk = get_perk_info(perk_id)
 		if(perk && perk.trait_given)
 			ADD_TRAIT(user, perk.trait_given, "perk")
+		var/quirk_trait = GLOB.perk_quirk_conflicts[perk_id]
+		if(quirk_trait)
+			ADD_TRAIT(user, quirk_trait, "perk")
 
 // Get all perks organized by SPECIAL stat
 /proc/get_perks_by_stat(special_stat)

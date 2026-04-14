@@ -90,7 +90,8 @@ GLOBAL_LIST_EMPTY(active_companions)
 		var/dir = get_dir(companion_turf, target_turf)
 		companion.Move(get_step(companion_turf, dir), dir)
 	else
-		companion.attack_hand(target)
+		if(ismob(target))
+			companion.UnarmedAttack(target)
 
 /datum/component/companion/proc/on_move()
 	// Could add response to master moving

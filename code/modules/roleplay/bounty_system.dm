@@ -162,75 +162,57 @@ GLOBAL_LIST_INIT(active_bounty_hunters, list())
 	var/mob/killer = find_player_by_ckey(killer_ckey)
 	var/mob/victim = find_player_by_ckey(victim_ckey)
 	
-	// Give reward to killer
 	if(killer && ishuman(killer))
-		// Create cash stack
-		var/obj/item/stack/f13Cash/caps/cap_stack = new(get_turf(killer))
-		cap_stack.amount = min(bounty, BOUNTY_CAPS_STACK_MAX) // Cap at 50 per stack
-		killer.put_in_hands(cap_stack)
+		var/remaining = bounty
+		while(remaining > 0)
+			var/give = min(remaining, 50)
+			var/obj/item/stack/f13Cash/caps/C = new(get_turf(killer), give)
+			killer.put_in_hands(C)
+			remaining -= give
 		
 		to_chat(killer, span_notice("You collected a [bounty] cap bounty on [victim ? victim.real_name : victim_ckey]!"))
-		
-		// Karma reward
 		adjust_karma(killer_ckey, BOUNTY_KILL_REWARD)
+		log_game("BOUNTY: [killer_ckey] collected [bounty] cap bounty on [victim_ckey]")
+		add_xp(killer_ckey, XP_COMPLETE_QUEST_NEUTRAL, "bounty:[victim_ckey]")
 	
-	// Announce
 	if(victim)
 		priority_announce("[killer ? killer.real_name : killer_ckey] has collected the [bounty] cap bounty on [victim.real_name]!", "Bounty Collected", "bounty")
 	
-	// Remove bounty
 	remove_bounty(victim_ckey)
-	
-	// Clear any bounty hunters targeting this player
 	clear_bounty_hunters(victim_ckey)
 	
 	return bounty
 
+/proc/check_bounty_on_death(mob/living/carbon/human/victim, mob/killer)
+	if(!victim || !victim.ckey)
+		return
+	var/bounty = get_bounty(victim.ckey)
+	if(bounty <= 0)
+		return
+	if(!killer || !killer.ckey)
+		return
+	if(killer.ckey == victim.ckey)
+		return
+	collect_bounty(killer.ckey, victim.ckey)
+
 // ============ BOUNTY HUNTERS ============
 
 /proc/spawn_bounty_hunters(ckey)
-	var/mob/target = find_player_by_ckey(ckey)
-	if(!target)
+	var/mob/M = find_player_by_ckey(ckey)
+	if(!M || !ishuman(M) || M.stat == DEAD)
 		return
-	
-	// Only spawn for high bounties
+	var/mob/living/carbon/human/target = M
 	var/bounty = get_bounty(ckey)
 	if(bounty < BOUNTY_AMOUNT_INFAMOUS)
 		return
-	
-	// Spawn 2-3 bounty hunters
-	var/num_hunters = rand(2, 3)
-	var/turf/spawn_turf = find_safe_turf()
-	
-	for(var/i = 1 to num_hunters)
-		var/mob/living/carbon/human/hunter = new(spawn_turf)
-		hunter.set_species(/datum/species/human)
-		hunter.real_name = "Bounty Hunter"
-		hunter.name = hunter.real_name
-		hunter.faction = "bounty_hunter"
-		
-		// Equip well
-		hunter.equip_to_slot_or_del(new /obj/item/clothing/under/suit/black_really(hunter), SLOT_W_UNIFORM)
-		hunter.equip_to_slot_or_del(new /obj/item/clothing/shoes/combat(hunter), SLOT_SHOES)
-		
-		// Good weapon
-		var/obj/item/gun/ballistic/automatic/assault_rifle/assault_rifle = new(hunter)
-		hunter.equip_to_slot_or_del(assault_rifle, SLOT_BACK)
-		
-		// Track this hunter
-		GLOB.active_bounty_hunters += hunter
-		
-		// Make them hunt the target
-		// Note: Full AI implementation would require proper AI controller
-		// For now they just spawn and exist
-		
-		addtimer(CALLBACK(GLOBAL_PROC, /proc/qdel, hunter), 600) // Despawn after 10 min
+	spawn_smart_bounty_hunters(target, bounty)
 
 /proc/clear_bounty_hunters(ckey)
-	for(var/mob/living/carbon/human/H in GLOB.active_bounty_hunters)
-		if(H && !QDELETED(H))
-			H.visible_message(span_notice("[H] receives word that the bounty has been collected and leaves."))
-			qdel(H)
+	for(var/mob/living/simple_animal/hostile/f13/bounty_hunter/BH in GLOB.active_bounty_hunters)
+		if(BH && !QDELETED(BH))
+			BH.visible_message(span_notice("[BH] receives word that the bounty has been collected and leaves."))
+			qdel(BH)
+	GLOB.active_bounty_hunters.Cut()
 
 // ============ QUERY FUNCTIONS ============
 
@@ -307,9 +289,11 @@ GLOBAL_LIST_INIT(active_bounty_hunters, list())
 		for(var/list/b in bounties)
 			var/is_self = (b["ckey"] == user.ckey)
 			var/cls = is_self ? "bounty-item your-bounty" : "bounty-item"
+			var/mob/bounty_mob = find_player_by_ckey(b["ckey"])
+			var/display_name = bounty_mob ? bounty_mob.real_name : b["ckey"]
 			
 			html += "<div class='[cls]'>"
-			html += "<div class='bounty-name'>[b["ckey"]]</div>"
+			html += "<div class='bounty-name'>[display_name]</div>"
 			html += "<div class='bounty-amount'>[b["amount"]] caps</div>"
 			html += "<div class='bounty-reason'>[b["reason"]]</div>"
 			html += "<div class='bounty-placed'>Placed: [b["created_at"]]</div>"
@@ -358,15 +342,16 @@ GLOBAL_LIST_INIT(active_bounty_hunters, list())
 
 // ============ INITIALIZATION ============
 
-/world/proc/init_bounty_system()
+/proc/init_bounty_system()
 	setup_bounty_db()
-	// Process bounties periodically
-	addtimer(CALLBACK(GLOBAL_PROC, .proc/process_bounties), 6000) // Every 10 minutes
+	create_perk_tables()
+	create_level_tables()
+	addtimer(CALLBACK(GLOBAL_PROC, /proc/process_bounties), 6000)
 
 /proc/process_bounties()
-	// Spawn bounty hunters for infamous players
 	for(var/mob/living/carbon/human/H in GLOB.alive_mob_list)
 		if(H.client && H.ckey)
 			var/karma = get_karma(H.ckey)
 			if(karma <= KARMA_INFAMOUS && prob(5))
 				spawn_bounty_hunters(H.ckey)
+	addtimer(CALLBACK(GLOBAL_PROC, /proc/process_bounties), 6000)

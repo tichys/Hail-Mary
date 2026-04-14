@@ -62,6 +62,8 @@
 	combat_mode = COMBAT_MODE_MELEE
 	retreat_distance = null
 	minimum_distance = 1
+	veer_chance = 20
+	dodge_chance = 15
 
 /mob/living/simple_animal/hostile/vault/CanAttack(atom/the_target)
 	if(isliving(the_target))
@@ -243,6 +245,12 @@
 	ranged = TRUE
 	retreat_distance = 6
 	minimum_distance = 1
+	veer_chance = 20
+	dodge_chance = 15
+	can_retreat = TRUE
+	retreat_health_threshold = 0.3
+	can_use_stimpak = TRUE
+	stimpak_threshold = 0.4
 	
 	ranged_cooldown_time = 22
 	extra_projectiles = 2
@@ -344,7 +352,10 @@
 	combat_mode = COMBAT_MODE_RANGED
 	retreat_distance = 3
 	minimum_distance = 1
-	
+	uses_cover = TRUE
+	can_throw_grenades = TRUE
+	can_suppress = TRUE
+
 	ranged_cooldown_time = 12
 	extra_projectiles = 2
 	attack_verb_simple = "power-fists"
@@ -450,6 +461,12 @@
 	combat_mode = COMBAT_MODE_MELEE
 	retreat_distance = null
 	minimum_distance = 1
+	veer_chance = 20
+	dodge_chance = 15
+	can_retreat = TRUE
+	retreat_health_threshold = 0.3
+	can_use_stimpak = TRUE
+	stimpak_threshold = 0.4
 
 /mob/living/simple_animal/hostile/bs/Aggro()
 	. = ..()
@@ -523,7 +540,8 @@
 	ranged = TRUE
 	retreat_distance = 5
 	minimum_distance = 1
-	
+	uses_cover = TRUE
+
 	ranged_cooldown_time = 2 SECONDS
 	projectiletype = /obj/item/projectile/beam/laser/lasgun/hitscan
 	projectilesound = 'sound/f13weapons/aer9fire.ogg'
@@ -624,6 +642,12 @@
 	combat_mode = COMBAT_MODE_MELEE
 	retreat_distance = null
 	minimum_distance = 1
+	veer_chance = 20
+	dodge_chance = 15
+	can_retreat = TRUE
+	retreat_health_threshold = 0.3
+	can_use_stimpak = TRUE
+	stimpak_threshold = 0.4
 
 /mob/living/simple_animal/hostile/ncr/Aggro()
 	. = ..()
@@ -697,7 +721,9 @@
 	ranged = TRUE
 	retreat_distance = 5
 	minimum_distance = 1
-	
+	uses_cover = TRUE
+	can_throw_grenades = TRUE
+
 	ranged_cooldown_time = 2 SECONDS
 	projectiletype = /obj/item/projectile/bullet/m44/simple
 	projectilesound = 'sound/f13weapons/44mag.ogg'
@@ -795,6 +821,10 @@
 	combat_mode = COMBAT_MODE_MELEE
 	retreat_distance = null
 	minimum_distance = 1
+	veer_chance = 20
+	dodge_chance = 15
+	can_retreat = TRUE
+	retreat_health_threshold = 0.3
 
 /mob/living/simple_animal/hostile/legion/Aggro()
 	. = ..()
@@ -869,7 +899,8 @@
 	ranged = TRUE
 	retreat_distance = 5
 	minimum_distance = 1
-	
+	uses_cover = TRUE
+
 	ranged_cooldown_time = 2 SECONDS
 	projectiletype = /obj/item/projectile/bullet/a762/sport/simple
 	projectilesound = 'sound/f13weapons/hunting_rifle.ogg'
@@ -961,6 +992,8 @@
 	combat_mode = COMBAT_MODE_MELEE
 	retreat_distance = null
 	minimum_distance = 1
+	veer_chance = 20
+	dodge_chance = 15
 
 /mob/living/simple_animal/hostile/tribe/Aggro()
 	. = ..()
