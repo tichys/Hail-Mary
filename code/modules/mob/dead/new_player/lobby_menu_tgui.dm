@@ -11,6 +11,11 @@
 /datum/lobby_menu/ui_state(mob/user)
 	return GLOB.always_state
 
+/datum/lobby_menu/ui_close(mob/user)
+	var/mob/dead/new_player/np = owner?.mob
+	if(istype(np))
+		addtimer(CALLBACK(np, TYPE_PROC_REF(/mob/dead/new_player, new_player_panel)), 1)
+
 /datum/lobby_menu/ui_interact(mob/user, datum/tgui/ui)
 	ui = SStgui.try_update_ui(user, src, ui)
 	if(!ui)

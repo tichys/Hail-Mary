@@ -24,6 +24,11 @@
 /datum/tgui_character_setup/ui_state(mob/user)
 	return GLOB.always_state
 
+/datum/tgui_character_setup/ui_close(mob/user)
+	var/mob/dead/new_player/np = owner?.mob
+	if(istype(np))
+		addtimer(CALLBACK(np, TYPE_PROC_REF(/mob/dead/new_player, new_player_panel)), 1)
+
 /datum/tgui_character_setup/ui_interact(mob/user, datum/tgui/ui)
 	ui = SStgui.try_update_ui(user, src, ui)
 	if(!ui)
@@ -164,7 +169,7 @@
 /datum/tgui_character_setup/proc/get_special_remaining()
 	if(!prefs) return 5
 	var/total = (prefs.special_s||5)+(prefs.special_p||5)+(prefs.special_e||5)+(prefs.special_c||5)+(prefs.special_i||5)+(prefs.special_a||5)+(prefs.special_l||5)
-	return max(0, 40 - total)
+	return max(0, SPECIAL_MAX_POINT_SUM_CAP - total)
 
 /datum/tgui_character_setup/proc/get_jobs()
 	. = list()
@@ -349,6 +354,9 @@
 		if("adjust_special")
 			var/stat = params["stat"]
 			var/delta = text2num(params["delta"])
+			var/current_total = (prefs.special_s||5)+(prefs.special_p||5)+(prefs.special_e||5)+(prefs.special_c||5)+(prefs.special_i||5)+(prefs.special_a||5)+(prefs.special_l||5)
+			if(delta > 0 && current_total >= SPECIAL_MAX_POINT_SUM_CAP)
+				return
 			switch(stat)
 				if("strength") prefs.special_s = clamp((prefs.special_s||5)+delta, 1, 10)
 				if("perception") prefs.special_p = clamp((prefs.special_p||5)+delta, 1, 10)

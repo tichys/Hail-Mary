@@ -1259,7 +1259,7 @@ span.independent { display: inline-block; position: absolute; width: 20%; right:
 	dat += "<b>Luck        :</b> <a href='?_src_=prefs;preference=special_l;task=input'>[special_l]</a><BR>"
 	dat += "<font size='1'><i>Luck affects the amount of caps you find in trash piles and prevents unlucky mishaps.</i></font><br>"
 	if (total > SPECIAL_MAX_POINT_SUM_CAP)
-		dat += "<center>Maximum exceeded, please change until your total is at or below 35<center>"
+		dat += "<center>Maximum exceeded, please change until your total is at or below [SPECIAL_MAX_POINT_SUM_CAP]<center>"
 	else
 		dat += "<center><a href='?_src_=prefs;preference=special;task=close'>Done</a></center>"
 

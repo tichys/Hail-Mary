@@ -11,6 +11,11 @@
 /datum/latejoin_panel/ui_state(mob/user)
 	return GLOB.always_state
 
+/datum/latejoin_panel/ui_close(mob/user)
+	var/mob/dead/new_player/np = user
+	if(istype(np))
+		addtimer(CALLBACK(np, TYPE_PROC_REF(/mob/dead/new_player, new_player_panel)), 1)
+
 /datum/latejoin_panel/ui_interact(mob/user, datum/tgui/ui)
 	ui = SStgui.try_update_ui(user, src, ui)
 	if(!ui)

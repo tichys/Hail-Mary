@@ -198,6 +198,8 @@ GLOBAL_LIST_EMPTY(pending_trade_requests)
 	var/list/items_b = list()
 	var/caps_a = 0
 	var/caps_b = 0
+	var/obj/item/stack/f13Cash/escrowed_caps_a
+	var/obj/item/stack/f13Cash/escrowed_caps_b
 	var/confirmed_a = FALSE
 	var/confirmed_b = FALSE
 	var/state = TRADE_STATE_OFFERING
@@ -256,10 +258,42 @@ GLOBAL_LIST_EMPTY(pending_trade_requests)
 	return TRUE
 
 /datum/trade/proc/set_caps(mob/living/carbon/human/user, amount)
-	if(user == party_a)
-		caps_a = max(0, amount)
+	amount = max(0, amount)
+
+	var/is_a = (user == party_a)
+
+	if(is_a)
+		return_escrowed_caps_a(user)
+		if(amount > 0)
+			var/found = find_caps_on_mob(user)
+			if(found < amount)
+				to_chat(user, span_warning("You only have [found] caps."))
+				return FALSE
+			escrowed_caps_a = take_caps_from_mob(user, amount)
+			if(!escrowed_caps_a || escrowed_caps_a.amount < amount)
+				if(escrowed_caps_a)
+					user.put_in_hands(escrowed_caps_a)
+					escrowed_caps_a = null
+				to_chat(user, span_warning("Failed to escrow caps."))
+				return FALSE
+			escrowed_caps_a.forceMove(src)
+		caps_a = amount
 	else if(user == party_b)
-		caps_b = max(0, amount)
+		return_escrowed_caps_b(user)
+		if(amount > 0)
+			var/found = find_caps_on_mob(user)
+			if(found < amount)
+				to_chat(user, span_warning("You only have [found] caps."))
+				return FALSE
+			escrowed_caps_b = take_caps_from_mob(user, amount)
+			if(!escrowed_caps_b || escrowed_caps_b.amount < amount)
+				if(escrowed_caps_b)
+					user.put_in_hands(escrowed_caps_b)
+					escrowed_caps_b = null
+				to_chat(user, span_warning("Failed to escrow caps."))
+				return FALSE
+			escrowed_caps_b.forceMove(src)
+		caps_b = amount
 	else
 		return FALSE
 
@@ -268,6 +302,57 @@ GLOBAL_LIST_EMPTY(pending_trade_requests)
 	confirmed_b = FALSE
 	update_uis()
 	return TRUE
+
+/datum/trade/proc/return_escrowed_caps_a(mob/living/carbon/human/user)
+	if(escrowed_caps_a && !QDELETED(escrowed_caps_a))
+		if(user && !QDELETED(user))
+			user.put_in_hands(escrowed_caps_a)
+		else
+			escrowed_caps_a.forceMove(get_turf(party_a))
+		escrowed_caps_a = null
+	caps_a = 0
+
+/datum/trade/proc/return_escrowed_caps_b(mob/living/carbon/human/user)
+	if(escrowed_caps_b && !QDELETED(escrowed_caps_b))
+		if(user && !QDELETED(user))
+			user.put_in_hands(escrowed_caps_b)
+		else
+			escrowed_caps_b.forceMove(get_turf(party_b))
+		escrowed_caps_b = null
+	caps_b = 0
+
+/datum/trade/proc/find_caps_on_mob(mob/living/carbon/human/H)
+	var/total = 0
+	for(var/obj/item/stack/f13Cash/cash in H.GetAllContents())
+		if(cash.amount > 0)
+			total += cash.amount
+	return total
+
+/datum/trade/proc/take_caps_from_mob(mob/living/carbon/human/H, amount)
+	var/remaining = amount
+	var/obj/item/stack/f13Cash/result_stack = null
+	for(var/obj/item/stack/f13Cash/cash in H.GetAllContents())
+		if(remaining <= 0)
+			break
+		if(cash.amount <= 0)
+			continue
+		var/to_take = min(cash.amount, remaining)
+		if(to_take == cash.amount)
+			if(!result_stack)
+				result_stack = cash
+				remaining -= cash.amount
+			else
+				result_stack.amount += cash.amount
+				remaining -= cash.amount
+				qdel(cash)
+		else
+			if(!result_stack)
+				result_stack = new cash.type(H, to_take)
+			else
+				result_stack.amount += to_take
+			cash.amount -= to_take
+			remaining -= to_take
+	return result_stack
 
 /datum/trade/proc/toggle_confirm(mob/living/carbon/human/user)
 	if(user == party_a)
@@ -287,18 +372,56 @@ GLOBAL_LIST_EMPTY(pending_trade_requests)
 		execute_trade()
 
 /datum/trade/proc/execute_trade()
-	if(!complete_items(party_a, items_b, caps_b, party_b))
-		to_chat(party_a, span_warning("Trade failed! Items could not be transferred."))
-		to_chat(party_b, span_warning("Trade failed! Items could not be transferred."))
-		return
+	var/list/transferred_to_a = list()
+	var/list/transferred_to_b = list()
+	var/caps_a_got = FALSE
+	var/caps_b_got = FALSE
 
-	if(!complete_items(party_b, items_a, caps_a, party_a))
-		to_chat(party_a, span_warning("Trade failed! Items could not be transferred."))
-		to_chat(party_b, span_warning("Trade failed! Items could not be transferred."))
-		return
+	if(escrowed_caps_b && caps_b > 0)
+		if(!QDELETED(party_a) && !QDELETED(escrowed_caps_b))
+			escrowed_caps_b.forceMove(party_a)
+			party_a.put_in_hands(escrowed_caps_b)
+			escrowed_caps_b = null
+			caps_b_got = TRUE
+		else
+			rollback_trade(transferred_to_a, transferred_to_b, caps_a_got, caps_b_got)
+			return
+
+	if(escrowed_caps_a && caps_a > 0)
+		if(!QDELETED(party_b) && !QDELETED(escrowed_caps_a))
+			escrowed_caps_a.forceMove(party_b)
+			party_b.put_in_hands(escrowed_caps_a)
+			escrowed_caps_a = null
+			caps_a_got = TRUE
+		else
+			rollback_trade(transferred_to_a, transferred_to_b, caps_a_got, caps_b_got)
+			return
+
+	for(var/obj/item/I in items_b)
+		if(QDELETED(I))
+			continue
+		if(!QDELETED(party_a) && party_a.put_in_hands(I))
+			transferred_to_a += I
+		else if(!QDELETED(party_a))
+			party_a.equip_to_slot_if_possible(I, ITEM_SLOT_BACK)
+			transferred_to_a += I
+		else
+			rollback_trade(transferred_to_a, transferred_to_b, caps_a_got, caps_b_got)
+			return
+
+	for(var/obj/item/I in items_a)
+		if(QDELETED(I))
+			continue
+		if(!QDELETED(party_b) && party_b.put_in_hands(I))
+			transferred_to_b += I
+		else if(!QDELETED(party_b))
+			party_b.equip_to_slot_if_possible(I, ITEM_SLOT_BACK)
+			transferred_to_b += I
+		else
+			rollback_trade(transferred_to_a, transferred_to_b, caps_a_got, caps_b_got)
+			return
 
 	close_uis()
-
 	to_chat(party_a, span_notice("Trade completed successfully!"))
 	to_chat(party_b, span_notice("Trade completed successfully!"))
 
@@ -308,41 +431,44 @@ GLOBAL_LIST_EMPTY(pending_trade_requests)
 	GLOB.active_trades -= src
 	qdel(src)
 
-/datum/trade/proc/complete_items(mob/living/carbon/human/recipient, list/items, caps, mob/living/carbon/human/source)
-	if(caps > 0)
-		var/caps_transferred = transfer_caps(source, recipient, caps)
-		if(caps_transferred < caps)
-			to_chat(source, span_warning("Not enough caps to complete trade."))
-			return FALSE
+/datum/trade/proc/rollback_trade(list/transferred_to_a, list/transferred_to_b, caps_a_got, caps_b_got)
+	to_chat(party_a, span_warning("Trade failed! Your items have been returned."))
+	to_chat(party_b, span_warning("Trade failed! Your items have been returned."))
 
-	for(var/obj/item/I in items)
+	for(var/obj/item/I in transferred_to_a)
 		if(QDELETED(I))
 			continue
-		if(recipient.put_in_hands(I))
+		if(!QDELETED(party_b))
+			party_b.put_in_hands(I)
+		else
+			I.forceMove(get_turf(party_b))
+
+	for(var/obj/item/I in transferred_to_b)
+		if(QDELETED(I))
 			continue
-		recipient.equip_to_slot_if_possible(I, ITEM_SLOT_BACK)
+		if(!QDELETED(party_a))
+			party_a.put_in_hands(I)
+		else
+			I.forceMove(get_turf(party_a))
 
-	return TRUE
+	return_all_items()
+	close_uis()
+	GLOB.active_trades -= src
+	qdel(src)
 
-/datum/trade/proc/transfer_caps(mob/living/carbon/human/source, mob/living/carbon/human/recipient, amount)
-	var/caps_removed = 0
-	var/total_caps = amount
-
-	for(var/obj/item/stack/f13Cash/cash in source.get_contents())
-		if(caps_removed >= total_caps)
-			break
-		var/needed = total_caps - caps_removed
-		var/to_take = min(cash.amount, needed)
-		if(to_take > 0)
-			if(to_take == cash.amount)
-				cash.forceMove(recipient)
-			else
-				var/obj/item/stack/f13Cash/split = new cash.type(recipient, to_take)
-				if(split)
-					cash.amount -= to_take
-			caps_removed += to_take
-
-	return caps_removed
+/datum/trade/proc/return_all_items()
+	for(var/obj/item/I in items_a)
+		if(!QDELETED(I) && !QDELETED(party_a))
+			if(party_a.put_in_hands(I))
+				continue
+			party_a.equip_to_slot_if_possible(I, ITEM_SLOT_BACK)
+	for(var/obj/item/I in items_b)
+		if(!QDELETED(I) && !QDELETED(party_b))
+			if(party_b.put_in_hands(I))
+				continue
+			party_b.equip_to_slot_if_possible(I, ITEM_SLOT_BACK)
+	return_escrowed_caps_a(party_a)
+	return_escrowed_caps_b(party_b)
 
 /datum/trade/proc/cancel(mob/living/carbon/human/user)
 	if(!has_participant(user))
@@ -353,16 +479,7 @@ GLOBAL_LIST_EMPTY(pending_trade_requests)
 	to_chat(party_a, span_warning("Trade cancelled by [user]."))
 	to_chat(party_b, span_warning("Trade cancelled by [user]."))
 
-	for(var/obj/item/I in items_a)
-		if(!QDELETED(I))
-			if(party_a.put_in_hands(I))
-				continue
-			party_a.equip_to_slot_if_possible(I, ITEM_SLOT_BACK)
-	for(var/obj/item/I in items_b)
-		if(!QDELETED(I))
-			if(party_b.put_in_hands(I))
-				continue
-			party_b.equip_to_slot_if_possible(I, ITEM_SLOT_BACK)
+	return_all_items()
 
 	GLOB.active_trades -= src
 	qdel(src)
@@ -524,18 +641,7 @@ GLOBAL_LIST_EMPTY(pending_trade_requests)
 	if(other_party && !QDELETED(other_party))
 		to_chat(other_party, span_warning("Trade cancelled - [disconnecting_player] disconnected."))
 	
-	// Return items to their original owners
-	for(var/obj/item/I in items_a)
-		if(!QDELETED(I) && !QDELETED(party_a))
-			if(party_a.put_in_hands(I))
-				continue
-			party_a.equip_to_slot_if_possible(I, ITEM_SLOT_BACK)
-	
-	for(var/obj/item/I in items_b)
-		if(!QDELETED(I) && !QDELETED(party_b))
-			if(party_b.put_in_hands(I))
-				continue
-			party_b.equip_to_slot_if_possible(I, ITEM_SLOT_BACK)
+	return_all_items()
 	
 	GLOB.active_trades -= src
 	qdel(src)
