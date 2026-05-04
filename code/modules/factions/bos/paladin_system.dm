@@ -253,7 +253,7 @@ GLOBAL_LIST_EMPTY(paladin_progressions)
 	var/bonus = 10 + (progression.paladin_tier * 2)
 
 	for(var/mob/living/carbon/human/H in range(range, user))
-		if(H.stat == CONSCIOUS && H.mind?.assigned_role in list("Knight", "Knight Sergeant", "Paladin", "Senior Paladin", "Paladin Commander", "Head Paladin"))
+		if(H.stat == CONSCIOUS && (H.mind?.assigned_role in list("Knight", "Knight Sergeant", "Paladin", "Senior Paladin", "Paladin Commander", "Head Paladin")))
 			to_chat(H, span_notice("Tactical Command active! +[bonus]% combat effectiveness."))
 			H.add_filter("paladin_command", 2, list("type" = "outline", "color" = "#ffcc00", "size" = 1))
 			addtimer(CALLBACK(src, PROC_REF(end_tactical_command), H), 45 SECONDS)
@@ -476,7 +476,7 @@ GLOBAL_LIST_EMPTY(paladin_progressions)
 	var/bonus = 10
 
 	for(var/mob/living/carbon/human/H in range(range, owner))
-		if(H.stat == CONSCIOUS && H.mind?.assigned_role in list("Knight", "Knight Sergeant", "Paladin", "Senior Paladin", "Paladin Commander", "Head Paladin"))
+		if(H.stat == CONSCIOUS && (H.mind?.assigned_role in list("Knight", "Knight Sergeant", "Paladin", "Senior Paladin", "Paladin Commander", "Head Paladin")))
 			to_chat(H, span_notice("Tactical Command active! +[bonus]% combat effectiveness."))
 			H.add_filter("paladin_command", 2, list("type" = "outline", "color" = "#ffcc00", "size" = 1))
 			addtimer(CALLBACK(src, PROC_REF(end_tactical_command), H), 45 SECONDS)

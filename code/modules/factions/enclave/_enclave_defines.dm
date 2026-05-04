@@ -1,7 +1,6 @@
 // Enclave Faction Defines
 
-// Access
-#define ACCESS_ENCLAVE 130
+// Access is defined in code/__DEFINES/access.dm
 
 // Vertibird Status
 #define VERTIBIRD_STATUS_STANDBY "standby"

@@ -140,7 +140,7 @@ GLOBAL_LIST_INIT(player_active_quests, list())
 		return
 	if(!GLOB.player_active_quests[ckey])
 		GLOB.player_active_quests[ckey] = list()
-	if(GLOB.player_active_quests[ckey].len >= QUEST_MAX_ACTIVE)
+	if(length(GLOB.player_active_quests[ckey]) >= QUEST_MAX_ACTIVE)
 		return FALSE
 	GLOB.player_active_quests[ckey] += Q
 	return TRUE

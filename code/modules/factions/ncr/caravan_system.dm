@@ -614,7 +614,7 @@ GLOBAL_LIST_EMPTY(ncr_routes)
 
 	qdel(src)
 
-/obj/vehicle/caravan/take_damage(damage_amount, damage_type, damage_flag, sound_effect, attack_dir)
+/obj/vehicle/caravan/take_damage(damage_amount, damage_type, damage_flag, sound_effect, attack_dir, armour_penetration = 0, atom/attacked_by)
 	. = ..()
 
 	if(obj_integrity <= 0)

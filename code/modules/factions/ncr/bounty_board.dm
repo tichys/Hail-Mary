@@ -64,8 +64,7 @@ GLOBAL_LIST_EMPTY(ncr_player_active_contracts)
 /datum/bounty_board_data/New(obj/machinery/bounty_board/ncr/board)
 	owner = board
 	active_bounties = GLOB.ncr_bounties_global
-	setup_database()
-	load_bounties()
+	INVOKE_ASYNC(src, PROC_REF(setup_database))
 
 /datum/bounty_board_data/proc/setup_database()
 	if(!SSdbcore.Connect())
@@ -89,6 +88,8 @@ GLOBAL_LIST_EMPTY(ncr_player_active_contracts)
 		)"})
 	var/success = query.Execute()
 	qdel(query)
+	if(success)
+		load_bounties()
 	return success
 
 /datum/bounty_board_data/proc/load_bounties()
